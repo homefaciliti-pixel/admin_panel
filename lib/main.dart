@@ -13,6 +13,7 @@ import 'package:admin_panel/viewmodels/Settings_ViewModels/notification_viewmode
 import 'package:admin_panel/viewmodels/Settings_ViewModels/review_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
 import 'package:admin_panel/viewmodels/reports_viewmodels/reports_viewmodel.dart';
+import 'package:admin_panel/views/auth%20screen/login_screen.dart';
 import 'package:admin_panel/views/mainScreen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -109,7 +110,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: const MainScreen(),
+      home: const LoginScreen(),
     );
   }
 }
