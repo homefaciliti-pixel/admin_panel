@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../../service_model/pages/page_model.dart';
-
+import '../../service_model/Pages/page_model.dart';
 class PageAuth extends ChangeNotifier {
 
   final String baseUrl =
