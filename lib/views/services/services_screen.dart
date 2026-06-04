@@ -534,8 +534,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       ? null
                       : () async {
                     final title = titleController.text.trim();
-                    final categoryId =
-                    int.tryParse(categoryController.text.trim());
+                    final categoryId = categoryController.text.trim().isEmpty ? null : categoryController.text.trim();
                     final price =
                         double.tryParse(priceController.text.trim()) ?? 0;
                     final cutPrice =

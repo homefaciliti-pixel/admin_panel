@@ -23,7 +23,7 @@ class ServiceModel {
   final List<int>? imageBytes;
   final String description;
   final bool status;
-  final int? categoryId;
+  final String? categoryId;
   final double? rating;
   final String? time;
   final bool isHighlighted;
@@ -71,8 +71,7 @@ class ServiceModel {
       imageBytes: null,
       description: json['description']?.toString() ?? '',
       status: json['status'] == true,
-      categoryId: (json['categoryId'] as num?)?.toInt() ??
-          (json['category_id'] as num?)?.toInt(),
+      categoryId: json['categoryId']?.toString() ?? json['category_id']?.toString(),
       rating: (json['rating'] as num?)?.toDouble(),
       time: json['time']?.toString(),
       isHighlighted: json['isHighlighted'] == true,
@@ -91,7 +90,7 @@ class ServiceModel {
     List<int>? imageBytes,
     String? description,
     bool? status,
-    int? categoryId,
+    String? categoryId,
     double? rating,
     String? time,
     bool? isHighlighted,

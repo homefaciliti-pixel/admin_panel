@@ -186,7 +186,7 @@ class ServiceAuth extends ChangeNotifier {
 
   Future<bool> addService({
     required String title,
-    required int? categoryId,
+    required String? categoryId,
     required double price,
     required double cutPrice,
     required double discountPercent,
@@ -251,7 +251,7 @@ class ServiceAuth extends ChangeNotifier {
   Future<bool> updateService({
     required int id,
     required String title,
-    required int? categoryId,
+    required String? categoryId,
     required double price,
     required double cutPrice,
     required double discountPercent,

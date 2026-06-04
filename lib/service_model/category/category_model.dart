@@ -25,7 +25,7 @@ class CategoryResponse {
 }
 
 class CategoryItem {
-  final int id;
+  final String id;
   final String title;
   final String parent;
   final String image;
@@ -41,7 +41,7 @@ class CategoryItem {
 
   factory CategoryItem.fromJson(Map<String, dynamic> json) {
     return CategoryItem(
-      id: json['id'] ?? 0,
+      id: json['id']?.toString() ?? '',
       title: json['title'] ?? '',
       parent: json['parent'] ?? '',
       image: json['image'] ?? '',
@@ -50,7 +50,7 @@ class CategoryItem {
   }
 
   CategoryItem copyWith({
-    int? id,
+    String? id,
     String? title,
     String? parent,
     String? image,

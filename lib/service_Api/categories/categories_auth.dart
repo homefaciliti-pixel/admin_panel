@@ -214,7 +214,7 @@ class AuthCategories extends ChangeNotifier {
   }
 
   Future<void> updateCategory({
-    required int id,
+    required String id,
     required String title,
     String? parent,
     required String existingImage,
@@ -257,7 +257,7 @@ class AuthCategories extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteCategory(int id) async {
+  Future<void> deleteCategory(String id) async {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/categories/$id'),
@@ -276,7 +276,7 @@ class AuthCategories extends ChangeNotifier {
     }
   }
 
-  Future<void> toggleStatus(int id, bool value) async {
+  Future<void> toggleStatus(String id, bool value) async {
     final index = _allCategories.indexWhere((e) => e.id == id);
     if (index == -1) return;
 
