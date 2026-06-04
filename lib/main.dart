@@ -1,4 +1,4 @@
-import 'package:admin_panel/data/models/booking_earning_model.dart';
+
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Subscriptions/subscription_auth.dart';
 import 'package:admin_panel/service_Api/Order/order_auth.dart';
@@ -9,28 +9,15 @@ import 'package:admin_panel/service_Api/settings/banner_auth.dart';
 import 'package:admin_panel/service_Api/settings/city_auth.dart';
 import 'package:admin_panel/service_Api/settings/state_auth.dart';
 import 'package:admin_panel/service_Api/users/user_auth.dart';
-import 'package:admin_panel/viewmodels/Settings_ViewModels/banner_viewmodel.dart';
-import 'package:admin_panel/viewmodels/Settings_ViewModels/city_viewmodel.dart';
-import 'package:admin_panel/viewmodels/Settings_ViewModels/locality_viewmodel.dart';
 import 'package:admin_panel/viewmodels/Settings_ViewModels/notification_viewmodel.dart';
 import 'package:admin_panel/viewmodels/Settings_ViewModels/review_viewmodel.dart';
-import 'package:admin_panel/viewmodels/Settings_ViewModels/state_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
-import 'package:admin_panel/viewmodels/earnings_viewmodel.dart';
-import 'package:admin_panel/viewmodels/order_viewmodel.dart';
-import 'package:admin_panel/viewmodels/page_viewmodel.dart';
 import 'package:admin_panel/viewmodels/reports_viewmodels/reports_viewmodel.dart';
-import 'package:admin_panel/viewmodels/service_viewmodel.dart';
-import 'package:admin_panel/viewmodels/user_viewmodel.dart';
-import 'package:admin_panel/views/auth%20screen/login_screen.dart';
 import 'package:admin_panel/views/mainScreen/main_screen.dart';
-import 'package:admin_panel/views/partner/partner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'utils/app_scroll_behavior.dart';
 import 'viewmodels/navigation_viewmodel.dart';
-import 'viewmodels/partner_viewmodel.dart';
 
 void main() {
   runApp(
@@ -53,9 +40,6 @@ void main() {
           create: (_) => SubscriptionAuth(),
         ),
 
-        ChangeNotifierProvider(
-          create: (_) => EarningsViewModel(),
-        ),
 
         ChangeNotifierProvider(
           create: (_) => UserViewmodel(),
@@ -85,9 +69,7 @@ void main() {
           create: (_) => CityAuth()..fetchCities(),
         ),
 
-        ChangeNotifierProvider(
-          create: (_) => LocalityViewModel(),
-        ),
+
 
         ChangeNotifierProvider(
           create: (_) => ReviewViewModel(),

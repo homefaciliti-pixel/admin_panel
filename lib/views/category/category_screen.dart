@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../service_Api/categories/categories_auth.dart';
 import '../../data/models/category_model.dart';
+import '../../service_model/category/category_model.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});

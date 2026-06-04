@@ -2,7 +2,6 @@
 // import 'package:http/http.dart' as http;
 // import 'package:admin_panel/data/models/booking_earning_model.dart';
 // import 'package:admin_panel/data/models/category_model.dart';
-// import 'package:admin_panel/data/models/order_model.dart';
 // import 'package:admin_panel/data/models/partner_model.dart';
 // import 'package:admin_panel/data/models/service_model.dart';
 // import 'package:admin_panel/data/models/subscription_earning_model.dart';
@@ -12,7 +11,6 @@
 // import 'package:admin_panel/data/models/Settings models/notification_model.dart';
 // import 'package:admin_panel/data/models/Settings models/review_model.dart';
 // import 'package:admin_panel/data/models/Settings models/state_model.dart';
-// import 'package:admin_panel/viewmodels/Settings_ViewModels/locality_model.dart';
 //
 // import '../../service_model/partner/partner_model.dart';
 // class ApiService {

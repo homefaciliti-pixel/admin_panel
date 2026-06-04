@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../service_Api/users/user_auth.dart';
-import '../../viewmodels/user_viewmodel.dart';
 import '../../widgets/userTable/user_table.dart';
 
 class UserScreen extends StatelessWidget {

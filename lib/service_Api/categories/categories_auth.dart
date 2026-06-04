@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../../data/models/category_model.dart';
+import '../../service_model/category/category_model.dart';
 
 class AuthCategories extends ChangeNotifier {
   final String baseUrl = 'https://adminbackend-1-h03r.onrender.com/api';
