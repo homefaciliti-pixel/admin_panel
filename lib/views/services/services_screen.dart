@@ -319,13 +319,13 @@ class _ServiceScreenState extends State<ServiceScreen> {
       text: item?.categoryId?.toString() ?? "",
     );
     final priceController = TextEditingController(
-      text: item?.price.toString() ?? "",
+      text: item == null ? "" : item.discountPrice.toStringAsFixed(0),
     );
     final cutPriceController = TextEditingController(
-      text: item?.cutPrice.toString() ?? "",
+      text: item == null ? "" : item.price.toStringAsFixed(0),
     );
     final discountPercentController = TextEditingController(
-      text: item?.discountPercent.toString() ?? "",
+      text: item == null ? "" : item.discountPercent.toStringAsFixed(0),
     );
     final descriptionController = TextEditingController(
       text: item?.description ?? "",

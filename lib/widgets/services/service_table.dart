@@ -96,11 +96,11 @@ class ServiceTable extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 2,
-                        child: Text("₹${item.price.toStringAsFixed(0)}"),
+                        child: Text("₹${item.discountPrice.toStringAsFixed(0)}"),
                       ),
                       Expanded(
                         flex: 2,
-                        child: Text("₹${item.cutPrice.toStringAsFixed(0)}"),
+                        child: Text("₹${item.price.toStringAsFixed(0)}"),
                       ),
                       Expanded(
                         flex: 2,
