@@ -2,7 +2,9 @@ import 'package:admin_panel/service_Api/pages/page_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../service_model/pages/page_model.dart';
+import '../../service_model/Pages/page_model.dart';
+
+// import '../../service_model/pages/page_model.dart';
 
 class PagesScreen extends StatelessWidget {
   const PagesScreen({super.key});

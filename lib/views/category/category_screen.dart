@@ -3,9 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
 import '../../service_Api/categories/categories_auth.dart';
-import '../../data/models/category_model.dart';
 import '../../service_model/category/category_model.dart';
 
 class CategoryScreen extends StatelessWidget {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../data/models/partner_model.dart'; // PartnerModel import karo
 import '../../service_Api/partner/partner_auth.dart'; // PartnerAuth use ho raha hai
 import '../../service_model/partner/partner_model.dart';
 import '../../widgets/partner/partner_table.dart';

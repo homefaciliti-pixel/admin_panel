@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../data/models/partner_model.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
 
 import '../../service_model/partner/partner_model.dart';
