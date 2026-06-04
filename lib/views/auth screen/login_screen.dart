@@ -7,8 +7,13 @@ import '../mainScreen/main_screen.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+
+
+print("login screen");
+
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
