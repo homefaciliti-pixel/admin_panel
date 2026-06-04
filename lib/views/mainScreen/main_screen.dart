@@ -99,7 +99,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("MAIN SCREEN OPENED");
+
     final vm = Provider.of<NavigationViewModel>(context);
 
     return LayoutBuilder(
