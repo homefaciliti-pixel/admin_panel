@@ -110,11 +110,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: Scaffold(
-        body: Center(
-          child: Text("LOGIN SCREEN CHECK"),
-        ),
-      ),
+      home: const LoginScreen(),
     );
   }
 }
