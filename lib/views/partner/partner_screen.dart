@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../service_Api/partner/partner_auth.dart'; // PartnerAuth use ho raha hai
+import '../../service_Api/partner/partner_auth.dart';
 import '../../service_model/partner/partner_model.dart';
 import '../../widgets/partner/partner_table.dart';
 import 'partner_details_screen.dart';

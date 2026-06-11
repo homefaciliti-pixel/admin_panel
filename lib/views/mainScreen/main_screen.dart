@@ -17,6 +17,7 @@ import '../../viewmodels/navigation_viewmodel.dart';
 import '../../widgets/drawer/admin_drawer.dart';
 import '../Earning screens/booking_screen.dart';
 import '../dashboard/dashboard_screen.dart';
+import '../partner/active_partners.dart';
 import '../partner/partner_screen.dart';
 import '../partner/pending_partner_screen.dart';
 import '../reports/reports_screen.dart';
@@ -33,13 +34,11 @@ class MainScreen extends StatelessWidget {
       case "Category":
         return const CategoryScreen();
 
-      case "Partner List":
+      case "All Partners":
         return const PartnerScreen();
-
 
       case "Pending Approval":
         return const PendingPartnerScreen();
-
 
       case "Bookings":
         return const BookingScreen();
@@ -59,7 +58,7 @@ class MainScreen extends StatelessWidget {
       case "Pages":
         return const PagesScreen();
 
-      case"Banner":
+      case "Banner":
         return const BannerScreen();
 
       case "State":
@@ -83,15 +82,14 @@ class MainScreen extends StatelessWidget {
       case "Login":
         return const LoginScreen();
 
+      case "Active Partners":
+        return const ActivePartnerScreen();
 
       default:
         return Center(
           child: Text(
             page,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
         );
     }
@@ -99,7 +97,6 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final vm = Provider.of<NavigationViewModel>(context);
 
     return LayoutBuilder(
@@ -108,18 +105,10 @@ class MainScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: AppColors.background,
-          drawer: isDesktop
-              ? null
-              : const Drawer(
-            child: AdminDrawer(),
-          ),
+          drawer: isDesktop ? null : const Drawer(child: AdminDrawer()),
           body: Row(
             children: [
-              if (isDesktop)
-                const SizedBox(
-                  width: 260,
-                  child: AdminDrawer(),
-                ),
+              if (isDesktop) const SizedBox(width: 260, child: AdminDrawer()),
               Expanded(
                 child: Column(
                   children: [
@@ -241,7 +230,7 @@ class MainScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ]
+                              ],
                             ],
                           ),
                         ],

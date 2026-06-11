@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 import '../../service_model/order/order_model.dart';
 
-
 class OrderAuth extends ChangeNotifier {
   OrderAuth() {
     orders = List.from(_allOrders);
@@ -108,7 +107,7 @@ class OrderAuth extends ChangeNotifier {
             item.serviceName.toLowerCase().contains(keyword) ||
             item.city.toLowerCase().contains(keyword) ||
             item.locality.toLowerCase().contains(keyword) ||
-            item.vendorName.toLowerCase().contains(keyword) ||
+            item.vendorNumber.toLowerCase().contains(keyword) ||
             item.status.toLowerCase().contains(keyword) ||
             item.address.toLowerCase().contains(keyword);
       }).toList();
@@ -118,10 +117,7 @@ class OrderAuth extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> updateOrder(
-      int id,
-      Map<String, dynamic> updateFields,
-      ) async {
+  Future<bool> updateOrder(int id, Map<String, dynamic> updateFields) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -152,9 +148,13 @@ class OrderAuth extends ChangeNotifier {
     }
   }
 
+<<<<<<< HEAD
 
 
   Future<bool> assignVendor(int id, String vendorMobile) async {
+=======
+  Future<bool> assignVendor(int id, String vendorNumber) async {
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -163,9 +163,13 @@ class OrderAuth extends ChangeNotifier {
       final response = await http.put(
         Uri.parse('$_baseUrl/$id/assign'),
         headers: {'Content-Type': 'application/json'},
+<<<<<<< HEAD
         body: jsonEncode({
           'vendorMobile': vendorMobile.trim(),
         }),
+=======
+        body: jsonEncode({'vendorMobile': vendorNumber.trim()}),
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
       );
 
       if (response.statusCode == 200) {

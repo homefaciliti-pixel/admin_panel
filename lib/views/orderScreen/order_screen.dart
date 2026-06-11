@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // not used, but safe to remove if you want
 import 'package:provider/provider.dart';
-
 import '../../service_Api/Order/order_auth.dart';
 import '../../service_Api/partner/partner_auth.dart';
 import '../../service_model/order/order_model.dart';
@@ -98,7 +96,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
               /// SHOW ENTRIES + PAGINATION TOP
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
@@ -138,8 +139,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             onChanged: vm.isLoading
                                 ? null
                                 : (value) {
-                              if (value != null) vm.changeEntries(value);
-                            },
+                                    if (value != null) vm.changeEntries(value);
+                                  },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -263,77 +264,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ),
                   ),
                 ),
-
-              const SizedBox(height: 15),
-
-              /// PAGINATION BOTTOM
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox.shrink(),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: vm.previousPage,
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: const Icon(Icons.chevron_left),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff111827),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            "${vm.currentPage}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        InkWell(
-                          onTap: vm.nextPage,
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: const Icon(Icons.chevron_right),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         );
@@ -383,7 +313,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       _detailChip("Status", item.status),
                       _detailChip(
                         "Vendor",
-                        item.vendorName.isEmpty ? "-" : item.vendorName,
+                        item.vendorNumber.isEmpty ? "-" : item.vendorNumber,
                       ),
                     ],
                   ),
@@ -393,7 +323,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     runSpacing: 16,
                     children: [
                       _detailCard("ID", item.id.toString()),
-                      _detailCard("Service Request No", item.serviceRequestNumber),
+                      _detailCard(
+                        "Service Request No",
+                        item.serviceRequestNumber,
+                      ),
                       _detailCard("Service Name", item.serviceName),
                       _detailCard(
                         "Service Amount",
@@ -405,8 +338,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       _detailCard("Locality", item.locality),
                       _detailCard("Status", item.status),
                       _detailCard(
-                        "Vendor Name",
-                        item.vendorName.isEmpty ? "-" : item.vendorName,
+                        "Vendor Number",
+                        item.vendorNumber.isEmpty ? "-" : item.vendorNumber,
                       ),
                       _detailCard(
                         "Vendor Mobile",
@@ -442,10 +375,19 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   void _showAssignVendorSheet(
+<<<<<<< HEAD
       BuildContext context,
       OrderAuth vm,
       OrderModel item,
       ) {
+=======
+    BuildContext context,
+    OrderAuth vm,
+    OrderModel item,
+  ) {
+    final vendorController = TextEditingController(text: item.vendorNumber);
+
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -457,7 +399,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
         return StatefulBuilder(
           builder: (context, setState) {
+<<<<<<< HEAD
             final bool isAssigned = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
+=======
+            final bool isAssigned = item.vendorNumber.trim().isNotEmpty;
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
 
             return Container(
               padding: EdgeInsets.only(
@@ -495,6 +441,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                   const SizedBox(height: 20),
+<<<<<<< HEAD
                   Consumer<PartnerAuth>(
                     builder: (context, partnerAuth, child) {
                       if (partnerAuth.isLoading && partnerAuth.approvedPartners.isEmpty) {
@@ -557,12 +504,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         },
                       );
                     },
+=======
+                  TextField(
+                    controller: vendorController,
+                    decoration: InputDecoration(
+                      labelText: "Vendor Number",
+                      hintText: "Enter vendor Number",
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
                   ),
                   const SizedBox(height: 18),
                   Text(
                     isAssigned
+<<<<<<< HEAD
                         ? "Assigned to: ${item.vendorName} (${item.vendorMobile})"
                         : "Select approved vendor to assign this order.",
+=======
+                        ? "This order is already assigned. You can unassign it."
+                        : "Add vendor Number assign this order.",
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
@@ -580,6 +545,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
+<<<<<<< HEAD
                           onPressed: selectedMobile == null
                               ? null
                               : () async {
@@ -595,12 +561,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     );
                                   }
                                 },
+=======
+                          onPressed: () async {
+                            final vendorName = vendorController.text.trim();
+
+                            final ok = await vm.assignVendor(
+                              item.id,
+                              vendorName,
+                            );
+                            if (ok && mounted) {
+                              Navigator.pop(context);
+                            }
+                          },
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff111827),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          child: Text(isAssigned ? "Reassign" : "Assign"),
+                          child: Text("Assign"),
                         ),
                       ),
                     ],
@@ -642,14 +621,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   void _showEditOrderDialog(
-      BuildContext context,
-      OrderAuth vm,
-      OrderModel item,
-      ) {
+    BuildContext context,
+    OrderAuth vm,
+    OrderModel item,
+  ) {
     final statusController = TextEditingController(text: item.status);
+<<<<<<< HEAD
     final vendorController = TextEditingController(
       text: item.vendorMobile == '-' ? '' : item.vendorMobile,
     );
+=======
+    final vendorController = TextEditingController(text: item.vendorNumber);
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
     final slotTimeController = TextEditingController(text: item.slotTime);
     final serviceDateController = TextEditingController(text: item.serviceDate);
     final cityController = TextEditingController(text: item.city);
@@ -693,6 +676,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onPressed: vm.isLoading
                   ? null
                   : () async {
+<<<<<<< HEAD
                 final ok = await vm.updateOrder(
                   item.id,
                   {
@@ -705,11 +689,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     'address': addressController.text.trim(),
                   },
                 );
+=======
+                      final ok = await vm.updateOrder(item.id, {
+                        'status': statusController.text.trim(),
+                        'vendorName': vendorController.text.trim(),
+                        'slotTime': slotTimeController.text.trim(),
+                        'serviceDate': serviceDateController.text.trim(),
+                        'city': cityController.text.trim(),
+                        'locality': localityController.text.trim(),
+                        'address': addressController.text.trim(),
+                      });
+>>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
 
-                if (ok && context.mounted) {
-                  Navigator.pop(dialogContext);
-                }
-              },
+                      if (ok && context.mounted) {
+                        Navigator.pop(dialogContext);
+                      }
+                    },
               child: const Text("Save"),
             ),
           ],
@@ -762,10 +757,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Widget _editField(
-      TextEditingController controller,
-      String label, {
-        int maxLines = 1,
-      }) {
+    TextEditingController controller,
+    String label, {
+    int maxLines = 1,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
