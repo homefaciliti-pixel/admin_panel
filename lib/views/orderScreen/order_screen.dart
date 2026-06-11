@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart'; // not used, but safe to remove
 import 'package:provider/provider.dart';
 
 import '../../service_Api/Order/order_auth.dart';
+import '../../service_Api/partner/partner_auth.dart';
 import '../../service_model/order/order_model.dart';
 import '../../widgets/order_table/order_table.dart';
 
@@ -24,6 +25,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
     if (!_loaded) {
       context.read<OrderAuth>().fetchOrders();
+      context.read<PartnerAuth>().loadAllPartners();
       _loaded = true;
     }
   }
@@ -444,17 +446,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
       OrderAuth vm,
       OrderModel item,
       ) {
-    final vendorController = TextEditingController(
-      text: item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-'
-          ? item.vendorMobile
-          : '',
-    );
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
+        String? selectedMobile = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-'
+            ? item.vendorMobile
+            : null;
+
         return StatefulBuilder(
           builder: (context, setState) {
             final bool isAssigned = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
@@ -495,24 +495,74 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                   const SizedBox(height: 20),
-                  TextField(
-                    controller: vendorController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: "Vendor Mobile Number",
-                      hintText: "Enter partner's 10-digit mobile number",
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                  Consumer<PartnerAuth>(
+                    builder: (context, partnerAuth, child) {
+                      if (partnerAuth.isLoading && partnerAuth.approvedPartners.isEmpty) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      final approved = partnerAuth.approvedPartners;
+                      if (approved.isEmpty) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  "No approved partners found.",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      // Check if current assigned mobile is in approved list
+                      final hasMatchingPartner = approved.any((p) => p.mobile == selectedMobile);
+                      final dropdownValue = hasMatchingPartner ? selectedMobile : null;
+
+                      return DropdownButtonFormField<String>(
+                        value: dropdownValue,
+                        hint: const Text("Select Approved Partner"),
+                        decoration: InputDecoration(
+                          labelText: "Select Partner",
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        items: approved.map((partner) {
+                          return DropdownMenuItem<String>(
+                            value: partner.mobile,
+                            child: Text("${partner.name} (${partner.mobile})"),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() {
+                              selectedMobile = val;
+                            });
+                          }
+                        },
+                      );
+                    },
                   ),
                   const SizedBox(height: 18),
                   Text(
                     isAssigned
                         ? "Assigned to: ${item.vendorName} (${item.vendorMobile})"
-                        : "Enter vendor mobile number to assign this order.",
+                        : "Select approved vendor to assign this order.",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
@@ -530,21 +580,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () async {
-                            final vendorMobile = vendorController.text.trim();
-
-                            final ok = await vm.assignVendor(item.id, vendorMobile);
-                            if (ok && mounted) {
-                              Navigator.pop(context);
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(vm.errorMessage ?? "Failed to assign vendor"),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          },
+                          onPressed: selectedMobile == null
+                              ? null
+                              : () async {
+                                  final ok = await vm.assignVendor(item.id, selectedMobile!);
+                                  if (ok && mounted) {
+                                    Navigator.pop(context);
+                                  } else if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(vm.errorMessage ?? "Failed to assign vendor"),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff111827),
                             foregroundColor: Colors.white,
