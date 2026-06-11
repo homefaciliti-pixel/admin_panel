@@ -49,6 +49,10 @@ class PartnerModel {
   final String createdAt;
   final String policeVerificationImage;
 
+  final String? latitude;
+  final String? longitude;
+  final String? locationTime;
+
   PartnerModel({
     required this.id,
     required this.name,
@@ -84,6 +88,9 @@ class PartnerModel {
     required this.rating,
     required this.totalReviews,
     required this.createdAt,
+    this.latitude,
+    this.longitude,
+    this.locationTime,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) {
@@ -139,6 +146,9 @@ class PartnerModel {
       totalReviews: (json['totalReviews'] as num?)?.toInt() ?? 0,
       createdAt: safeString(json['createdAt']),
       policeVerificationImage: safeString(json['policeVerificationImage']),
+      latitude: json['latitude'] != null ? json['latitude'].toString() : null,
+      longitude: json['longitude'] != null ? json['longitude'].toString() : null,
+      locationTime: json['locationTime'] != null ? json['locationTime'].toString() : null,
     );
   }
 
@@ -178,6 +188,9 @@ class PartnerModel {
       'rating': rating,
       'totalReviews': totalReviews,
       'createdAt': createdAt,
+      'latitude': latitude,
+      'longitude': longitude,
+      'locationTime': locationTime,
     };
   }
 
@@ -216,6 +229,9 @@ class PartnerModel {
     double? rating,
     int? totalReviews,
     String? createdAt,
+    String? latitude,
+    String? longitude,
+    String? locationTime,
   }) {
     return PartnerModel(
       id: id ?? this.id,
@@ -252,6 +268,9 @@ class PartnerModel {
       rating: rating ?? this.rating,
       totalReviews: totalReviews ?? this.totalReviews,
       createdAt: createdAt ?? this.createdAt,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      locationTime: locationTime ?? this.locationTime,
     );
   }
 }

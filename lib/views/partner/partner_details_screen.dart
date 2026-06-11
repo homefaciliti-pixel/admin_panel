@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:http/http.dart' as http;
 
 import '../../service_model/partner/partner_model.dart';
 
@@ -16,6 +19,8 @@ class PartnerDetailsScreen extends StatefulWidget {
 
 class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   bool _initialized = false;
+  String? _resolvedAddress;
+  bool _isResolvingAddress = false;
 
   @override
   void didChangeDependencies() {
@@ -29,13 +34,72 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
       vm.selectPartner(widget.partner);
       vm.changeTab(PartnerDetailTab.detail);
 
+      if (widget.partner.latitude != null &&
+          widget.partner.longitude != null &&
+          widget.partner.latitude!.isNotEmpty &&
+          widget.partner.longitude!.isNotEmpty) {
+        _resolveCurrentAddress(widget.partner.latitude!, widget.partner.longitude!);
+      }
+
       vm.getPartnerDetails(widget.partner.id).then((freshPartner) {
         if (freshPartner != null && mounted) {
           vm.selectPartner(freshPartner);
+          if (freshPartner.latitude != null &&
+              freshPartner.longitude != null &&
+              freshPartner.latitude!.isNotEmpty &&
+              freshPartner.longitude!.isNotEmpty) {
+            _resolveCurrentAddress(freshPartner.latitude!, freshPartner.longitude!);
+          }
         }
       });
 
       _initialized = true;
+    }
+  }
+
+  void _resolveCurrentAddress(String lat, String lng) async {
+    if (mounted) {
+      setState(() {
+        _isResolvingAddress = true;
+        _resolvedAddress = null;
+      });
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$lat&lon=$lng'),
+        headers: {
+          'User-Agent': 'HomeFacilitiAdminPanel/1.0',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final displayName = data['display_name'] as String?;
+        if (mounted) {
+          setState(() {
+            _resolvedAddress = displayName;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _resolvedAddress = "Address query failed (${response.statusCode})";
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _resolvedAddress = "Failed to resolve address: $e";
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isResolvingAddress = false;
+        });
+      }
     }
   }
 
@@ -508,24 +572,79 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   /// =========================================
   /// DETAIL TAB
   /// =========================================
+  Widget _addressFieldCard(String title, String value) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xffF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value.isEmpty ? "-" : value,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, height: 1.4),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDetailTab(PartnerModel partner) {
+    final hasCoords = partner.latitude != null &&
+        partner.longitude != null &&
+        partner.latitude!.isNotEmpty &&
+        partner.longitude!.isNotEmpty;
+
     return _sectionCard(
       title: "Basic Details",
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _fieldCard("Partner ID", partner.id.toString()),
-          _fieldCard("Name", partner.name),
-          _fieldCard("Email", partner.email),
-          _fieldCard("Mobile", partner.mobile),
-          _fieldCard("City", partner.city),
-          _fieldCard("State", partner.state),
-          _fieldCard("Locality", partner.locality),
-          _fieldCard("Address", partner.address),
-          _fieldCard("Created At", partner.createdAt),
-          _fieldCard("Approved", partner.isApproved ? "Yes" : "No"),
-          _fieldCard("Active", partner.status ? "Yes" : "No"),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              _fieldCard("Partner ID", partner.id.toString()),
+              _fieldCard("Name", partner.name),
+              _fieldCard("Email", partner.email),
+              _fieldCard("Mobile", partner.mobile),
+              _fieldCard("City", partner.city),
+              _fieldCard("State", partner.state),
+              _fieldCard("Locality", partner.locality),
+              _fieldCard("Address", partner.address),
+              _fieldCard("Created At", partner.createdAt),
+              _fieldCard("Approved", partner.isApproved ? "Yes" : "No"),
+              _fieldCard("Active", partner.status ? "Yes" : "No"),
+              _fieldCard("Latitude", partner.latitude ?? "-"),
+              _fieldCard("Longitude", partner.longitude ?? "-"),
+              _fieldCard(
+                "Last Location Time",
+                (partner.locationTime != null && partner.locationTime!.isNotEmpty)
+                    ? _formatLocationTime(partner.locationTime!)
+                    : "-",
+              ),
+              if (hasCoords)
+                _mapLinkCard(partner.latitude!, partner.longitude!),
+            ],
+          ),
+          if (hasCoords) ...[
+            const SizedBox(height: 20),
+            _addressFieldCard(
+              "Current Live Address (Resolved from GPS)",
+              _isResolvingAddress
+                  ? "Fetching address details from GPS coordinates..."
+                  : (_resolvedAddress ?? "Address not resolved"),
+            ),
+          ],
         ],
       ),
     );
@@ -976,5 +1095,66 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
         style: TextStyle(color: color, fontWeight: FontWeight.w600),
       ),
     );
+  }
+
+  Widget _mapLinkCard(String lat, String lng) {
+    return Container(
+      width: 260,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xffF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Live Map",
+            style: TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton.icon(
+            onPressed: () {
+              final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+              html.window.open(url, '_blank');
+            },
+            icon: const Icon(Icons.map, size: 16),
+            label: const Text("View on Google Maps"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xff111827),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatLocationTime(String timeStr) {
+    try {
+      final dateTime = DateTime.parse(timeStr).toLocal();
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final year = dateTime.year;
+
+      int hour = dateTime.hour;
+      final minute = dateTime.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+
+      if (hour > 12) hour -= 12;
+      if (hour == 0) hour = 12;
+
+      final hourStr = hour.toString().padLeft(2, '0');
+
+      return "$day-$month-$year $hourStr:$minute $period";
+    } catch (_) {
+      return timeStr;
+    }
   }
 }

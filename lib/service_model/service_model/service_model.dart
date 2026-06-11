@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 class ServiceModel {
@@ -74,8 +75,12 @@ class ServiceModel {
       categoryId: json['categoryId']?.toString() ?? json['category_id']?.toString(),
       rating: (json['rating'] as num?)?.toDouble(),
       time: json['time']?.toString(),
-      isHighlighted: json['isHighlighted'] == true,
-      highlights: const [],
+      isHighlighted: json['isHighlighted'] == true || json['isHighlighted'] == 'true',
+      highlights: json['highlights'] != null
+          ? List<String>.from(json['highlights'] is String
+              ? jsonDecode(json['highlights'])
+              : json['highlights'])
+          : const [],
       reviewsCount: 0,
       cutPrice: (json['cutPrice'] as num?)?.toDouble() ?? 0,
     );

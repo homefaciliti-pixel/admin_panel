@@ -406,6 +406,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         "Vendor Name",
                         item.vendorName.isEmpty ? "-" : item.vendorName,
                       ),
+                      _detailCard(
+                        "Vendor Mobile",
+                        item.vendorMobile.isEmpty ? "-" : item.vendorMobile,
+                      ),
                       _detailCard("Created At", item.createdAt),
                       _detailCard("Address", item.address),
                     ],
@@ -440,7 +444,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
       OrderAuth vm,
       OrderModel item,
       ) {
-    final vendorController = TextEditingController(text: item.vendorName);
+    final vendorController = TextEditingController(
+      text: item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-'
+          ? item.vendorMobile
+          : '',
+    );
 
     showModalBottomSheet(
       context: context,
@@ -449,7 +457,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setState) {
-            final bool isAssigned = item.vendorName.trim().isNotEmpty;
+            final bool isAssigned = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
 
             return Container(
               padding: EdgeInsets.only(
@@ -489,9 +497,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   const SizedBox(height: 20),
                   TextField(
                     controller: vendorController,
+                    keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      labelText: "Vendor Name",
-                      hintText: "Enter vendor name",
+                      labelText: "Vendor Mobile Number",
+                      hintText: "Enter partner's 10-digit mobile number",
                       filled: true,
                       fillColor: Colors.grey.shade50,
                       border: OutlineInputBorder(
@@ -502,8 +511,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   const SizedBox(height: 18),
                   Text(
                     isAssigned
-                        ? "This order is already assigned. You can unassign it."
-                        : "Add vendor name to assign this order.",
+                        ? "Assigned to: ${item.vendorName} (${item.vendorMobile})"
+                        : "Enter vendor mobile number to assign this order.",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
@@ -522,11 +531,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            final vendorName = vendorController.text.trim();
+                            final vendorMobile = vendorController.text.trim();
 
-                            final ok = await vm.assignVendor(item.id, vendorName);
+                            final ok = await vm.assignVendor(item.id, vendorMobile);
                             if (ok && mounted) {
                               Navigator.pop(context);
+                            } else if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(vm.errorMessage ?? "Failed to assign vendor"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -548,6 +564,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           final ok = await vm.unassignVendor(item.id);
                           if (ok && mounted) {
                             Navigator.pop(context);
+                          } else if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(vm.errorMessage ?? "Failed to unassign vendor"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -574,7 +597,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       OrderModel item,
       ) {
     final statusController = TextEditingController(text: item.status);
-    final vendorController = TextEditingController(text: item.vendorName);
+    final vendorController = TextEditingController(
+      text: item.vendorMobile == '-' ? '' : item.vendorMobile,
+    );
     final slotTimeController = TextEditingController(text: item.slotTime);
     final serviceDateController = TextEditingController(text: item.serviceDate);
     final cityController = TextEditingController(text: item.city);
@@ -594,7 +619,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 children: [
                   _editField(statusController, "Status"),
                   const SizedBox(height: 14),
-                  _editField(vendorController, "Vendor Name"),
+                  _editField(vendorController, "Vendor Mobile"),
                   const SizedBox(height: 14),
                   _editField(slotTimeController, "Slot Time"),
                   const SizedBox(height: 14),
@@ -622,7 +647,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   item.id,
                   {
                     'status': statusController.text.trim(),
-                    'vendorName': vendorController.text.trim(),
+                    'vendorMobile': vendorController.text.trim(),
                     'slotTime': slotTimeController.text.trim(),
                     'serviceDate': serviceDateController.text.trim(),
                     'city': cityController.text.trim(),

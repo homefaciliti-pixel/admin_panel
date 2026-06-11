@@ -958,6 +958,16 @@ class ReportsScreen extends StatelessWidget {
   Widget _buildCurrentTable(
       ReportsViewModel vm,
       ) {
+    if (vm.isLoading) {
+      return const SizedBox(
+        height: 520,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xff111827),
+          ),
+        ),
+      );
+    }
 
     switch (vm.currentTab) {
 

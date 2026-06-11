@@ -1,19 +1,45 @@
 class OrderModel {
+  /// unique id
   final int id;
+
+  /// service request number
   final String serviceRequestNumber;
+
+  /// service title
   final String serviceName;
+
+  /// service amount
   final double serviceAmount;
+
+  /// booking slot time
   final String slotTime;
+
+  /// service date
   final String serviceDate;
+
+  /// city name
   final String city;
+
+  /// locality / area
   final String locality;
-  final String status;
+
+  /// order status
+  /// example:
+  /// Pending, Assigned, Completed, Cancelled
+  String status;
+
+  /// current vendor name
   final String vendorName;
+
+  /// current vendor mobile
   final String vendorMobile;
-  final String createdAt;
+
   final String address;
 
-  const OrderModel({
+  /// created time
+  final String createdAt;
+
+  OrderModel({
     required this.id,
     required this.serviceRequestNumber,
     required this.serviceName,
@@ -29,42 +55,8 @@ class OrderModel {
     required this.address,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) {
-    return OrderModel(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      serviceRequestNumber: json['serviceRequestNumber']?.toString() ?? '',
-      serviceName: json['serviceName']?.toString() ?? '',
-      serviceAmount: (json['serviceAmount'] as num?)?.toDouble() ?? 0,
-      slotTime: json['slotTime']?.toString() ?? '',
-      serviceDate: json['serviceDate']?.toString() ?? '',
-      city: json['city']?.toString() ?? '',
-      locality: json['locality']?.toString() ?? '',
-      status: json['status']?.toString() ?? '',
-      vendorName: json['vendorName']?.toString() ?? '',
-      vendorMobile: json['vendorMobile']?.toString() ?? '',
-      createdAt: json['createdAt']?.toString() ?? '',
-      address: json['address']?.toString() ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'serviceRequestNumber': serviceRequestNumber,
-      'serviceName': serviceName,
-      'serviceAmount': serviceAmount,
-      'slotTime': slotTime,
-      'serviceDate': serviceDate,
-      'city': city,
-      'locality': locality,
-      'status': status,
-      'vendorName': vendorName,
-      'vendorMobile': vendorMobile,
-      'createdAt': createdAt,
-      'address': address,
-    };
-  }
-
+  /// copyWith
+  /// ek-ek field update karne ke liye
   OrderModel copyWith({
     int? id,
     String? serviceRequestNumber,
@@ -78,7 +70,6 @@ class OrderModel {
     String? vendorName,
     String? vendorMobile,
     String? createdAt,
-    String? address,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -93,7 +84,7 @@ class OrderModel {
       vendorName: vendorName ?? this.vendorName,
       vendorMobile: vendorMobile ?? this.vendorMobile,
       createdAt: createdAt ?? this.createdAt,
-      address: address ?? this.address,
+      address: '',
     );
   }
 }

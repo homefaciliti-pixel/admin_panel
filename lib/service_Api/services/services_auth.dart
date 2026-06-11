@@ -217,6 +217,7 @@ class ServiceAuth extends ChangeNotifier {
         'time': serviceTime.trim(),
         'isHighlighted': highlights.isNotEmpty,
         'categoryId': categoryId,
+        'highlights': highlights,
       };
 
       print('POST BODY => ${jsonEncode(body)}');
@@ -285,6 +286,7 @@ class ServiceAuth extends ChangeNotifier {
         'time': serviceTime.trim(),
         'isHighlighted': highlights.isNotEmpty,
         'categoryId': categoryId,
+        'highlights': highlights,
       };
 
       print('PUT BODY => ${jsonEncode(body)}');

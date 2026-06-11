@@ -12,4 +12,14 @@ class UserReportModel {
     required this.createdAt,
     required this.locality,
   });
+
+  factory UserReportModel.fromJson(Map<String, dynamic> json) {
+    return UserReportModel(
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      userName: json['name'] ?? json['userName'] ?? '',
+      mobile: json['mobile'] ?? '',
+      createdAt: json['createdAt'] ?? '',
+      locality: json['address'] ?? json['locality'] ?? '',
+    );
+  }
 }

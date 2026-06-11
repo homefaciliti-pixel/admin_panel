@@ -64,7 +64,7 @@ class PartnerTable extends StatelessWidget {
                   child: Text("#", style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(
-                  flex: 4,
+                  flex: 3,
                   child: Text("Partner", style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(
@@ -76,8 +76,12 @@ class PartnerTable extends StatelessWidget {
                   child: Text("City", style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(
-                  flex: 2,
-                  child: Text("State", style: TextStyle(color: Colors.white)),
+                  flex: 3,
+                  child: Text("Location (Lat/Lng)", style: TextStyle(color: Colors.white)),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text("Last Active", style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(
                   flex: 2,
@@ -125,7 +129,7 @@ class PartnerTable extends StatelessWidget {
 
                       /// PARTNER NAME + EMAIL
                       Expanded(
-                        flex: 4,
+                        flex: 3,
                         child: InkWell(
                           onTap: () {
                             // Agar callback diya hai to use karo
@@ -194,10 +198,26 @@ class PartnerTable extends StatelessWidget {
                         child: Text(item.city),
                       ),
 
-                      /// STATE
+                      /// LOCATION (LAT/LNG)
                       Expanded(
-                        flex: 2,
-                        child: Text(item.state),
+                        flex: 3,
+                        child: Text(
+                          (item.latitude != null && item.longitude != null && item.latitude!.isNotEmpty && item.longitude!.isNotEmpty)
+                              ? "${item.latitude}, ${item.longitude}"
+                              : "-",
+                          style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
+                        ),
+                      ),
+
+                      /// LAST ACTIVE TIME
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          (item.locationTime != null && item.locationTime!.isNotEmpty)
+                              ? _formatLocationTime(item.locationTime!)
+                              : "-",
+                          style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
+                        ),
                       ),
 
                       /// CREATED AT
@@ -251,5 +271,27 @@ class PartnerTable extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatLocationTime(String timeStr) {
+    try {
+      final dateTime = DateTime.parse(timeStr).toLocal();
+      final day = dateTime.day.toString().padLeft(2, '0');
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final year = dateTime.year;
+
+      int hour = dateTime.hour;
+      final minute = dateTime.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+
+      if (hour > 12) hour -= 12;
+      if (hour == 0) hour = 12;
+
+      final hourStr = hour.toString().padLeft(2, '0');
+
+      return "$day-$month-$year $hourStr:$minute $period";
+    } catch (_) {
+      return timeStr;
+    }
   }
 }

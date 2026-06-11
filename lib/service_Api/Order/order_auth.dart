@@ -154,7 +154,7 @@ class OrderAuth extends ChangeNotifier {
 
 
 
-  Future<bool> assignVendor(int id, String vendorName) async {
+  Future<bool> assignVendor(int id, String vendorMobile) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -164,7 +164,7 @@ class OrderAuth extends ChangeNotifier {
         Uri.parse('$_baseUrl/$id/assign'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'vendorName': vendorName.trim(),
+          'vendorMobile': vendorMobile.trim(),
         }),
       );
 

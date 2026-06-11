@@ -12,4 +12,14 @@ class PartnerReportModel {
     required this.createdAt,
     required this.locality,
   });
+
+  factory PartnerReportModel.fromJson(Map<String, dynamic> json) {
+    return PartnerReportModel(
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      partnerName: json['name'] ?? json['partnerName'] ?? '',
+      mobile: json['mobile'] ?? '',
+      createdAt: json['createdAt'] ?? '',
+      locality: json['locality'] ?? json['address'] ?? '',
+    );
+  }
 }

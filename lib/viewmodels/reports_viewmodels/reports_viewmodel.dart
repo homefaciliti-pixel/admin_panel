@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -28,7 +30,7 @@ class ReportsViewModel extends ChangeNotifier {
 
   void changeTab(ReportsTab tab) {
     currentTab = tab;
-    notifyListeners();
+    loadReportData();
   }
 
   /// =========================================
@@ -51,100 +53,11 @@ class ReportsViewModel extends ChangeNotifier {
   /// =========================================
   /// MASTER LISTS
   /// =========================================
-  ///
-  /// future me yahi backend/API se aayega
 
-  final List<UserReportModel> _allUsers = [
-    UserReportModel(
-      id: 1,
-      userName: "Rahul Sharma",
-      mobile: "9876543210",
-      createdAt: "2026-05-02",
-      locality: 'jaipur',
-    ),
-    UserReportModel(
-      id: 2,
-      userName: "Neha Singh",
-      mobile: "9123456780",
-      createdAt: "2026-05-10",
-      locality: 'udaipur',
-    ),
-    UserReportModel(
-      id: 3,
-      userName: "Aman Verma",
-      mobile: "9988776655",
-      createdAt: "2026-05-18",
-      locality: 'jodhpur',
-    ),
-  ];
-
-  final List<PartnerReportModel> _allPartners = [
-    PartnerReportModel(
-      id: 1,
-      partnerName: "Govind",
-      mobile: "9000000001",
-      createdAt: "2026-05-03",
-      locality: 'jaipur',
-    ),
-    PartnerReportModel(
-      id: 2,
-      partnerName: "Mahesh Kumar",
-      mobile: "9000000002",
-      createdAt: "2026-05-12",
-      locality: 'kota',
-    ),
-    PartnerReportModel(
-      id: 3,
-      partnerName: "Sonali",
-      mobile: "9000000003",
-      createdAt: "2026-05-20",
-      locality: 'jaipur',
-    ),
-  ];
-
-  final List<EarningReportModel> _allEarnings = [
-    EarningReportModel(
-      id: 1,
-      source: "Booking",
-      title: "AC Repair",
-      amount: 1200,
-      paymentMethod: "UPI",
-      createdAt: "2026-05-04", locality: 'jaipur',
-    ),
-    EarningReportModel(
-      id: 2,
-      source: "Subscription",
-      title: "Partner Verification",
-      amount: 100,
-      paymentMethod: "Cash",
-      createdAt: "2026-05-14", locality: 'udaipur',
-    ),
-    EarningReportModel(
-      id: 3,
-      source: "Booking",
-      title: "Plumbing",
-      amount: 800,
-      paymentMethod: "Card",
-      createdAt: "2026-05-22", locality: 'sikar',
-    ),
-  ];
-
-  final List<SubscriptionReportModel> _allSubscriptions = [
-    SubscriptionReportModel(
-      id: 1,
-      partnerName: "Govind",
-      planName: "Partner Verification",
-      amount: 100,
-      createdAt: "2026-05-03", locality: 'jodhpur',
-    ),
-    SubscriptionReportModel(
-      id: 2,
-      partnerName: "Mahesh Kumar",
-      planName: "Partner Verification",
-      amount: 100,
-      createdAt: "2026-05-18", locality: 'jaipur',
-    ),
-  ];
+  List<UserReportModel> _allUsers = [];
+  List<PartnerReportModel> _allPartners = [];
+  List<EarningReportModel> _allEarnings = [];
+  List<SubscriptionReportModel> _allSubscriptions = [];
 
   /// =========================================
   /// FILTERED LISTS
@@ -155,52 +68,83 @@ class ReportsViewModel extends ChangeNotifier {
   List<EarningReportModel> earnings = [];
   List<SubscriptionReportModel> subscriptions = [];
 
+  bool isLoading = false;
+  final String _baseUrl = 'https://adminbackend-1-h03r.onrender.com/api';
+
   /// constructor
   ReportsViewModel() {
-    users = List.from(_allUsers);
-    partners = List.from(_allPartners);
-    earnings = List.from(_allEarnings);
-    subscriptions = List.from(_allSubscriptions);
+    loadReportData();
   }
 
-  /// =========================================
-  /// DATE PARSER
-  /// =========================================
+  String _formatDate(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year;
+    return '$day-$month-$year';
+  }
 
-  DateTime? _parseDate(String value) {
+  String _getTabName() {
+    switch (currentTab) {
+      case ReportsTab.users:
+        return 'users';
+      case ReportsTab.partners:
+        return 'partners';
+      case ReportsTab.earnings:
+        return 'earnings';
+      case ReportsTab.subscriptions:
+        return 'subscriptions';
+    }
+  }
+
+  Future<void> loadReportData() async {
+    isLoading = true;
+    notifyListeners();
+
     try {
-      return DateTime.parse(value);
-    } catch (_) {
-      return null;
+      final startStr = startDate != null ? _formatDate(startDate!) : '01-01-2020';
+      final endStr = endDate != null ? _formatDate(endDate!) : '31-12-2030';
+      const queryParam = '';
+      const exportParam = 'none';
+
+      final uri = Uri.parse('$_baseUrl/reports/${_getTabName()}')
+          .replace(queryParameters: {
+        'startDate': startStr,
+        'endDate': endStr,
+        'query': queryParam,
+        'export': exportParam,
+      });
+
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        if (body['success'] == true && body['data'] is List) {
+          final data = body['data'] as List;
+          switch (currentTab) {
+            case ReportsTab.users:
+              _allUsers = data.map((json) => UserReportModel.fromJson(json)).toList();
+              users = List.from(_allUsers);
+              break;
+            case ReportsTab.partners:
+              _allPartners = data.map((json) => PartnerReportModel.fromJson(json)).toList();
+              partners = List.from(_allPartners);
+              break;
+            case ReportsTab.earnings:
+              _allEarnings = data.map((json) => EarningReportModel.fromJson(json)).toList();
+              earnings = List.from(_allEarnings);
+              break;
+            case ReportsTab.subscriptions:
+              _allSubscriptions = data.map((json) => SubscriptionReportModel.fromJson(json)).toList();
+              subscriptions = List.from(_allSubscriptions);
+              break;
+          }
+        }
+      }
+    } catch (e) {
+      print('ReportsViewModel - Error loading reports: $e');
     }
-  }
 
-  /// =========================================
-  /// CHECK DATE RANGE
-  /// =========================================
-
-  bool _isInRange(String dateString) {
-    final itemDate = _parseDate(dateString);
-    if (itemDate == null) return false;
-
-    final start = startDate;
-    final end = endDate;
-
-    if (start != null &&
-        itemDate.isBefore(
-          DateTime(start.year, start.month, start.day),
-        )) {
-      return false;
-    }
-
-    if (end != null &&
-        itemDate.isAfter(
-          DateTime(end.year, end.month, end.day, 23, 59, 59),
-        )) {
-      return false;
-    }
-
-    return true;
+    isLoading = false;
+    notifyListeners();
   }
 
   /// =========================================
@@ -208,12 +152,7 @@ class ReportsViewModel extends ChangeNotifier {
   /// =========================================
 
   void applyFilters() {
-    users = _allUsers.where((e) => _isInRange(e.createdAt)).toList();
-    partners = _allPartners.where((e) => _isInRange(e.createdAt)).toList();
-    earnings = _allEarnings.where((e) => _isInRange(e.createdAt)).toList();
-    subscriptions = _allSubscriptions.where((e) => _isInRange(e.createdAt)).toList();
-
-    notifyListeners();
+    loadReportData();
   }
 
   /// =========================================
@@ -223,13 +162,7 @@ class ReportsViewModel extends ChangeNotifier {
   void resetFilters() {
     startDate = null;
     endDate = null;
-
-    users = List.from(_allUsers);
-    partners = List.from(_allPartners);
-    earnings = List.from(_allEarnings);
-    subscriptions = List.from(_allSubscriptions);
-
-    notifyListeners();
+    loadReportData();
   }
 
   /// =========================================
@@ -238,14 +171,13 @@ class ReportsViewModel extends ChangeNotifier {
 
   void searchUsers(String value) {
     if (value.trim().isEmpty) {
-      users = _allUsers.where((e) => _isInRange(e.createdAt)).toList();
+      users = List.from(_allUsers);
     } else {
       final keyword = value.toLowerCase();
       users = _allUsers.where((e) {
-        return _isInRange(e.createdAt) &&
-            (e.userName.toLowerCase().contains(keyword) ||
-                e.locality.toLowerCase().contains(keyword)||
-                e.mobile.toLowerCase().contains(keyword));
+        return e.userName.toLowerCase().contains(keyword) ||
+            e.locality.toLowerCase().contains(keyword) ||
+            e.mobile.toLowerCase().contains(keyword);
       }).toList();
     }
     notifyListeners();
@@ -257,14 +189,13 @@ class ReportsViewModel extends ChangeNotifier {
 
   void searchPartners(String value) {
     if (value.trim().isEmpty) {
-      partners = _allPartners.where((e) => _isInRange(e.createdAt)).toList();
+      partners = List.from(_allPartners);
     } else {
       final keyword = value.toLowerCase();
       partners = _allPartners.where((e) {
-        return _isInRange(e.createdAt) &&
-            (e.partnerName.toLowerCase().contains(keyword) ||
-                e.locality.toLowerCase().contains(keyword)||
-                e.mobile.toLowerCase().contains(keyword));
+        return e.partnerName.toLowerCase().contains(keyword) ||
+            e.locality.toLowerCase().contains(keyword) ||
+            e.mobile.toLowerCase().contains(keyword);
       }).toList();
     }
     notifyListeners();
@@ -276,15 +207,14 @@ class ReportsViewModel extends ChangeNotifier {
 
   void searchEarnings(String value) {
     if (value.trim().isEmpty) {
-      earnings = _allEarnings.where((e) => _isInRange(e.createdAt)).toList();
+      earnings = List.from(_allEarnings);
     } else {
       final keyword = value.toLowerCase();
       earnings = _allEarnings.where((e) {
-        return _isInRange(e.createdAt) &&
-            (e.source.toLowerCase().contains(keyword) ||
-                e.title.toLowerCase().contains(keyword) ||
-                e.locality.toLowerCase().contains(keyword)||
-                e.paymentMethod.toLowerCase().contains(keyword));
+        return e.source.toLowerCase().contains(keyword) ||
+            e.title.toLowerCase().contains(keyword) ||
+            e.locality.toLowerCase().contains(keyword) ||
+            e.paymentMethod.toLowerCase().contains(keyword);
       }).toList();
     }
     notifyListeners();
@@ -296,14 +226,13 @@ class ReportsViewModel extends ChangeNotifier {
 
   void searchSubscriptions(String value) {
     if (value.trim().isEmpty) {
-      subscriptions = _allSubscriptions.where((e) => _isInRange(e.createdAt)).toList();
+      subscriptions = List.from(_allSubscriptions);
     } else {
       final keyword = value.toLowerCase();
       subscriptions = _allSubscriptions.where((e) {
-        return _isInRange(e.createdAt) &&
-            (e.partnerName.toLowerCase().contains(keyword) ||
-                e.locality.toLowerCase().contains(keyword)||
-                e.planName.toLowerCase().contains(keyword));
+        return e.partnerName.toLowerCase().contains(keyword) ||
+            e.locality.toLowerCase().contains(keyword) ||
+            e.planName.toLowerCase().contains(keyword);
       }).toList();
     }
     notifyListeners();

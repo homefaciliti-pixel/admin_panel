@@ -136,9 +136,21 @@ class OrderTable extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            item.vendorName.isEmpty ? "-" : item.vendorName,
-                            overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                item.vendorName.isEmpty ? "-" : item.vendorName,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              if (item.vendorMobile.isNotEmpty && item.vendorMobile != '-')
+                                Text(
+                                  item.vendorMobile,
+                                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                                ),
+                            ],
                           ),
                         ),
                         Expanded(
