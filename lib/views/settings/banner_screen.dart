@@ -414,7 +414,9 @@ class BannerScreen extends StatelessWidget {
 
     final fixedUrl = clean.startsWith('http://')
         ? clean.replaceFirst('http://', 'https://')
-        : clean;
+        : clean.startsWith('https://')
+            ? clean
+            : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$clean';
 
     return Image.network(
       fixedUrl,
@@ -726,7 +728,9 @@ class BannerScreen extends StatelessWidget {
     if (existingImage.isNotEmpty && existingImage.toLowerCase() != 'url') {
       final fixedUrl = existingImage.startsWith('http://')
           ? existingImage.replaceFirst('http://', 'https://')
-          : existingImage;
+          : existingImage.startsWith('https://')
+              ? existingImage
+              : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$existingImage';
 
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
