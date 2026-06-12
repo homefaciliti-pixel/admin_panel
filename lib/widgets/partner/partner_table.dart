@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
 
+import '../../core/App_permission/app_permission.dart';
 import '../../service_model/partner/partner_model.dart';
 import '../../views/partner/partner_details_screen.dart';
 
 class PartnerTable extends StatelessWidget {
   // PartnerModel ki typed list
   final List<PartnerModel> partners;
+
+  final bool isPending;
 
   // API / state handle karne wali class
   final PartnerAuth vm;
@@ -23,6 +26,7 @@ class PartnerTable extends StatelessWidget {
     required this.vm,
     this.onPartnerTap,
     this.onEditTap,
+    this.isPending = false,
   });
 
   @override
@@ -58,42 +62,63 @@ class PartnerTable extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
-                Expanded(
+              children: [
+                const Expanded(
                   flex: 1,
                   child: Text("#", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 3,
                   child: Text("Partner", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: Text("Mobile", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: Text("City", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+
+                const Expanded(
+                  flex: 2,
+                  child: Text(
+                    "State",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+
+
+                if(!isPending)
+                const Expanded(
                   flex: 3,
                   child: Text("Location (Lat/Lng)", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                if(!isPending)
+                const Expanded(
                   flex: 3,
                   child: Text("Last Active", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: Text("Created At", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                if(!isPending)
+                const Expanded(
                   flex: 1,
                   child: Text("Status", style: TextStyle(color: Colors.white)),
                 ),
-                Expanded(
+                if(!isPending)
+                const Expanded(
                   flex: 1,
                   child: Text("Edit", style: TextStyle(color: Colors.white)),
+                ),
+                const Expanded(
+                  flex: 1,
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -197,8 +222,15 @@ class PartnerTable extends StatelessWidget {
                         flex: 2,
                         child: Text(item.city),
                       ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(item.state),
+                      ),
+
+
 
                       /// LOCATION (LAT/LNG)
+                      if(!isPending)
                       Expanded(
                         flex: 3,
                         child: Text(
@@ -210,6 +242,7 @@ class PartnerTable extends StatelessWidget {
                       ),
 
                       /// LAST ACTIVE TIME
+                      if(!isPending)
                       Expanded(
                         flex: 3,
                         child: Text(
@@ -226,7 +259,9 @@ class PartnerTable extends StatelessWidget {
                         child: Text(item.createdAt),
                       ),
 
+
                       /// STATUS SWITCH
+                      if (!isPending)
                       Expanded(
                         flex: 1,
                         child: Switch(
@@ -241,6 +276,7 @@ class PartnerTable extends StatelessWidget {
                       ),
 
                       /// EDIT ICON
+                      if (!isPending)
                       Expanded(
                         flex: 1,
                         child: IconButton(
@@ -259,6 +295,43 @@ class PartnerTable extends StatelessWidget {
                                 builder: (_) => PartnerDetailsScreen(partner: item),
                               ),
                             );
+                          },
+                        ),
+                      ),
+
+                      if (AppPermission.isSuperAdmin)
+
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text("Delete Partner"),
+                                content: const Text(
+                                  "Are you sure you want to delete this partner?",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, false),
+                                    child: const Text("Cancel"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(context, true),
+                                    child: const Text("Delete"),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirm == true) {
+                              await vm.deletePartner(item.id);
+                            }
                           },
                         ),
                       ),

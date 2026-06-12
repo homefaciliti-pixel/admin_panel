@@ -70,8 +70,8 @@ class MainScreen extends StatelessWidget {
       case "Locality":
         return const LocalityScreen();
 
-      case "Reviews&Ratings":
-        return const ReviewsScreen();
+      // case "Reviews&Ratings":
+      //   return const ReviewsScreen();
 
       case "Notifications":
         return const NotificationsScreen();

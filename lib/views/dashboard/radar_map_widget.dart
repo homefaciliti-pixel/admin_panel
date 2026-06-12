@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../service_Api/partner/partner_auth.dart';
 
 class RadarMapWidget extends StatefulWidget {
   final List<dynamic> activePartners;
@@ -76,7 +75,7 @@ class _RadarMapWidgetState extends State<RadarMapWidget> with SingleTickerProvid
         decoration: BoxDecoration(
           color: const Color(0xff0f172a), // Slate 900
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.slate.shade850),
+          border: Border.all(color:const Color(0xff1e293b)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.25),
@@ -186,7 +185,7 @@ class _RadarMapWidgetState extends State<RadarMapWidget> with SingleTickerProvid
               ),
             ),
             // Divider
-            VerticalDivider(color: Colors.slate.shade800, width: 1),
+            VerticalDivider(color: const Color(0xff1e293b), width: 1),
             // Right info/list sidebar
             Expanded(
               flex: 3,
@@ -245,7 +244,7 @@ class _RadarMapWidgetState extends State<RadarMapWidget> with SingleTickerProvid
                                           ? const Color(0xff1e293b).withOpacity(0.7)
                                           : Colors.transparent,
                                       border: Border(
-                                        bottom: BorderSide(color: Colors.slate.shade900.withOpacity(0.5)),
+                                        bottom: BorderSide(color: const Color(0xff0f172a).withOpacity(0.5)),
                                         left: BorderSide(
                                           color: isPartnerSelected ? Colors.greenAccent : Colors.transparent,
                                           width: 3,
@@ -257,7 +256,7 @@ class _RadarMapWidgetState extends State<RadarMapWidget> with SingleTickerProvid
                                         // Profile Image
                                         CircleAvatar(
                                           radius: 18,
-                                          backgroundColor: Colors.slate.shade700,
+                                          backgroundColor: Colors.blueGrey.shade700,
                                           backgroundImage: partner['profileImage'] != null && partner['profileImage'].isNotEmpty
                                               ? NetworkImage(partner['profileImage'])
                                               : null,

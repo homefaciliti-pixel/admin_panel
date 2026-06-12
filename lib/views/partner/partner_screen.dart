@@ -97,6 +97,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                   partners: vm.paginatedPartners,
 
                   vm: vm,
+                  isPending: false,
 
                   /// NAME CLICK
                   onPartnerTap: (PartnerModel item) {

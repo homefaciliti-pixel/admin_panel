@@ -150,77 +150,59 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
                           ],
                         ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor: WidgetStateProperty.all(
-                              const Color(0xff111827),
-                            ),
-                            headingTextStyle: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            columns: const [
-                              DataColumn(
-                                label: Text("TRANSACTION ID"),
-                              ),
-                              DataColumn(
-                                label: Text("SERVICE AMOUNT"),
-                              ),
-                              DataColumn(
-                                label: Text("PAYMENT METHOD"),
-                              ),
-                              DataColumn(
-                                label: Text("EXTRA SERVICE AMOUNT"),
-                              ),
-                              DataColumn(
-                                label: Text("EXTRA SERVICE PAYMENT METHOD"),
-                              ),
-                              DataColumn(
-                                label: Text("TOTAL AMOUNT"),
-                              ),
-                              DataColumn(
-                                label: Text("ORDER DATE"),
-                              ),
-                            ],
-                            rows: vm.bookingEarnings.map((item) {
-                              return DataRow(
-                                cells: [
-                                  DataCell(
-                                    Text(item.transactionId),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "₹${item.serviceAmount.toStringAsFixed(0)}",
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(item.paymentMethod),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "₹${item.extraServiceAmount.toStringAsFixed(0)}",
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(item.extraServicePaymentMethod),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      "₹${item.totalAmount.toStringAsFixed(0)}",
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Text(item.orderDate),
-                                  ),
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                headingRowColor: WidgetStateProperty.all(
+                                  const Color(0xff111827),
+                                ),
+                                headingTextStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                columns: const [
+                                  DataColumn(label: Text("TRANSACTION ID")),
+                                  DataColumn(label: Text("SERVICE AMOUNT")),
+                                  DataColumn(label: Text("PAYMENT METHOD")),
+                                  DataColumn(label: Text("EXTRA SERVICE AMOUNT")),
+                                  DataColumn(label: Text("EXTRA SERVICE PAYMENT METHOD")),
+                                  DataColumn(label: Text("TOTAL AMOUNT")),
+                                  DataColumn(label: Text("ORDER DATE")),
                                 ],
-                              );
-                            }).toList(),
+                                rows: vm.bookingEarnings.map((item) {
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(Text(item.transactionId)),
+                                      DataCell(
+                                        Text("₹${item.serviceAmount.toStringAsFixed(0)}"),
+                                      ),
+                                      DataCell(Text(item.paymentMethod)),
+                                      DataCell(
+                                        Text("₹${item.extraServiceAmount.toStringAsFixed(0)}"),
+                                      ),
+                                      DataCell(Text(item.extraServicePaymentMethod)),
+                                      DataCell(
+                                        Text("₹${item.totalAmount.toStringAsFixed(0)}"),
+                                      ),
+                                      DataCell(Text(item.orderDate)),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    )
+
+
                   ],
+
+
             ],
           ),
         );

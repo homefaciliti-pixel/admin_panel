@@ -8,11 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../service_model/reports_models/earning_report_model.dart';
+import '../../service_model/reports_models/partner_report_model.dart';
+import '../../service_model/reports_models/subscription_report_model.dart';
+import '../../service_model/reports_models/user_report_model.dart';
 
-import '../../data/models/reports_models/earning_report_model.dart';
-import '../../data/models/reports_models/partner_report_model.dart';
-import '../../data/models/reports_models/subscription_report_model.dart';
-import '../../data/models/reports_models/user_report_model.dart';
 
 enum ReportsTab {
   users,

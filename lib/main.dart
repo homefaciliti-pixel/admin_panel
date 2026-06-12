@@ -10,11 +10,9 @@ import 'package:admin_panel/service_Api/settings/city_auth.dart';
 import 'package:admin_panel/service_Api/settings/state_auth.dart';
 import 'package:admin_panel/service_Api/users/user_auth.dart';
 import 'package:admin_panel/viewmodels/Settings_ViewModels/notification_viewmodel.dart';
-import 'package:admin_panel/viewmodels/Settings_ViewModels/review_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
 import 'package:admin_panel/viewmodels/reports_viewmodels/reports_viewmodel.dart';
 import 'package:admin_panel/views/auth%20screen/login_screen.dart';
-import 'package:admin_panel/views/mainScreen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'utils/app_scroll_behavior.dart';
@@ -47,7 +45,7 @@ void main() {
 
         ChangeNotifierProvider(create: (_) => CityAuth()..fetchCities()),
 
-        ChangeNotifierProvider(create: (_) => ReviewViewModel()),
+       // ChangeNotifierProvider(create: (_) => ReviewViewModel()),
 
         ChangeNotifierProvider(create: (_) => NotificationViewModel()),
 
