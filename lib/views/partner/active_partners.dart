@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/Activepartners/active_partner_auth.dart';
 import '../../widgets/partner/active_partner/active_partner_table.dart';
+import '../dashboard/radar_map_widget.dart';
 
 class ActivePartnerScreen extends StatefulWidget {
   const ActivePartnerScreen({super.key});
@@ -16,6 +17,7 @@ class _ActivePartnerScreenState
 
   final TextEditingController searchController =
   TextEditingController();
+  bool isMapView = false;
 
   @override
   void initState() {
@@ -45,110 +47,148 @@ class _ActivePartnerScreenState
 
           children: [
 
-            // TITLE
+            // TITLE & TOGGLE BUTTONS
 
-            const Text(
-              "Active Partners",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Active Partners",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          isMapView = false;
+                        });
+                      },
+                      icon: const Icon(Icons.table_chart),
+                      label: const Text("Table View"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: !isMapView ? const Color(0xff1e3a8a) : Colors.grey.shade200,
+                        foregroundColor: !isMapView ? Colors.white : Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          isMapView = true;
+                        });
+                      },
+                      icon: const Icon(Icons.map),
+                      label: const Text("Map View"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isMapView ? const Color(0xff1e3a8a) : Colors.grey.shade200,
+                        foregroundColor: isMapView ? Colors.white : Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
 
             const SizedBox(height: 20),
 
-            // SEARCH
+            // SEARCH (Only show in Table View)
 
-            Container(
-              height: 50,
-
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                BorderRadius.circular(12),
-              ),
-
-              child: TextField(
-                controller: searchController,
-
-                decoration: const InputDecoration(
-                  hintText:
-                  "Search Partner...",
-                  prefixIcon:
-                  Icon(Icons.search),
-                  border: InputBorder.none,
+            if (!isMapView) ...[
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextField(
+                  controller: searchController,
+                  decoration: const InputDecoration(
+                    hintText: "Search Partner...",
+                    prefixIcon: Icon(Icons.search),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(height: 20),
+            ],
 
-            const SizedBox(height: 20),
-
-            // TABLE
+            // TABLE or MAP
 
             Expanded(
               child: vm.isLoading
                   ? const Center(
-                child:
-                CircularProgressIndicator(),
-              )
-                  : ActivePartnerTable(
-                partners: vm.partners,
-                vm: vm,
+                      child: CircularProgressIndicator(),
+                    )
+                  : isMapView
+                      ? SingleChildScrollView(
+                          child: RadarMapWidget(
+                            activePartners: vm.partners.map((p) => {
+                              'partnerId': p.partnerId,
+                              'profileImage': p.profileImage,
+                              'name': p.name,
+                              'phone': p.phone,
+                              'category': p.category,
+                              'subCategory': p.subCategory,
+                              'area': p.area,
+                              'latitude': p.latitude,
+                              'longitude': p.longitude,
+                              'currentOrders': p.currentOrders,
+                              'isOnline': p.isOnline,
+                              'activeAt': p.activeAt,
+                              'lastActive': p.lastActive,
+                            }).toList(),
+                          ),
+                        )
+                      : ActivePartnerTable(
+                          partners: vm.partners,
+                          vm: vm,
+                        ),
+            ),
+
+            // PAGINATION (dummy, Only show in Table View)
+
+            if (!isMapView) ...[
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: const Text("Previous"),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      "1",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: const Text("Next"),
+                  ),
+                ],
               ),
-            ),
-
-            const SizedBox(height: 15),
-
-            // PAGINATION (dummy)
-
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment.end,
-
-              children: [
-
-                OutlinedButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Previous",
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius:
-                    BorderRadius.circular(
-                      8,
-                    ),
-                  ),
-
-                  child: const Text(
-                    "1",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                OutlinedButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Next",
-                  ),
-                ),
-              ],
-            ),
+            ],
           ],
         ),
       ),

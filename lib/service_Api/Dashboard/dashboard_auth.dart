@@ -86,7 +86,10 @@ class DashboardViewModel extends ChangeNotifier {
   int get totalCategories => _amountByName('Total Categories');
   int get totalServices => _amountByName('Total Services');
   int get totalPartners => _amountByName('Total Partners');
-  int get activePartners => _amountByName('Active Partners');
+  int get activePartners {
+    final count = _amountByName('Active Partners');
+    return count > 0 ? count : activePartnersList.length;
+  }
   int get totalOrders => _amountByName('Total Orders');
   int get todayOrders => _amountByName('Today Orders');
   int get completeOrders => _amountByName('Complete Orders');
