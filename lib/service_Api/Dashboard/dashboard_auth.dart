@@ -8,6 +8,52 @@ class DashboardViewModel extends ChangeNotifier {
 
   /// API se aane wali cards list
   List<Map<String, dynamic>> cards = [];
+  List<dynamic> activePartnersList = [];
+
+  Future<void> _fetchStats() async {
+    final response = await http.get(
+      Uri.parse('https://adminbackend-1-h03r.onrender.com/api/dashboard'),
+      headers: const {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    debugPrint("DASHBOARD STATUS => ${response.statusCode}");
+    debugPrint("DASHBOARD BODY => ${response.body}");
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+      final data = decoded['data'];
+
+      if (data is List) {
+        cards = data.whereType<Map<String, dynamic>>().toList();
+      } else {
+        errorMessage = 'Dashboard data list me nahi hai';
+      }
+    } else {
+      errorMessage = 'Dashboard response invalid hai';
+    }
+  }
+
+  Future<void> fetchActivePartners() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://adminbackend-1-h03r.onrender.com/api/partners/active'),
+        headers: const {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+          activePartnersList = decoded['data'] as List<dynamic>;
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching active partners: $e");
+    }
+  }
 
   Future<void> fetchDashboard() async {
     isLoading = true;
@@ -15,29 +61,10 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.get(
-        Uri.parse('https://adminbackend-1-h03r.onrender.com/api/dashboard'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      debugPrint("DASHBOARD STATUS => ${response.statusCode}");
-      debugPrint("DASHBOARD BODY => ${response.body}");
-
-      final decoded = jsonDecode(response.body);
-
-      if (decoded is Map<String, dynamic> && decoded['success'] == true) {
-        final data = decoded['data'];
-
-        if (data is List) {
-          cards = data.whereType<Map<String, dynamic>>().toList();
-        } else {
-          errorMessage = 'Dashboard data list me nahi hai';
-        }
-      } else {
-        errorMessage = 'Dashboard response invalid hai';
-      }
+      await Future.wait([
+        _fetchStats(),
+        fetchActivePartners(),
+      ]);
     } catch (e) {
       errorMessage = 'API error: $e';
     }
@@ -59,6 +86,7 @@ class DashboardViewModel extends ChangeNotifier {
   int get totalCategories => _amountByName('Total Categories');
   int get totalServices => _amountByName('Total Services');
   int get totalPartners => _amountByName('Total Partners');
+  int get activePartners => _amountByName('Active Partners');
   int get totalOrders => _amountByName('Total Orders');
   int get todayOrders => _amountByName('Today Orders');
   int get completeOrders => _amountByName('Complete Orders');
