@@ -57,7 +57,7 @@ class AdminDrawer extends StatelessWidget {
               vm,
               "Partner",
               Icons.people,
-              ["Partner List", "Pending Approval"],
+              ["All Partners", "Pending Approval","Active Partners"],
             ),
 
             expansionMenu(

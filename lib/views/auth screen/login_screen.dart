@@ -7,7 +7,6 @@ import '../mainScreen/main_screen.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
@@ -50,7 +49,6 @@ class LoginScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-
                           /// LOGO
                           Container(
                             height: 90,
@@ -130,9 +128,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             validator: (value) {
-                              if (value == null || value
-                                  .trim()
-                                  .isEmpty) {
+                              if (value == null || value.trim().isEmpty) {
                                 return "Please enter email id";
                               }
                               if (!value.contains("@")) {
@@ -187,15 +183,43 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             validator: (value) {
-                              if (value == null || value
-                                  .trim()
-                                  .isEmpty) {
+                              if (value == null || value.trim().isEmpty) {
                                 return "Please enter password";
                               }
                               if (value.length < 6) {
                                 return "Password must be at least 6 characters";
                               }
                               return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          DropdownButtonFormField<String>(
+                            value: vm.selectedRole,
+                            decoration: InputDecoration(
+                              labelText: "Login As",
+                              prefixIcon: const Icon(
+                                Icons.admin_panel_settings,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: "super_admin",
+                                child: Text("Super Admin"),
+                              ),
+                              DropdownMenuItem(
+                                value: "admin",
+                                child: Text("Admin"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                vm.changeRole(value);
+                              }
                             },
                           ),
 
@@ -224,32 +248,32 @@ class LoginScreen extends StatelessWidget {
                               onPressed: vm.isLoading
                                   ? null
                                   : () async {
-                                if (!formKey.currentState!.validate())
-                                  return;
+                                      if (!formKey.currentState!.validate())
+                                        return;
 
-                                final success = await vm.login(
-                                  email: emailController.text.trim(),
-                                  password: passwordController.text
-                                      .trim(),
-                                );
+                                      final success = await vm.login(
+                                        email: emailController.text.trim(),
+                                        password: passwordController.text
+                                            .trim(),
+                                      );
 
-                                if (success && context.mounted) {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Login success"),
-                                    ),
-                                  );
-                                  Navigator.pushReplacement(
-                                    context,
+                                      if (success && context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Login success"),
+                                          ),
+                                        );
+                                        Navigator.pushReplacement(
+                                          context,
 
-                                    MaterialPageRoute(
-                                      builder: (_) => const MainScreen(),
-                                    ),
-                                  );
-                                }
-                              },
+                                          MaterialPageRoute(
+                                            builder: (_) => const MainScreen(),
+                                          ),
+                                        );
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xff111827),
                                 foregroundColor: Colors.white,
@@ -260,20 +284,20 @@ class LoginScreen extends StatelessWidget {
                               ),
                               child: vm.isLoading
                                   ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.2,
-                                  color: Colors.white,
-                                ),
-                              )
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.2,
+                                        color: Colors.white,
+                                      ),
+                                    )
                                   : const Text(
-                                "Login",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
+                                      "Login",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                             ),
                           ),
 

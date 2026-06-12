@@ -4,10 +4,7 @@ class AuthRepository {
   /// future me yaha API call lagegi
   /// abhi dummy login use kar rahe hain
 
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     await Future.delayed(const Duration(seconds: 1));
 
     /// dummy validation

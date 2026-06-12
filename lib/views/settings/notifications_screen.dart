@@ -1051,7 +1051,7 @@ class NotificationsScreen extends StatelessWidget {
 
                       DropdownButtonFormField<String>(
 
-                        value: selectedAudience,
+                        initialValue: selectedAudience,
 
                         decoration:
                         const InputDecoration(

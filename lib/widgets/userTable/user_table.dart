@@ -1,3 +1,4 @@
+import 'package:admin_panel/core/App_permission/app_permission.dart';
 import 'package:flutter/material.dart';
 import '../../service_Api/users/user_auth.dart';
 import '../../service_model/Users_model/user_model.dart';
@@ -253,7 +254,8 @@ class UserTable extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Expanded(
+                     if(AppPermission.isSuperAdmin)
+                     Expanded(
                         flex: 1,
                         child: IconButton(
                           tooltip: "Delete",

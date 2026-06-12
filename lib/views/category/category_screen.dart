@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../../core/App_permission/app_permission.dart';
 import '../../service_Api/categories/categories_auth.dart';
 import '../../service_model/category/category_model.dart';
 
@@ -29,8 +30,10 @@ class CategoryScreen extends StatelessWidget {
           }
 
           final total = vm.categories.length;
-          final safeStart =
-          ((vm.currentPage - 1) * vm.selectedEntries).clamp(0, total);
+          final safeStart = ((vm.currentPage - 1) * vm.selectedEntries).clamp(
+            0,
+            total,
+          );
           final safeEnd = (safeStart + vm.selectedEntries).clamp(0, total);
           final pageData = vm.categories.sublist(safeStart, safeEnd);
 
@@ -70,9 +73,18 @@ class CategoryScreen extends StatelessWidget {
                         value: vm.selectedEntries,
                         underline: const SizedBox(),
                         items: const [
-                          DropdownMenuItem(value: 10, child: Text("10 Entries")),
-                          DropdownMenuItem(value: 20, child: Text("20 Entries")),
-                          DropdownMenuItem(value: 50, child: Text("50 Entries")),
+                          DropdownMenuItem(
+                            value: 10,
+                            child: Text("10 Entries"),
+                          ),
+                          DropdownMenuItem(
+                            value: 20,
+                            child: Text("20 Entries"),
+                          ),
+                          DropdownMenuItem(
+                            value: 50,
+                            child: Text("50 Entries"),
+                          ),
                         ],
                         onChanged: (value) {
                           if (value != null) vm.changeEntries(value);
@@ -125,25 +137,19 @@ class CategoryScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey.shade200,
-                            ),
+                            bottom: BorderSide(color: Colors.grey.shade200),
                           ),
                         ),
                         child: Row(
                           children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text("${item.id}"),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: Text(item.title),
-                            ),
+                            Expanded(flex: 1, child: Text("${item.id}")),
+                            Expanded(flex: 4, child: Text(item.title)),
                             Expanded(
                               flex: 2,
                               child: Text(
-                                item.parent.isEmpty ? 'Main Category' : item.parent,
+                                item.parent.isEmpty
+                                    ? 'Main Category'
+                                    : item.parent,
                               ),
                             ),
                             Expanded(
@@ -152,30 +158,34 @@ class CategoryScreen extends StatelessWidget {
                             ),
                             Expanded(
                               flex: 2,
-                              child: Switch(
-                                value: item.status,
-                                onChanged: (v) async {
-                                  await vm.toggleStatus(item.id, v);
-                                },
-                              ),
+                              child: AppPermission.isSuperAdmin
+                                  ? Switch(
+                                      value: item.status,
+                                      onChanged: (v) async {
+                                        await vm.toggleStatus(item.id, v);
+                                      },
+                                    )
+                                  : Text(item.status ? "Active" : "Inactive"),
                             ),
                             Expanded(
                               flex: 2,
                               child: Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () => _showEditDialog(context, vm, item),
+                                    onPressed: () =>
+                                        _showEditDialog(context, vm, item),
                                     icon: const Icon(Icons.edit),
                                   ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await vm.deleteCategory(item.id);
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
+                                  if (AppPermission.isSuperAdmin)
+                                    IconButton(
+                                      onPressed: () async {
+                                        await vm.deleteCategory(item.id);
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -249,7 +259,7 @@ class CategoryScreen extends StatelessWidget {
                           child: Text("Main Category"),
                         ),
                         ...vm.parentOptions.map(
-                              (p) => DropdownMenuItem<String?>(
+                          (p) => DropdownMenuItem<String?>(
                             value: p,
                             child: Text(p),
                           ),
@@ -311,10 +321,15 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
-  void _showEditDialog(BuildContext context, AuthCategories vm, CategoryItem item) {
+  void _showEditDialog(
+    BuildContext context,
+    AuthCategories vm,
+    CategoryItem item,
+  ) {
     final titleController = TextEditingController(text: item.title);
-    String? selectedParent =
-    item.parent.trim().isEmpty ? 'Main Category' : item.parent.trim();
+    String? selectedParent = item.parent.trim().isEmpty
+        ? 'Main Category'
+        : item.parent.trim();
 
     String existingImage = item.image;
     Uint8List? imageBytes;
@@ -350,7 +365,7 @@ class CategoryScreen extends StatelessWidget {
                           child: Text("Main Category"),
                         ),
                         ...vm.parentOptions.map(
-                              (p) => DropdownMenuItem<String?>(
+                          (p) => DropdownMenuItem<String?>(
                             value: p,
                             child: Text(p),
                           ),
@@ -459,8 +474,9 @@ class CategoryScreen extends StatelessWidget {
     }
 
     if (existingImage.isNotEmpty) {
-      final imageUrl =
-      existingImage.startsWith('http') ? existingImage : '$imageBaseUrl$existingImage';
+      final imageUrl = existingImage.startsWith('http')
+          ? existingImage
+          : '$imageBaseUrl$existingImage';
 
       return ClipRRect(
         borderRadius: BorderRadius.circular(8),

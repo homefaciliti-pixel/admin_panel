@@ -1,30 +1,29 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
+import '../../core/App_permission/app_permission.dart';
 import '../../data/repositories/auth_repository.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthRepository _authRepository = AuthRepository();
 
-  /// loading state
   bool isLoading = false;
-
-  /// password hide/show
   bool obscurePassword = true;
-
-  /// error message
   String? errorMessage;
 
-  /// password visibility toggle
+  /// selected role
+  String selectedRole = "super_admin";
+
+  void changeRole(String role) {
+    selectedRole = role;
+    notifyListeners();
+  }
+
   void togglePasswordVisibility() {
     obscurePassword = !obscurePassword;
     notifyListeners();
   }
 
-  /// login method
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     errorMessage = null;
     isLoading = true;
     notifyListeners();
@@ -35,7 +34,9 @@ class LoginViewModel extends ChangeNotifier {
         password: password,
       );
 
-      if (!success) {
+      if (success) {
+        AppPermission.role = selectedRole;
+      } else {
         errorMessage = "Invalid email or password";
       }
 

@@ -1,4 +1,4 @@
-
+import 'package:admin_panel/service_Api/Activepartners/active_partner_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Subscriptions/subscription_auth.dart';
 import 'package:admin_panel/service_Api/Order/order_auth.dart';
@@ -25,68 +25,37 @@ void main() {
     MultiProvider(
       providers: [
         /// navigation provider
-        ChangeNotifierProvider(
-          create: (_) => NavigationViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => NavigationViewModel()),
 
         /// partner provider
-        ChangeNotifierProvider(
-          create: (_) => PartnerAuth(),
-        ),
+        ChangeNotifierProvider(create: (_) => PartnerAuth()),
 
-        ChangeNotifierProvider(
-          create: (_) => BookingAuth(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => SubscriptionAuth(),
-        ),
+        ChangeNotifierProvider(create: (_) => BookingAuth()),
+        ChangeNotifierProvider(create: (_) => SubscriptionAuth()),
 
+        ChangeNotifierProvider(create: (_) => UserViewmodel()),
 
-        ChangeNotifierProvider(
-          create: (_) => UserViewmodel(),
-        ),
+        ChangeNotifierProvider(create: (_) => ServiceAuth()..fetchServices()),
 
-        ChangeNotifierProvider(
-          create: (_) => ServiceAuth()..fetchServices(),
-        ),
+        ChangeNotifierProvider(create: (_) => OrderAuth()..fetchOrders()),
 
-        ChangeNotifierProvider(
-          create: (_) => OrderAuth()..fetchOrders(),
-        ),
+        ChangeNotifierProvider(create: (_) => PageAuth()),
 
-        ChangeNotifierProvider(
-          create: (_) => PageAuth(),
-        ),
+        ChangeNotifierProvider(create: (_) => BannerAuth()),
 
-        ChangeNotifierProvider(
-          create: (_) => BannerAuth(),
-        ),
+        ChangeNotifierProvider(create: (_) => StateAuth()..fetchStates()),
 
-        ChangeNotifierProvider(
-          create: (_) => StateAuth()..fetchStates(),
-        ),
+        ChangeNotifierProvider(create: (_) => CityAuth()..fetchCities()),
 
-        ChangeNotifierProvider(
-          create: (_) => CityAuth()..fetchCities(),
-        ),
+        ChangeNotifierProvider(create: (_) => ReviewViewModel()),
 
+        ChangeNotifierProvider(create: (_) => NotificationViewModel()),
 
+        ChangeNotifierProvider(create: (_) => ReportsViewModel()),
 
-        ChangeNotifierProvider(
-          create: (_) => ReviewViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
 
-        ChangeNotifierProvider(
-          create: (_) => NotificationViewModel(),
-        ),
-
-        ChangeNotifierProvider(
-          create: (_) => ReportsViewModel(),
-        ),
-
-        ChangeNotifierProvider(
-          create: (_) => LoginViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => ActivePartnerAuth()),
       ],
       child: const MyApp(),
     ),
@@ -104,9 +73,7 @@ class MyApp extends StatelessWidget {
       scrollBehavior: AppScrollBehavior(),
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: 1.0,
-          ),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: child!,
         );
       },

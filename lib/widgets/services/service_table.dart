@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:admin_panel/core/App_permission/app_permission.dart';
 import 'package:flutter/material.dart';
 
 import '../../service_Api/services/services_auth.dart';
@@ -174,6 +175,11 @@ class ServiceTable extends StatelessWidget {
                           onPressed: () => onEdit(item),
                         ),
                       ),
+
+                      /// permission denied for admin
+
+
+                      if(AppPermission.isSuperAdmin)
                       Expanded(
                         flex: 1,
                         child: IconButton(

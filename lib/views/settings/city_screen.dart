@@ -1,3 +1,4 @@
+import 'package:admin_panel/core/App_permission/app_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/settings/city_auth.dart';
@@ -239,6 +240,7 @@ class CityScreen extends StatelessWidget {
                                                   );
                                                 },
                                               ),
+                                              if(AppPermission.isSuperAdmin)
                                               IconButton(
                                                 icon: const Icon(
                                                   Icons.delete,
