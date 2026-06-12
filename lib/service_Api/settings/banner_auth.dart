@@ -149,6 +149,10 @@ class BannerAuth extends ChangeNotifier {
     required String title,
     required Uint8List? imageBytes,
     required String? imageName,
+    String category = '',
+    String badge = '',
+    String subtitle = '',
+    String buttonText = 'Book Now',
   }) async {
     try {
       if (title.trim().isEmpty) {
@@ -168,6 +172,10 @@ class BannerAuth extends ChangeNotifier {
       /// Text fields
       request.fields['title'] = title.trim();
       request.fields['status'] = 'true';
+      request.fields['category'] = category;
+      request.fields['badge'] = badge;
+      request.fields['subtitle'] = subtitle;
+      request.fields['buttonText'] = buttonText.isEmpty ? 'Book Now' : buttonText;
 
       /// File field
       request.files.add(
@@ -202,6 +210,10 @@ class BannerAuth extends ChangeNotifier {
     required String existingImage,
     Uint8List? newImageBytes,
     String? newImageName,
+    String category = '',
+    String badge = '',
+    String subtitle = '',
+    String buttonText = 'Book Now',
   }) async {
     try {
       if (title.trim().isEmpty) {
@@ -214,6 +226,10 @@ class BannerAuth extends ChangeNotifier {
 
       /// Text field
       request.fields['title'] = title.trim();
+      request.fields['category'] = category;
+      request.fields['badge'] = badge;
+      request.fields['subtitle'] = subtitle;
+      request.fields['buttonText'] = buttonText.isEmpty ? 'Book Now' : buttonText;
 
       /// If new image selected, upload new file.
       /// Otherwise keep existing image path/url.

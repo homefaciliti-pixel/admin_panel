@@ -426,6 +426,10 @@ class BannerScreen extends StatelessWidget {
   /// ADD BANNER DIALOG
   void _showAddDialog(BuildContext context, BannerAuth vm) {
     final titleController = TextEditingController();
+    final categoryController = TextEditingController();
+    final badgeController = TextEditingController();
+    final subtitleController = TextEditingController();
+    final buttonTextController = TextEditingController(text: 'Book Now');
     Uint8List? imageBytes;
     XFile? pickedFile;
 
@@ -437,44 +441,74 @@ class BannerScreen extends StatelessWidget {
             return AlertDialog(
               title: const Text("Add Banner"),
               content: SizedBox(
-                width: 450,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                        labelText: "Title",
+                width: 500,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(labelText: "Title *"),
                       ),
-                    ),
-                    const SizedBox(height: 14),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: categoryController,
+                        decoration: const InputDecoration(
+                          labelText: "Category (e.g. AcRepair, refer)",
+                          hintText: "Leave blank if no navigation",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: badgeController,
+                        decoration: const InputDecoration(
+                          labelText: "Badge Text (e.g. 100% FREE, COMING SOON)",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: subtitleController,
+                        maxLines: 2,
+                        decoration: const InputDecoration(
+                          labelText: "Subtitle / Description",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: buttonTextController,
+                        decoration: const InputDecoration(
+                          labelText: "Button Text",
+                        ),
+                      ),
+                      const SizedBox(height: 14),
 
-                    /// Pick image from device
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final file = await picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 85,
-                        );
+                      /// Pick image from device
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final picker = ImagePicker();
+                          final file = await picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 85,
+                          );
 
-                        if (file != null) {
-                          final bytes = await file.readAsBytes();
-                          setState(() {
-                            pickedFile = file;
-                            imageBytes = bytes;
-                          });
-                        }
-                      },
-                      icon: const Icon(Icons.image),
-                      label: const Text("Pick Image"),
-                    ),
+                          if (file != null) {
+                            final bytes = await file.readAsBytes();
+                            setState(() {
+                              pickedFile = file;
+                              imageBytes = bytes;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.image),
+                        label: const Text("Pick Image *"),
+                      ),
 
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                    /// Preview
-                    _previewImage(bytes: imageBytes),
-                  ],
+                      /// Preview
+                      _previewImage(bytes: imageBytes),
+                    ],
+                  ),
                 ),
               ),
               actions: [
@@ -490,6 +524,10 @@ class BannerScreen extends StatelessWidget {
                       title: titleController.text.trim(),
                       imageBytes: imageBytes,
                       imageName: pickedFile?.name,
+                      category: categoryController.text.trim(),
+                      badge: badgeController.text.trim(),
+                      subtitle: subtitleController.text.trim(),
+                      buttonText: buttonTextController.text.trim(),
                     );
                     Navigator.pop(context);
                   },
@@ -510,6 +548,10 @@ class BannerScreen extends StatelessWidget {
       BannerModel item,
       ) {
     final titleController = TextEditingController(text: item.title);
+    final categoryController = TextEditingController(text: item.category);
+    final badgeController = TextEditingController(text: item.badge);
+    final subtitleController = TextEditingController(text: item.subtitle);
+    final buttonTextController = TextEditingController(text: item.buttonText.isEmpty ? 'Book Now' : item.buttonText);
     Uint8List? imageBytes;
     XFile? pickedFile;
 
@@ -521,47 +563,77 @@ class BannerScreen extends StatelessWidget {
             return AlertDialog(
               title: const Text("Edit Banner"),
               content: SizedBox(
-                width: 450,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                        labelText: "Title",
+                width: 500,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(labelText: "Title *"),
                       ),
-                    ),
-                    const SizedBox(height: 14),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: categoryController,
+                        decoration: const InputDecoration(
+                          labelText: "Category (e.g. AcRepair, refer)",
+                          hintText: "Leave blank if no navigation",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: badgeController,
+                        decoration: const InputDecoration(
+                          labelText: "Badge Text (e.g. 100% FREE, COMING SOON)",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: subtitleController,
+                        maxLines: 2,
+                        decoration: const InputDecoration(
+                          labelText: "Subtitle / Description",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: buttonTextController,
+                        decoration: const InputDecoration(
+                          labelText: "Button Text",
+                        ),
+                      ),
+                      const SizedBox(height: 14),
 
-                    /// Change image from device
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final file = await picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 85,
-                        );
+                      /// Change image from device
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final picker = ImagePicker();
+                          final file = await picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 85,
+                          );
 
-                        if (file != null) {
-                          final bytes = await file.readAsBytes();
-                          setState(() {
-                            pickedFile = file;
-                            imageBytes = bytes;
-                          });
-                        }
-                      },
-                      icon: const Icon(Icons.image),
-                      label: const Text("Change Image"),
-                    ),
+                          if (file != null) {
+                            final bytes = await file.readAsBytes();
+                            setState(() {
+                              pickedFile = file;
+                              imageBytes = bytes;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.image),
+                        label: const Text("Change Image"),
+                      ),
 
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                    /// Preview selected or existing image
-                    _previewImage(
-                      bytes: imageBytes,
-                      existingImage: item.image,
-                    ),
-                  ],
+                      /// Preview selected or existing image
+                      _previewImage(
+                        bytes: imageBytes,
+                        existingImage: item.image,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               actions: [
@@ -579,6 +651,10 @@ class BannerScreen extends StatelessWidget {
                       existingImage: item.image,
                       newImageBytes: imageBytes,
                       newImageName: pickedFile?.name,
+                      category: categoryController.text.trim(),
+                      badge: badgeController.text.trim(),
+                      subtitle: subtitleController.text.trim(),
+                      buttonText: buttonTextController.text.trim(),
                     );
                     Navigator.pop(context);
                   },
