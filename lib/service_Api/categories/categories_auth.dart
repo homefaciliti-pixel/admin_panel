@@ -158,12 +158,14 @@ class AuthCategories extends ChangeNotifier {
       if (body is Map<String, dynamic>) {
         if (body['data'] is Map<String, dynamic>) {
           final data = body['data'] as Map<String, dynamic>;
-          return data['image']?.toString() ??
+          return data['url']?.toString() ??
+              data['image']?.toString() ??
               data['filename']?.toString() ??
               data['path']?.toString();
         }
 
-        return body['image']?.toString() ??
+        return body['url']?.toString() ??
+            body['image']?.toString() ??
             body['filename']?.toString() ??
             body['path']?.toString();
       }
