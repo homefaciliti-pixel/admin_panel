@@ -17,7 +17,23 @@ class _ActivePartnerScreenState
 
   final TextEditingController searchController =
   TextEditingController();
-  bool isMapView = false;
+  bool showDistrictsList = false;
+  String? selectedDistrict;
+
+  Map<String, List<ActivePartnerModel>> _groupPartnersByDistrict(List<ActivePartnerModel> partners) {
+    final Map<String, List<ActivePartnerModel>> grouped = {};
+    for (var p in partners) {
+      final area = p.area;
+      final parts = area.split(',');
+      final districtName = parts.isNotEmpty ? parts.last.trim() : 'Unknown';
+      if (districtName.isEmpty) continue;
+      if (!grouped.containsKey(districtName)) {
+        grouped[districtName] = [];
+      }
+      grouped[districtName]!.add(p);
+    }
+    return grouped;
+  }
 
   @override
   void initState() {
@@ -34,6 +50,9 @@ class _ActivePartnerScreenState
   Widget build(BuildContext context) {
 
     final vm = Provider.of<ActivePartnerAuth>(context);
+    final grouped = _groupPartnersByDistrict(vm.partners);
+    final districts = grouped.keys.toList()
+      ..sort((a, b) => grouped[b]!.length.compareTo(grouped[a]!.length));
 
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FB),
@@ -64,14 +83,15 @@ class _ActivePartnerScreenState
                     ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          isMapView = false;
+                          showDistrictsList = false;
+                          selectedDistrict = null;
                         });
                       },
                       icon: const Icon(Icons.table_chart),
                       label: const Text("Table View"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: !isMapView ? const Color(0xff1e3a8a) : Colors.grey.shade200,
-                        foregroundColor: !isMapView ? Colors.white : Colors.black87,
+                        backgroundColor: !showDistrictsList ? const Color(0xff1e3a8a) : Colors.grey.shade200,
+                        foregroundColor: !showDistrictsList ? Colors.white : Colors.black87,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -81,14 +101,15 @@ class _ActivePartnerScreenState
                     ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          isMapView = true;
+                          showDistrictsList = true;
+                          selectedDistrict = null;
                         });
                       },
-                      icon: const Icon(Icons.map),
-                      label: const Text("Map View"),
+                      icon: const Icon(Icons.location_city),
+                      label: const Text("District Tracker"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isMapView ? const Color(0xff1e3a8a) : Colors.grey.shade200,
-                        foregroundColor: isMapView ? Colors.white : Colors.black87,
+                        backgroundColor: showDistrictsList ? const Color(0xff1e3a8a) : Colors.grey.shade200,
+                        foregroundColor: showDistrictsList ? Colors.white : Colors.black87,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -103,7 +124,7 @@ class _ActivePartnerScreenState
 
             // SEARCH (Only show in Table View)
 
-            if (!isMapView) ...[
+            if (!showDistrictsList) ...[
               Container(
                 height: 50,
                 decoration: BoxDecoration(
@@ -122,33 +143,139 @@ class _ActivePartnerScreenState
               const SizedBox(height: 20),
             ],
 
-            // TABLE or MAP
+            // TABLE or DISTRICTS or MAP
 
             Expanded(
               child: vm.isLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  : isMapView
-                      ? SingleChildScrollView(
-                          child: RadarMapWidget(
-                            activePartners: vm.partners.map((p) => {
-                              'partnerId': p.partnerId,
-                              'profileImage': p.profileImage,
-                              'name': p.name,
-                              'phone': p.phone,
-                              'category': p.category,
-                              'subCategory': p.subCategory,
-                              'area': p.area,
-                              'latitude': p.latitude,
-                              'longitude': p.longitude,
-                              'currentOrders': p.currentOrders,
-                              'isOnline': p.isOnline,
-                              'activeAt': p.activeAt,
-                              'lastActive': p.lastActive,
-                            }).toList(),
-                          ),
-                        )
+                  : showDistrictsList
+                      ? (selectedDistrict == null
+                          ? (districts.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    "No active districts found.",
+                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: districts.length,
+                                  itemBuilder: (context, index) {
+                                    final district = districts[index];
+                                    final count = grouped[district]!.length;
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: ListTile(
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                        leading: CircleAvatar(
+                                          backgroundColor: Colors.blue.shade50,
+                                          child: Icon(Icons.location_city, color: Colors.blue.shade800),
+                                        ),
+                                        title: Text(
+                                          district,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                              decoration: BoxDecoration(
+                                                color: Colors.green.shade50,
+                                                borderRadius: BorderRadius.circular(20),
+                                                border: Border.all(color: Colors.green.shade200),
+                                              ),
+                                              child: Text(
+                                                "$count Active",
+                                                style: TextStyle(
+                                                  color: Colors.green.shade800,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            selectedDistrict = district;
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ))
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.arrow_back),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedDistrict = null;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Tracker - $selectedDistrict",
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.shade50,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        "${grouped[selectedDistrict!]?.length ?? 0} Active Partners Online",
+                                        style: TextStyle(
+                                          color: Colors.blue.shade800,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 15),
+                                Expanded(
+                                  child: RadarMapWidget(
+                                    activePartners: (grouped[selectedDistrict!] ?? []).map((p) => {
+                                      'partnerId': p.partnerId,
+                                      'profileImage': p.profileImage,
+                                      'name': p.name,
+                                      'phone': p.phone,
+                                      'category': p.category,
+                                      'subCategory': p.subCategory,
+                                      'area': p.area,
+                                      'latitude': p.latitude,
+                                      'longitude': p.longitude,
+                                      'currentOrders': p.currentOrders,
+                                      'isOnline': p.isOnline,
+                                      'activeAt': p.activeAt,
+                                      'lastActive': p.lastActive,
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ))
                       : ActivePartnerTable(
                           partners: vm.partners,
                           vm: vm,
@@ -157,7 +284,7 @@ class _ActivePartnerScreenState
 
             // PAGINATION (dummy, Only show in Table View)
 
-            if (!isMapView) ...[
+            if (!showDistrictsList) ...[
               const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

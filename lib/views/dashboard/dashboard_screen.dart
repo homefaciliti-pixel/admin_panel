@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/Dashboard/dashboard_auth.dart';
 import '../../widgets/common/stat_card.dart';
-import 'radar_map_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key, });
@@ -164,18 +163,6 @@ class DashboardScreen extends StatelessWidget {
                         Navigator.pushNamed(context, "/support");
                       },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                const Text(
-                  "Active Partners Location Map",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                RadarMapWidget(activePartners: vm.activePartnersList),
               ],
             ),
           );
