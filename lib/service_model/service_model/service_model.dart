@@ -6,9 +6,6 @@ class ServiceModel {
   final String title;
   final double price;
 
-
-
-
   final double discountAmount;
 
   double get discountPercent {
@@ -82,14 +79,18 @@ class ServiceModel {
       imageBytes: null,
       description: json['description']?.toString() ?? '',
       status: json['status'] == true,
-      categoryId: json['categoryId']?.toString() ?? json['category_id']?.toString(),
+      categoryId:
+          json['categoryId']?.toString() ?? json['category_id']?.toString(),
       rating: (json['rating'] as num?)?.toDouble(),
       time: json['time']?.toString(),
-      isHighlighted: json['isHighlighted'] == true || json['isHighlighted'] == 'true',
+      isHighlighted:
+          json['isHighlighted'] == true || json['isHighlighted'] == 'true',
       highlights: json['highlights'] != null
-          ? List<String>.from(json['highlights'] is String
-              ? jsonDecode(json['highlights'])
-              : json['highlights'])
+          ? List<String>.from(
+              json['highlights'] is String
+                  ? jsonDecode(json['highlights'])
+                  : json['highlights'],
+            )
           : const [],
       reviewsCount: 0,
       cutPrice: (json['cutPrice'] as num?)?.toDouble() ?? 0,

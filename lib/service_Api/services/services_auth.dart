@@ -310,6 +310,7 @@ class ServiceAuth extends ChangeNotifier {
   }
 
   Future<String?> _uploadImageToServer(List<int>? imageBytes) async {
+
     if (imageBytes == null || imageBytes.isEmpty) return null;
 
     try {
@@ -319,6 +320,7 @@ class ServiceAuth extends ChangeNotifier {
       );
 
       // If backend field name is different, change only 'image'
+
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
@@ -331,9 +333,14 @@ class ServiceAuth extends ChangeNotifier {
       final response = await http.Response.fromStream(streamed);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+
         final json = jsonDecode(response.body);
+
+
         return json['data']?['url']?.toString();
       }
+
+      print("UPLOAD JSON => $json");
 
       debugPrint('Image upload failed: ${response.body}');
       return null;

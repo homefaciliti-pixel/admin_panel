@@ -579,7 +579,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       rating: rating,
                       reviewsCount: reviewsCount,
                       serviceTime: serviceTime,
-                      existingImageUrl: item?.imageUrl,
+                      existingImageUrl: item.imageUrl,
                     );
 
                     if (ok && context.mounted) {
