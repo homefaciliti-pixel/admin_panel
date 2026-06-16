@@ -50,6 +50,16 @@ class ServiceModel {
     required this.cutPrice,
   });
 
+  static String _normalizeUrl(String url) {
+    if (url.startsWith('http://') &&
+        !url.contains('localhost') &&
+        !url.contains('127.0.0.1') &&
+        !url.contains('10.0.2.2')) {
+      return url.replaceFirst('http://', 'https://');
+    }
+    return url;
+  }
+
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     final price = (json['price'] as num?)?.toDouble() ?? 0;
 
@@ -64,9 +74,9 @@ class ServiceModel {
       price: price,
       discountAmount: discountAmount,
 
-      // backend se jo image url aaye, wahi show hoga
+      // backend se jo image url aaye, wahi show hoga, dynamically normalized to HTTPS
       imageUrl: (json['image']?.toString().isNotEmpty ?? false)
-          ? json['image'].toString()
+          ? _normalizeUrl(json['image'].toString())
           : null,
 
       imageBytes: null,

@@ -432,6 +432,16 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
+  static String _normalizeUrl(String url) {
+    if (url.startsWith('http://') &&
+        !url.contains('localhost') &&
+        !url.contains('127.0.0.1') &&
+        !url.contains('10.0.2.2')) {
+      return url.replaceFirst('http://', 'https://');
+    }
+    return url;
+  }
+
   static const String imageBaseUrl =
       "https://adminbackend-1-h03r.onrender.com/uploads/";
 
@@ -440,7 +450,8 @@ class CategoryScreen extends StatelessWidget {
       return _emptyImageBox(size);
     }
 
-    final imageUrl = path.startsWith('http') ? path : '$imageBaseUrl$path';
+    final rawUrl = path.startsWith('http') ? path : '$imageBaseUrl$path';
+    final imageUrl = _normalizeUrl(rawUrl);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
@@ -474,9 +485,10 @@ class CategoryScreen extends StatelessWidget {
     }
 
     if (existingImage.isNotEmpty) {
-      final imageUrl = existingImage.startsWith('http')
+      final rawUrl = existingImage.startsWith('http')
           ? existingImage
           : '$imageBaseUrl$existingImage';
+      final imageUrl = _normalizeUrl(rawUrl);
 
       return ClipRRect(
         borderRadius: BorderRadius.circular(8),
