@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../../service_model/Active_Partners_model/active_Partnermodel.dart';
+import '../../service_model/Active_Partners_model/active_partner_model.dart';
 
 class ActivePartnerAuth extends ChangeNotifier {
   bool isLoading = false;
