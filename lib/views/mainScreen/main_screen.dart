@@ -13,7 +13,7 @@ import 'package:admin_panel/views/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../viewmodels/navigation_viewmodel.dart';
+import '../../service_Api/settings/navigation_viewmodel.dart';
 import '../../widgets/drawer/admin_drawer.dart';
 import '../Earning screens/booking_screen.dart';
 import '../dashboard/dashboard_screen.dart';

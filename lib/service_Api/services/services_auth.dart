@@ -215,16 +215,11 @@ class ServiceAuth extends ChangeNotifier {
         'highlights': highlights,
       };
 
-      print('POST BODY => ${jsonEncode(body)}');
-
       final response = await http.post(
         Uri.parse(_baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
-
-      print('POST STATUS => ${response.statusCode}');
-      print('POST RESPONSE => ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         await fetchServices();
@@ -282,16 +277,11 @@ class ServiceAuth extends ChangeNotifier {
         'highlights': highlights,
       };
 
-      print('PUT BODY => ${jsonEncode(body)}');
-
       final response = await http.put(
         Uri.parse('$_baseUrl/$id'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
-
-      print('PUT STATUS => ${response.statusCode}');
-      print('PUT RESPONSE => ${response.body}');
 
       if (response.statusCode == 200) {
         await fetchServices();
@@ -310,7 +300,6 @@ class ServiceAuth extends ChangeNotifier {
   }
 
   Future<String?> _uploadImageToServer(List<int>? imageBytes) async {
-
     if (imageBytes == null || imageBytes.isEmpty) return null;
 
     try {
@@ -333,19 +322,13 @@ class ServiceAuth extends ChangeNotifier {
       final response = await http.Response.fromStream(streamed);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-
         final json = jsonDecode(response.body);
-
 
         return json['data']?['url']?.toString();
       }
 
-      print("UPLOAD JSON => $json");
-
-      debugPrint('Image upload failed: ${response.body}');
       return null;
     } catch (e) {
-      debugPrint('Image upload error: $e');
       return null;
     }
   }

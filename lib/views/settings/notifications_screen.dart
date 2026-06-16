@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/Settings models/notification_model.dart';
-import '../../viewmodels/Settings_ViewModels/notification_viewmodel.dart';
+import '../../service_Api/settings/notification_viewmodel.dart';
 
 
 class NotificationsScreen extends StatelessWidget {

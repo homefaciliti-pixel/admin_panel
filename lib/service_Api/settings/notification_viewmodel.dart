@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/Settings models/notification_model.dart';
 
-
 class NotificationViewModel extends ChangeNotifier {
-
   /// =========================================
   /// PAGINATION
   /// =========================================
@@ -21,15 +19,12 @@ class NotificationViewModel extends ChangeNotifier {
   /// future me backend/API se aayega
 
   final List<NotificationModel> _allNotifications = [
-
     NotificationModel(
-
       id: 1,
 
       title: "Festival Offer",
 
-      message:
-      "Get 20% discount on all AC services.",
+      message: "Get 20% discount on all AC services.",
 
       audience: "All Users",
 
@@ -39,13 +34,11 @@ class NotificationViewModel extends ChangeNotifier {
     ),
 
     NotificationModel(
-
       id: 2,
 
       title: "Partner Meeting",
 
-      message:
-      "Monthly partner meeting scheduled tomorrow.",
+      message: "Monthly partner meeting scheduled tomorrow.",
 
       audience: "All Partners",
 
@@ -55,13 +48,11 @@ class NotificationViewModel extends ChangeNotifier {
     ),
 
     NotificationModel(
-
       id: 3,
 
       title: "Maintenance Notice",
 
-      message:
-      "System maintenance from 2 AM to 4 AM.",
+      message: "System maintenance from 2 AM to 4 AM.",
 
       audience: "All Users",
 
@@ -79,43 +70,33 @@ class NotificationViewModel extends ChangeNotifier {
 
   /// constructor
   NotificationViewModel() {
-
-    notifications =
-        List.from(_allNotifications);
+    notifications = List.from(_allNotifications);
   }
 
   /// =========================================
   /// ALL NOTIFICATIONS
   /// =========================================
 
-  List<NotificationModel> get allNotifications =>
-      List.from(_allNotifications);
+  List<NotificationModel> get allNotifications => List.from(_allNotifications);
 
   /// =========================================
   /// TOTAL PAGES
   /// =========================================
 
   int get totalPages {
-
     if (notifications.isEmpty) return 1;
 
-    return
-      (notifications.length / selectedEntries)
-          .ceil();
+    return (notifications.length / selectedEntries).ceil();
   }
 
   /// =========================================
   /// PAGINATED DATA
   /// =========================================
 
-  List<NotificationModel>
-  get paginatedNotifications {
+  List<NotificationModel> get paginatedNotifications {
+    final start = (currentPage - 1) * selectedEntries;
 
-    final start =
-        (currentPage - 1) * selectedEntries;
-
-    int end =
-        start + selectedEntries;
+    int end = start + selectedEntries;
 
     if (end > notifications.length) {
       end = notifications.length;
@@ -133,7 +114,6 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void changeEntries(int value) {
-
     selectedEntries = value;
 
     currentPage = 1;
@@ -146,9 +126,7 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void nextPage() {
-
     if (currentPage < totalPages) {
-
       currentPage++;
 
       notifyListeners();
@@ -160,9 +138,7 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void previousPage() {
-
     if (currentPage > 1) {
-
       currentPage--;
 
       notifyListeners();
@@ -176,37 +152,16 @@ class NotificationViewModel extends ChangeNotifier {
   /// title + message + audience pe search
 
   void searchNotification(String value) {
-
     if (value.trim().isEmpty) {
-
-      notifications =
-          List.from(_allNotifications);
-
+      notifications = List.from(_allNotifications);
     } else {
+      final keyword = value.toLowerCase();
 
-      final keyword =
-      value.toLowerCase();
-
-      notifications =
-          _allNotifications.where((item) {
-
-            return item.title
-                .toLowerCase()
-                .contains(keyword)
-
-                ||
-
-                item.message
-                    .toLowerCase()
-                    .contains(keyword)
-
-                ||
-
-                item.audience
-                    .toLowerCase()
-                    .contains(keyword);
-
-          }).toList();
+      notifications = _allNotifications.where((item) {
+        return item.title.toLowerCase().contains(keyword) ||
+            item.message.toLowerCase().contains(keyword) ||
+            item.audience.toLowerCase().contains(keyword);
+      }).toList();
     }
 
     currentPage = 1;
@@ -219,23 +174,14 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void toggleStatus(int id) {
-
-    final index =
-    _allNotifications.indexWhere(
-          (e) => e.id == id,
-    );
+    final index = _allNotifications.indexWhere((e) => e.id == id);
 
     if (index != -1) {
+      _allNotifications[index] = _allNotifications[index].copyWith(
+        status: !_allNotifications[index].status,
+      );
 
-      _allNotifications[index] =
-          _allNotifications[index].copyWith(
-
-            status:
-            !_allNotifications[index].status,
-          );
-
-      notifications =
-          List.from(_allNotifications);
+      notifications = List.from(_allNotifications);
 
       notifyListeners();
     }
@@ -246,20 +192,14 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void addNotification({
-
     required String title,
 
     required String message,
 
     required String audience,
   }) {
-
-    final newNotification =
-    NotificationModel(
-
-      id: _allNotifications.isEmpty
-          ? 1
-          : _allNotifications.last.id + 1,
+    final newNotification = NotificationModel(
+      id: _allNotifications.isEmpty ? 1 : _allNotifications.last.id + 1,
 
       title: title,
 
@@ -267,21 +207,14 @@ class NotificationViewModel extends ChangeNotifier {
 
       audience: audience,
 
-      createdAt:
-      DateTime.now()
-          .toString()
-          .split(" ")
-          .first,
+      createdAt: DateTime.now().toString().split(" ").first,
 
       status: true,
     );
 
-    _allNotifications.add(
-      newNotification,
-    );
+    _allNotifications.add(newNotification);
 
-    notifications =
-        List.from(_allNotifications);
+    notifications = List.from(_allNotifications);
 
     notifyListeners();
   }
@@ -291,7 +224,6 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void updateNotification({
-
     required int id,
 
     required String title,
@@ -300,26 +232,18 @@ class NotificationViewModel extends ChangeNotifier {
 
     required String audience,
   }) {
-
-    final index =
-    _allNotifications.indexWhere(
-          (e) => e.id == id,
-    );
+    final index = _allNotifications.indexWhere((e) => e.id == id);
 
     if (index != -1) {
+      _allNotifications[index] = _allNotifications[index].copyWith(
+        title: title,
 
-      _allNotifications[index] =
-          _allNotifications[index].copyWith(
+        message: message,
 
-            title: title,
+        audience: audience,
+      );
 
-            message: message,
-
-            audience: audience,
-          );
-
-      notifications =
-          List.from(_allNotifications);
+      notifications = List.from(_allNotifications);
 
       notifyListeners();
     }
@@ -330,22 +254,16 @@ class NotificationViewModel extends ChangeNotifier {
   /// =========================================
 
   void deleteNotification(int id) {
+    _allNotifications.removeWhere((e) => e.id == id);
 
-    _allNotifications.removeWhere(
-          (e) => e.id == id,
-    );
-
-    notifications =
-        List.from(_allNotifications);
+    notifications = List.from(_allNotifications);
 
     if (currentPage > totalPages) {
-
       currentPage = totalPages;
     }
 
     notifyListeners();
   }
-
 
   /// =========================================
   /// SEND NOTIFICATION
@@ -366,5 +284,4 @@ class NotificationViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 }

@@ -199,7 +199,6 @@ class ServiceTable extends StatelessWidget {
     print("IMAGE URL => $imageUrl");
 
     if (imageUrl.isEmpty) {
-
       return Container(
         width: 50,
         height: 50,
@@ -207,7 +206,7 @@ class ServiceTable extends StatelessWidget {
           color: Colors.grey.shade200,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Icon(Icons.image,color: Colors.yellow,),
+        child: const Icon(Icons.image, color: Colors.yellow),
       );
     }
 
@@ -227,18 +226,11 @@ class ServiceTable extends StatelessWidget {
           return const SizedBox(
             width: 50,
             height: 50,
-            child: Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            ),
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           );
         },
 
         errorBuilder: (context, error, stackTrace) {
-          print("IMAGE LOAD ERROR => $error");
-          print("FAILED URL => $imageUrl");
-
           return Container(
             width: 50,
             height: 50,
@@ -246,10 +238,7 @@ class ServiceTable extends StatelessWidget {
               color: Colors.grey.shade200,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(
-              Icons.broken_image,
-              color: Colors.red,
-            ),
+            child: const Icon(Icons.broken_image, color: Colors.red),
           );
         },
       ),

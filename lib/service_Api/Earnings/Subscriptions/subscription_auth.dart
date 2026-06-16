@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 import '../../../service_model/earnings_model/Booking_model/subscription_model.dart';
 
-
 class SubscriptionAuth extends ChangeNotifier {
   static const String _baseUrl =
       'https://adminbackend-1-h03r.onrender.com/api/earnings/subscriptions';
@@ -43,8 +42,9 @@ class SubscriptionAuth extends ChangeNotifier {
         totalSubscriptionCount = json['totalPlans'] ?? 0;
 
         final List list = json['data'] ?? [];
-        _allSubscriptions =
-            list.map((e) => SubscriptionModel.fromJson(e)).toList();
+        _allSubscriptions = list
+            .map((e) => SubscriptionModel.fromJson(e))
+            .toList();
 
         subscriptionEarnings = List.from(_allSubscriptions);
       } else {
