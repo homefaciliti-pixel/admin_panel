@@ -29,10 +29,7 @@ class ServiceAuth extends ChangeNotifier {
   }
 
   // New helper: cutPrice-based discount %
-  double _calculateDiscountPercentFromCutPrice(
-      double price,
-      double cutPrice,
-      ) {
+  double _calculateDiscountPercentFromCutPrice(double price, double cutPrice) {
     if (cutPrice <= 0) return 0;
     final percent = ((cutPrice - price) / cutPrice) * 100;
     if (percent.isNaN || percent.isInfinite || percent < 0) return 0;
@@ -93,7 +90,7 @@ class ServiceAuth extends ChangeNotifier {
           ..clear()
           ..addAll(
             dataList.map(
-                  (e) => ServiceModel.fromJson(e as Map<String, dynamic>),
+              (e) => ServiceModel.fromJson(e as Map<String, dynamic>),
             ),
           );
 
@@ -163,9 +160,7 @@ class ServiceAuth extends ChangeNotifier {
       final response = await http.patch(
         Uri.parse('$_baseUrl/$id/status'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'status': !currentStatus,
-        }),
+        body: jsonEncode({'status': !currentStatus}),
       );
 
       if (response.statusCode == 200) {
@@ -224,9 +219,7 @@ class ServiceAuth extends ChangeNotifier {
 
       final response = await http.post(
         Uri.parse(_baseUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
 
@@ -293,9 +286,7 @@ class ServiceAuth extends ChangeNotifier {
 
       final response = await http.put(
         Uri.parse('$_baseUrl/$id'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
 
@@ -317,10 +308,6 @@ class ServiceAuth extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-
-
-
 
   Future<String?> _uploadImageToServer(List<int>? imageBytes) async {
     if (imageBytes == null || imageBytes.isEmpty) return null;
@@ -355,5 +342,4 @@ class ServiceAuth extends ChangeNotifier {
       return null;
     }
   }
-
 }

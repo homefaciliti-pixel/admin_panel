@@ -36,10 +36,7 @@ class ActivePartnerModel {
     required this.lastActive,
   });
 
-
-  factory ActivePartnerModel.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory ActivePartnerModel.fromJson(Map<String, dynamic> json) {
     return ActivePartnerModel(
       partnerId: json["partnerId"] ?? "",
       profileImage: json["profileImage"] ?? "",
@@ -58,6 +55,5 @@ class ActivePartnerModel {
       activeAt: json["activeAt"]?.toString() ?? "",
       lastActive: json["lastActive"]?.toString() ?? "",
     );
-
   }
 }

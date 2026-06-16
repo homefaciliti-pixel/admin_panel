@@ -23,15 +23,12 @@ class BookingModel {
     return BookingModel(
       id: json['id'] ?? 0,
       transactionId: json['transactionId'] ?? '',
-      serviceAmount:
-      (json['serviceAmount'] as num?)?.toDouble() ?? 0.0,
+      serviceAmount: (json['serviceAmount'] as num?)?.toDouble() ?? 0.0,
       paymentMethod: json['paymentMethod'] ?? '',
       extraServiceAmount:
-      (json['extraServiceAmount'] as num?)?.toDouble() ?? 0.0,
-      extraServicePaymentMethod:
-      json['extraServicePaymentMethod'] ?? '',
-      totalAmount:
-      (json['totalAmount'] as num?)?.toDouble() ?? 0.0,
+          (json['extraServiceAmount'] as num?)?.toDouble() ?? 0.0,
+      extraServicePaymentMethod: json['extraServicePaymentMethod'] ?? '',
+      totalAmount: (json['totalAmount'] as num?)?.toDouble() ?? 0.0,
       orderDate: json['orderDate'] ?? '',
     );
   }

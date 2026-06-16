@@ -13,9 +13,7 @@ class DashboardViewModel extends ChangeNotifier {
   Future<void> _fetchStats() async {
     final response = await http.get(
       Uri.parse('https://adminbackend-1-h03r.onrender.com/api/dashboard'),
-      headers: const {
-        'Content-Type': 'application/json',
-      },
+      headers: const {'Content-Type': 'application/json'},
     );
 
     debugPrint("DASHBOARD STATUS => ${response.statusCode}");
@@ -39,10 +37,10 @@ class DashboardViewModel extends ChangeNotifier {
   Future<void> fetchActivePartners() async {
     try {
       final response = await http.get(
-        Uri.parse('https://adminbackend-1-h03r.onrender.com/api/partners/active'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        Uri.parse(
+          'https://adminbackend-1-h03r.onrender.com/api/partners/active',
+        ),
+        headers: const {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
@@ -61,10 +59,7 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.wait([
-        _fetchStats(),
-        fetchActivePartners(),
-      ]);
+      await Future.wait([_fetchStats(), fetchActivePartners()]);
     } catch (e) {
       errorMessage = 'API error: $e';
     }
@@ -75,7 +70,7 @@ class DashboardViewModel extends ChangeNotifier {
 
   int _amountByName(String name) {
     final item = cards.cast<Map<String, dynamic>?>().firstWhere(
-          (e) => (e?['name']?.toString() ?? '') == name,
+      (e) => (e?['name']?.toString() ?? '') == name,
       orElse: () => null,
     );
 
@@ -90,6 +85,7 @@ class DashboardViewModel extends ChangeNotifier {
     final count = _amountByName('Active Partners');
     return count > 0 ? count : activePartnersList.length;
   }
+
   int get totalOrders => _amountByName('Total Orders');
   int get todayOrders => _amountByName('Today Orders');
   int get completeOrders => _amountByName('Complete Orders');
@@ -100,6 +96,5 @@ class DashboardViewModel extends ChangeNotifier {
   String get subscriptionEarning =>
       '₹${_amountByName('Subscription Earnings')}';
 
-  String get orderEarning =>
-      '₹${_amountByName('Order Earnings')}';
+  String get orderEarning => '₹${_amountByName('Order Earnings')}';
 }

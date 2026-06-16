@@ -8,7 +8,8 @@ import '../../service_model/category/category_model.dart';
 
 class AuthCategories extends ChangeNotifier {
   final String baseUrl = 'https://adminbackend-1-h03r.onrender.com/api';
-  final String uploadUrl = 'https://adminbackend-1-h03r.onrender.com/api/upload';
+  final String uploadUrl =
+      'https://adminbackend-1-h03r.onrender.com/api/upload';
 
   List<CategoryItem> _allCategories = [];
   List<CategoryItem> categories = [];
@@ -136,7 +137,9 @@ class AuthCategories extends ChangeNotifier {
     final mediaType = _mediaTypeFromFileName(fileName);
 
     if (mediaType == null) {
-      throw Exception('Only image files (jpg, jpeg, png, gif, webp) are allowed!');
+      throw Exception(
+        'Only image files (jpg, jpeg, png, gif, webp) are allowed!',
+      );
     }
 
     final request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
@@ -226,7 +229,9 @@ class AuthCategories extends ChangeNotifier {
     try {
       String finalImage = existingImage;
 
-      if (newImageBytes != null && newImageName != null && newImageName.isNotEmpty) {
+      if (newImageBytes != null &&
+          newImageName != null &&
+          newImageName.isNotEmpty) {
         final uploaded = await _uploadImage(newImageBytes, newImageName);
         if (uploaded != null && uploaded.isNotEmpty) {
           finalImage = uploaded;
