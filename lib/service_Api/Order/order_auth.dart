@@ -148,13 +148,12 @@ class OrderAuth extends ChangeNotifier {
     }
   }
 
-<<<<<<< HEAD
 
 
-  Future<bool> assignVendor(int id, String vendorMobile) async {
-=======
+
+
+
   Future<bool> assignVendor(int id, String vendorNumber) async {
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -163,17 +162,14 @@ class OrderAuth extends ChangeNotifier {
       final response = await http.put(
         Uri.parse('$_baseUrl/$id/assign'),
         headers: {'Content-Type': 'application/json'},
-<<<<<<< HEAD
         body: jsonEncode({
-          'vendorMobile': vendorMobile.trim(),
+          'vendorMobile': vendorNumber.trim(),
         }),
-=======
-        body: jsonEncode({'vendorMobile': vendorNumber.trim()}),
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
       );
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
+
         if (json['success'] == true) {
           await fetchOrders();
           return true;

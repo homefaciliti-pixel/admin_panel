@@ -1,14 +1,11 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
-// import 'package:admin_panel/data/models/category_model.dart';
-// import 'package:admin_panel/data/models/partner_model.dart';
-// import 'package:admin_panel/data/models/service_model.dart';
+
 // import 'package:admin_panel/data/models/Settings models/city_model.dart';
 // import 'package:admin_panel/data/models/Settings models/notification_model.dart';
 // import 'package:admin_panel/data/models/Settings models/review_model.dart';
 // import 'package:admin_panel/data/models/Settings models/state_model.dart';
-//
-// import '../../service_model/partner/partner_model.dart';
+
 // class ApiService {
 //   // Base URL for the local Express API Server (change if hosted remotely)
 //   static const String baseUrl = 'http://localhost:3000/api';

@@ -1,10 +1,11 @@
+import 'dart:ui' as html;
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../service_Api/Activepartners/active_partner_auth.dart';
 import '../../../service_model/Active_Partners_model/active_Partnermodel.dart';
 
-
 class ActivePartnerTable extends StatelessWidget {
-
   final List<ActivePartnerModel> partners;
   final ActivePartnerAuth vm;
 
@@ -16,7 +17,6 @@ class ActivePartnerTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -33,14 +33,9 @@ class ActivePartnerTable extends StatelessWidget {
 
       child: Column(
         children: [
-
           // ================= HEADER =================
-
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             decoration: const BoxDecoration(
               color: Color(0xff111827),
               borderRadius: BorderRadius.only(
@@ -50,53 +45,34 @@ class ActivePartnerTable extends StatelessWidget {
             ),
             child: const Row(
               children: [
-
                 Expanded(
                   flex: 1,
-                  child: Text(
-                    "#",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("#", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
                   flex: 4,
-                  child: Text(
-                    "Partner",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Partner", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    "Phone",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Phone", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    "Area",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Area", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    "Orders",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Orders", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    "Status",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Status", style: TextStyle(color: Colors.white)),
                 ),
 
                 Expanded(
@@ -117,23 +93,18 @@ class ActivePartnerTable extends StatelessWidget {
 
                 Expanded(
                   flex: 1,
-                  child: Text(
-                    "Map",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Map", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
           ),
 
           // ================= BODY =================
-
           Expanded(
             child: ListView.builder(
               itemCount: partners.length,
 
               itemBuilder: (context, index) {
-
                 final item = partners[index];
 
                 return Container(
@@ -144,35 +115,25 @@ class ActivePartnerTable extends StatelessWidget {
 
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey.shade200,
-                      ),
+                      bottom: BorderSide(color: Colors.grey.shade200),
                     ),
                   ),
 
                   child: Row(
                     children: [
-
                       // SERIAL
-
-                      Expanded(
-                        flex: 1,
-                        child: Text("${index + 1}"),
-                      ),
+                      Expanded(flex: 1, child: Text("${index + 1}")),
 
                       // PARTNER
-
                       Expanded(
                         flex: 4,
                         child: Row(
                           children: [
-
                             CircleAvatar(
                               radius: 24,
                               backgroundColor: Colors.grey.shade200,
 
-                              backgroundImage:
-                              item.profileImage.isNotEmpty
+                              backgroundImage: item.profileImage.isNotEmpty
                                   ? NetworkImage(item.profileImage)
                                   : null,
 
@@ -185,10 +146,8 @@ class ActivePartnerTable extends StatelessWidget {
 
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Text(
                                     item.name,
                                     style: const TextStyle(
@@ -214,21 +173,12 @@ class ActivePartnerTable extends StatelessWidget {
                       ),
 
                       // PHONE
-
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.phone),
-                      ),
+                      Expanded(flex: 2, child: Text(item.phone)),
 
                       // AREA
-
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.area),
-                      ),
+                      Expanded(flex: 2, child: Text(item.area)),
 
                       // CURRENT ORDERS
-
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -239,22 +189,18 @@ class ActivePartnerTable extends StatelessWidget {
 
                           decoration: BoxDecoration(
                             color: Colors.orange.shade100,
-                            borderRadius:
-                            BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20),
                           ),
 
                           child: Text(
                             "${item.currentOrders}",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
 
                       // STATUS
-
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -268,21 +214,16 @@ class ActivePartnerTable extends StatelessWidget {
                                 ? Colors.green.shade100
                                 : Colors.red.shade100,
 
-                            borderRadius:
-                            BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20),
                           ),
 
                           child: Text(
-                            item.isOnline
-                                ? "Online"
-                                : "Offline",
+                            item.isOnline ? "Online" : "Offline",
 
                             textAlign: TextAlign.center,
 
                             style: TextStyle(
-                              color: item.isOnline
-                                  ? Colors.green
-                                  : Colors.red,
+                              color: item.isOnline ? Colors.green : Colors.red,
 
                               fontWeight: FontWeight.w600,
                             ),
@@ -291,31 +232,22 @@ class ActivePartnerTable extends StatelessWidget {
                       ),
 
                       // ACTIVE AT
-
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.activeAt),
-                      ),
+                      Expanded(flex: 2, child: Text(item.activeAt)),
 
                       // LAST ACTIVE
-
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.lastActive),
-                      ),
+                      Expanded(flex: 2, child: Text(item.lastActive)),
 
                       // MAP
-
                       Expanded(
                         flex: 1,
                         child: IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final Uri uri = Uri.parse(
+                              'https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}',
+                            );
 
-                            // Future:
-                            // Open Map Screen
-
+                            await launchUrl(uri);
                           },
-
                           icon: const Icon(
                             Icons.location_on,
                             color: Colors.red,

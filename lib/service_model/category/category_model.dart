@@ -2,10 +2,7 @@ class CategoryResponse {
   final bool success;
   final List<CategoryItem> data;
 
-  CategoryResponse({
-    required this.success,
-    required this.data,
-  });
+  CategoryResponse({required this.success, required this.data});
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) {
     return CategoryResponse(
@@ -17,10 +14,7 @@ class CategoryResponse {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'success': success,
-      'data': data.map((e) => e.toJson()).toList(),
-    };
+    return {'success': success, 'data': data.map((e) => e.toJson()).toList()};
   }
 }
 

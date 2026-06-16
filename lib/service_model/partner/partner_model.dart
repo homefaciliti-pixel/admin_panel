@@ -146,9 +146,9 @@ class PartnerModel {
       totalReviews: (json['totalReviews'] as num?)?.toInt() ?? 0,
       createdAt: safeString(json['createdAt']),
       policeVerificationImage: safeString(json['policeVerificationImage']),
-      latitude: json['latitude'] != null ? json['latitude'].toString() : null,
-      longitude: json['longitude'] != null ? json['longitude'].toString() : null,
-      locationTime: json['locationTime'] != null ? json['locationTime'].toString() : null,
+      latitude: json['latitude']?.toString(),
+      longitude: json['longitude']?.toString(),
+      locationTime: json['locationTime']?.toString(),
     );
   }
 

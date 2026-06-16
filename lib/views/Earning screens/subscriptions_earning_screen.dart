@@ -152,50 +152,55 @@ class _SubscriptionsEarningScreenState extends State<SubscriptionsEarningScreen>
                             ),
                           ],
                         ),
-                        child: SizedBox(
-                          width: double.infinity,
+                        child: Scrollbar(
+                          thumbVisibility: true,
                           child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: MediaQuery.of(context).size.width - 320,
-                              ),
-                              child: DataTable(
-                                headingRowColor: WidgetStateProperty.all(
-                                  const Color(0xff111827),
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width - 320,
                                 ),
-                                headingTextStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                                child: DataTable(
+                                  headingRowColor: WidgetStateProperty.all(
+                                    const Color(0xff111827),
+                                  ),
+                                  headingTextStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  columns: const [
+                                    DataColumn(label: Text("ID")),
+                                    DataColumn(label: Text("PARTNER NAME")),
+                                    DataColumn(label: Text("AMOUNT")),
+                                    DataColumn(label: Text("PAYMENT METHOD")),
+                                    DataColumn(label: Text("PURCHASE DATE")),
+                                    DataColumn(label: Text("STATUS")),
+                                  ],
+                                  rows: vm.subscriptionEarnings.map((item) {
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(Text(item.id.toString())),
+                                        DataCell(Text(item.partnerName)),
+                                        DataCell(
+                                          Text("₹${item.amount.toStringAsFixed(0)}"),
+                                        ),
+                                        DataCell(Text(item.paymentMethod)),
+                                        DataCell(Text(item.purchaseDate)),
+                                        DataCell(Text(item.status)),
+                                      ],
+                                    );
+                                  }).toList(),
                                 ),
-                                columns: const [
-                                  DataColumn(label: Text("ID")),
-                                  DataColumn(label: Text("PARTNER NAME")),
-                                  DataColumn(label: Text("AMOUNT")),
-                                  DataColumn(label: Text("PAYMENT METHOD")),
-                                  DataColumn(label: Text("PURCHASE DATE")),
-                                  DataColumn(label: Text("STATUS")),
-                                ],
-                                rows: vm.subscriptionEarnings.map((item) {
-                                  return DataRow(
-                                    cells: [
-                                      DataCell(Text(item.id.toString())),
-                                      DataCell(Text(item.partnerName)),
-                                      DataCell(
-                                        Text("₹${item.amount.toStringAsFixed(0)}"),
-                                      ),
-                                      DataCell(Text(item.paymentMethod)),
-                                      DataCell(Text(item.purchaseDate)),
-                                      DataCell(Text(item.status)),
-                                    ],
-                                  );
-                                }).toList(),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    )
+
+
                   ],
             ],
           ),

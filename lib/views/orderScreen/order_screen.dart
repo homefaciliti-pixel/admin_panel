@@ -375,19 +375,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   void _showAssignVendorSheet(
-<<<<<<< HEAD
+
       BuildContext context,
       OrderAuth vm,
       OrderModel item,
-      ) {
-=======
-    BuildContext context,
-    OrderAuth vm,
-    OrderModel item,
-  ) {
-    final vendorController = TextEditingController(text: item.vendorNumber);
+      )
 
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
+
+   {
+
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -399,11 +396,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
         return StatefulBuilder(
           builder: (context, setState) {
-<<<<<<< HEAD
+
             final bool isAssigned = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
-=======
-            final bool isAssigned = item.vendorNumber.trim().isNotEmpty;
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
+
+
+
 
             return Container(
               padding: EdgeInsets.only(
@@ -441,32 +438,44 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                   const SizedBox(height: 20),
-<<<<<<< HEAD
+
                   Consumer<PartnerAuth>(
                     builder: (context, partnerAuth, child) {
-                      if (partnerAuth.isLoading && partnerAuth.approvedPartners.isEmpty) {
+                      if (partnerAuth.isLoading &&
+                          partnerAuth.approvedPartners.isEmpty) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
 
                       final approved = partnerAuth.approvedPartners;
+
                       if (approved.isEmpty) {
                         return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.red.shade200),
+                            border: Border.all(
+                              color: Colors.red.shade200,
+                            ),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.error_outline, color: Colors.red),
+                              Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                              ),
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   "No approved partners found.",
-                                  style: TextStyle(color: Colors.red),
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
                             ],
@@ -474,13 +483,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         );
                       }
 
-                      // Check if current assigned mobile is in approved list
-                      final hasMatchingPartner = approved.any((p) => p.mobile == selectedMobile);
-                      final dropdownValue = hasMatchingPartner ? selectedMobile : null;
+                      final hasMatchingPartner = approved.any(
+                            (p) => p.mobile == selectedMobile,
+                      );
+
+                      final dropdownValue =
+                      hasMatchingPartner ? selectedMobile : null;
 
                       return DropdownButtonFormField<String>(
                         value: dropdownValue,
-                        hint: const Text("Select Approved Partner"),
+                        hint: const Text(
+                          "Select Approved Partner",
+                        ),
                         decoration: InputDecoration(
                           labelText: "Select Partner",
                           filled: true,
@@ -492,7 +506,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         items: approved.map((partner) {
                           return DropdownMenuItem<String>(
                             value: partner.mobile,
-                            child: Text("${partner.name} (${partner.mobile})"),
+                            child: Text(
+                              "${partner.name} (${partner.mobile})",
+                            ),
                           );
                         }).toList(),
                         onChanged: (val) {
@@ -504,40 +520,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         },
                       );
                     },
-=======
-                  TextField(
-                    controller: vendorController,
-                    decoration: InputDecoration(
-                      labelText: "Vendor Number",
-                      hintText: "Enter vendor Number",
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
                   ),
+
                   const SizedBox(height: 18),
+
                   Text(
                     isAssigned
-<<<<<<< HEAD
-                        ? "Assigned to: ${item.vendorName} (${item.vendorMobile})"
+                        ? "Assigned to: ${item.vendorMobile}"
                         : "Select approved vendor to assign this order.",
-=======
-                        ? "This order is already assigned. You can unassign it."
-                        : "Add vendor Number assign this order.",
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 13,
+                    ),
                   ),
+
                   const SizedBox(height: 20),
+
                   Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.pop(context),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
                           ),
                           child: const Text("Cancel"),
                         ),
@@ -545,45 +552,44 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
-<<<<<<< HEAD
                           onPressed: selectedMobile == null
                               ? null
                               : () async {
-                                  final ok = await vm.assignVendor(item.id, selectedMobile!);
-                                  if (ok && mounted) {
-                                    Navigator.pop(context);
-                                  } else if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(vm.errorMessage ?? "Failed to assign vendor"),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
-                                },
-=======
-                          onPressed: () async {
-                            final vendorName = vendorController.text.trim();
-
                             final ok = await vm.assignVendor(
                               item.id,
-                              vendorName,
+                              selectedMobile!,
                             );
+
                             if (ok && mounted) {
                               Navigator.pop(context);
+                            } else if (mounted) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    vm.errorMessage ??
+                                        "Failed to assign vendor",
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
                             }
                           },
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff111827),
+                            backgroundColor:
+                            const Color(0xff111827),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
                           ),
-                          child: Text("Assign"),
+                          child: const Text("Assign"),
                         ),
                       ),
                     ],
                   ),
+
+
                   if (isAssigned) ...[
                     const SizedBox(height: 12),
                     SizedBox(
@@ -626,13 +632,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     OrderModel item,
   ) {
     final statusController = TextEditingController(text: item.status);
-<<<<<<< HEAD
+
     final vendorController = TextEditingController(
       text: item.vendorMobile == '-' ? '' : item.vendorMobile,
     );
-=======
-    final vendorController = TextEditingController(text: item.vendorNumber);
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
+
+
+
     final slotTimeController = TextEditingController(text: item.slotTime);
     final serviceDateController = TextEditingController(text: item.serviceDate);
     final cityController = TextEditingController(text: item.city);
@@ -676,7 +682,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onPressed: vm.isLoading
                   ? null
                   : () async {
-<<<<<<< HEAD
+
                 final ok = await vm.updateOrder(
                   item.id,
                   {
@@ -689,17 +695,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     'address': addressController.text.trim(),
                   },
                 );
-=======
-                      final ok = await vm.updateOrder(item.id, {
-                        'status': statusController.text.trim(),
-                        'vendorName': vendorController.text.trim(),
-                        'slotTime': slotTimeController.text.trim(),
-                        'serviceDate': serviceDateController.text.trim(),
-                        'city': cityController.text.trim(),
-                        'locality': localityController.text.trim(),
-                        'address': addressController.text.trim(),
-                      });
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
+
+
+
 
                       if (ok && context.mounted) {
                         Navigator.pop(dialogContext);

@@ -97,6 +97,7 @@ class _PendingPartnerScreenState extends State<PendingPartnerScreen> {
                 child: PartnerTable(
                   partners: vm.partners,
                   vm: vm,
+                  isPending: true,
 
                   /// name click
                   onPartnerTap: (item) {

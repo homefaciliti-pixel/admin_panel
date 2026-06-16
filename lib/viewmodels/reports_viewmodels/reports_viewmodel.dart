@@ -8,18 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../service_model/reports_models/earning_report_model.dart';
+import '../../service_model/reports_models/partner_report_model.dart';
+import '../../service_model/reports_models/subscription_report_model.dart';
+import '../../service_model/reports_models/user_report_model.dart';
 
-import '../../data/models/reports_models/earning_report_model.dart';
-import '../../data/models/reports_models/partner_report_model.dart';
-import '../../data/models/reports_models/subscription_report_model.dart';
-import '../../data/models/reports_models/user_report_model.dart';
-
-enum ReportsTab {
-  users,
-  partners,
-  earnings,
-  subscriptions,
-}
+enum ReportsTab { users, partners, earnings, subscriptions }
 
 class ReportsViewModel extends ChangeNotifier {
   /// =========================================
@@ -101,18 +95,21 @@ class ReportsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final startStr = startDate != null ? _formatDate(startDate!) : '01-01-2020';
+      final startStr = startDate != null
+          ? _formatDate(startDate!)
+          : '01-01-2020';
       final endStr = endDate != null ? _formatDate(endDate!) : '31-12-2030';
       const queryParam = '';
       const exportParam = 'none';
 
-      final uri = Uri.parse('$_baseUrl/reports/${_getTabName()}')
-          .replace(queryParameters: {
-        'startDate': startStr,
-        'endDate': endStr,
-        'query': queryParam,
-        'export': exportParam,
-      });
+      final uri = Uri.parse('$_baseUrl/reports/${_getTabName()}').replace(
+        queryParameters: {
+          'startDate': startStr,
+          'endDate': endStr,
+          'query': queryParam,
+          'export': exportParam,
+        },
+      );
 
       final response = await http.get(uri);
       if (response.statusCode == 200) {
@@ -121,19 +118,27 @@ class ReportsViewModel extends ChangeNotifier {
           final data = body['data'] as List;
           switch (currentTab) {
             case ReportsTab.users:
-              _allUsers = data.map((json) => UserReportModel.fromJson(json)).toList();
+              _allUsers = data
+                  .map((json) => UserReportModel.fromJson(json))
+                  .toList();
               users = List.from(_allUsers);
               break;
             case ReportsTab.partners:
-              _allPartners = data.map((json) => PartnerReportModel.fromJson(json)).toList();
+              _allPartners = data
+                  .map((json) => PartnerReportModel.fromJson(json))
+                  .toList();
               partners = List.from(_allPartners);
               break;
             case ReportsTab.earnings:
-              _allEarnings = data.map((json) => EarningReportModel.fromJson(json)).toList();
+              _allEarnings = data
+                  .map((json) => EarningReportModel.fromJson(json))
+                  .toList();
               earnings = List.from(_allEarnings);
               break;
             case ReportsTab.subscriptions:
-              _allSubscriptions = data.map((json) => SubscriptionReportModel.fromJson(json)).toList();
+              _allSubscriptions = data
+                  .map((json) => SubscriptionReportModel.fromJson(json))
+                  .toList();
               subscriptions = List.from(_allSubscriptions);
               break;
           }
@@ -283,9 +288,24 @@ class ReportsViewModel extends ChangeNotifier {
       case ReportsTab.partners:
         return ["ID", "Partner Name", "Mobile", "Created At", "locality"];
       case ReportsTab.earnings:
-        return ["ID", "Source", "Title", "Amount", "Payment Method", "Created At", "locality"];
+        return [
+          "ID",
+          "Source",
+          "Title",
+          "Amount",
+          "Payment Method",
+          "Created At",
+          "locality",
+        ];
       case ReportsTab.subscriptions:
-        return ["ID", "Partner Name", "Plan Name", "Amount", "Created At", "locality"];
+        return [
+          "ID",
+          "Partner Name",
+          "Plan Name",
+          "Amount",
+          "Created At",
+          "locality",
+        ];
     }
   }
 
@@ -299,55 +319,55 @@ class ReportsViewModel extends ChangeNotifier {
         return users
             .map(
               (e) => [
-            e.id.toString(),
-            e.userName,
-            e.mobile,
-            e.createdAt,
-            e.locality
-          ],
-        )
+                e.id.toString(),
+                e.userName,
+                e.mobile,
+                e.createdAt,
+                e.locality,
+              ],
+            )
             .toList();
 
       case ReportsTab.partners:
         return partners
             .map(
               (e) => [
-            e.id.toString(),
-            e.partnerName,
-            e.mobile,
-            e.createdAt,
-             e.locality
-          ],
-        )
+                e.id.toString(),
+                e.partnerName,
+                e.mobile,
+                e.createdAt,
+                e.locality,
+              ],
+            )
             .toList();
 
       case ReportsTab.earnings:
         return earnings
             .map(
               (e) => [
-            e.id.toString(),
-            e.source,
-            e.title,
-            "Rs ${e.amount.toStringAsFixed(0)}",
-            e.paymentMethod,
-            e.createdAt,
-            e.locality
-          ],
-        )
+                e.id.toString(),
+                e.source,
+                e.title,
+                "Rs ${e.amount.toStringAsFixed(0)}",
+                e.paymentMethod,
+                e.createdAt,
+                e.locality,
+              ],
+            )
             .toList();
 
       case ReportsTab.subscriptions:
         return subscriptions
             .map(
               (e) => [
-            e.id.toString(),
-            e.partnerName,
-            e.planName,
-            "Rs${e.amount.toStringAsFixed(0)}",
-            e.createdAt,
-            e.locality
-          ],
-        )
+                e.id.toString(),
+                e.partnerName,
+                e.planName,
+                "Rs${e.amount.toStringAsFixed(0)}",
+                e.createdAt,
+                e.locality,
+              ],
+            )
             .toList();
     }
   }
@@ -371,10 +391,7 @@ class ReportsViewModel extends ChangeNotifier {
           return [
             pw.Text(
               title,
-              style: pw.TextStyle(
-                fontSize: 20,
-                fontWeight: pw.FontWeight.bold,
-              ),
+              style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 20),
             pw.Table.fromTextArray(
@@ -384,9 +401,7 @@ class ReportsViewModel extends ChangeNotifier {
                 fontWeight: pw.FontWeight.bold,
                 color: PdfColors.white,
               ),
-              headerDecoration: const pw.BoxDecoration(
-                color: PdfColors.black,
-              ),
+              headerDecoration: const pw.BoxDecoration(color: PdfColors.black),
               cellStyle: const pw.TextStyle(fontSize: 10),
               cellAlignment: pw.Alignment.centerLeft,
             ),

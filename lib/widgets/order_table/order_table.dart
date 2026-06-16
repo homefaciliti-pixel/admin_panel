@@ -46,127 +46,66 @@ class OrderTable extends StatelessWidget {
                     color: Colors.blue.shade50,
                     child: const Row(
                       children: [
-                        Expanded(flex: 1, child: Text("ID")),
+                        Expanded(
+                          flex: 1,
+                          child: Text("ID"),
+                        ),
                         Expanded(
                           flex: 3,
-<<<<<<< HEAD
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () => onViewDetails(item),
-                            child: Text(
-                              item.serviceRequestNumber,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                          child: Text("SERVICE REQUEST NUMBER"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            item.serviceName,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: Text("SERVICE NAME"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            "₹${item.serviceAmount.toStringAsFixed(0)}",
-                          ),
+                          child: Text("SERVICE AMOUNT"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(item.slotTime),
+                          child: Text("SLOT TIME"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(item.serviceDate),
+                          child: Text("SERVICE DATE"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(item.city),
+                          child: Text("CITY"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(item.locality),
+                          child: Text("LOCALITY"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: _statusChip(item.status),
+                          child: Text("STATUS"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                item.vendorName.isEmpty ? "-" : item.vendorName,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              if (item.vendorMobile.isNotEmpty && item.vendorMobile != '-')
-                                Text(
-                                  item.vendorMobile,
-                                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                                ),
-                            ],
-                          ),
+                          child: Text("VENDOR NUMBER"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: OutlinedButton.icon(
-                            onPressed: () => onAssignVendor(item),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xff111827),
-                              side: const BorderSide(
-                                color: Color(0xff111827),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            icon: const Icon(
-                              Icons.person_add_alt_1,
-                              size: 18,
-                            ),
-                            label: const Text("Assign"),
-                          ),
+                          child: Text("ASSIGN VENDOR"),
                         ),
                         Expanded(
                           flex: 1,
-                          child: IconButton(
-                            onPressed: () => onEditOrder(item),
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                          ),
+                          child: Text("EDIT"),
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(item.createdAt),
-=======
-                          child: Text("SERVICE REQUEST NUMBER"),
->>>>>>> ba2bee6 (Admin panel updates, login module, dashboard improvements and API integration)
+                          child: Text("CREATED AT"),
                         ),
-                        Expanded(flex: 2, child: Text("SERVICE NAME")),
-                        Expanded(flex: 2, child: Text("SERVICE AMOUNT")),
-                        Expanded(flex: 2, child: Text("SLOT TIME")),
-                        Expanded(flex: 2, child: Text("SERVICE DATE")),
-                        Expanded(flex: 2, child: Text("CITY")),
-                        Expanded(flex: 2, child: Text("LOCALITY")),
-                        Expanded(flex: 2, child: Text("STATUS")),
-                        Expanded(flex: 2, child: Text("VENDOR NUMBER")),
-                        Expanded(flex: 2, child: Text("ASSIGN VENDOR")),
-                        Expanded(flex: 1, child: Text("EDIT")),
-                        Expanded(flex: 2, child: Text("CREATED AT")),
                       ],
                     ),
                   ),
+
+
+
+
+
                   const Divider(height: 1),
                   SizedBox(
                     height: MediaQuery.of(context).size.height - 280,

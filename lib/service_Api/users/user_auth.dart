@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import '../../service_model/Users_model/user_model.dart';
 
 class UserViewmodel extends ChangeNotifier {

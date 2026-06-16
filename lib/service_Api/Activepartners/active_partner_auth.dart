@@ -6,17 +6,12 @@ import 'package:http/http.dart' as http;
 import '../../service_model/Active_Partners_model/active_Partnermodel.dart';
 
 class ActivePartnerAuth extends ChangeNotifier {
-
   bool isLoading = false;
 
   List<ActivePartnerModel> partners = [];
 
-
-
   Future<void> getActivePartners() async {
-
     try {
-
       isLoading = true;
       notifyListeners();
 
@@ -27,24 +22,15 @@ class ActivePartnerAuth extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-
         final data = jsonDecode(response.body);
 
-        partners =
-            (data["data"] as List)
-                .map(
-                  (e) => ActivePartnerModel.fromJson(e),
-            )
-                .toList();
+        partners = (data["data"] as List)
+            .map((e) => ActivePartnerModel.fromJson(e))
+            .toList();
       }
     } catch (e) {
-
-      debugPrint(
-        "Active Partner Error: $e",
-      );
-
+      debugPrint("Active Partner Error: $e");
     } finally {
-
       isLoading = false;
       notifyListeners();
     }

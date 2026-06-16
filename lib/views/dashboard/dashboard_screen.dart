@@ -4,7 +4,7 @@ import '../../service_Api/Dashboard/dashboard_auth.dart';
 import '../../widgets/common/stat_card.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key, });
+  const DashboardScreen({super.key});
 
   //final String token;
 
@@ -24,9 +24,7 @@ class DashboardScreen extends StatelessWidget {
           final width = MediaQuery.of(context).size.width;
 
           if (vm.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (vm.errorMessage != null) {
@@ -45,10 +43,7 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 const Text(
                   "Dashboard Overview",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 GridView.count(
@@ -163,6 +158,8 @@ class DashboardScreen extends StatelessWidget {
                         Navigator.pushNamed(context, "/support");
                       },
                     ),
+                  ],
+                ),
               ],
             ),
           );
