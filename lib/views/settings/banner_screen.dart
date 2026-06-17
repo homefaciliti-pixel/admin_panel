@@ -714,13 +714,14 @@ class BannerScreen extends StatelessWidget {
     String existingImage = '',
   }) {
     if (bytes != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.memory(
-          bytes,
-          height: 120,
-          width: double.infinity,
-          fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.memory(
+            bytes,
+            fit: BoxFit.cover,
+          ),
         ),
       );
     }
@@ -732,34 +733,34 @@ class BannerScreen extends StatelessWidget {
               ? existingImage
               : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$existingImage';
 
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.network(
-          fixedUrl,
-          height: 120,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              height: 120,
-              width: double.infinity,
-              color: Colors.grey.shade100,
-              child: const Center(child: Icon(Icons.broken_image)),
-            );
-          },
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.network(
+            fixedUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.grey.shade100,
+                child: const Center(child: Icon(Icons.broken_image)),
+              );
+            },
+          ),
         ),
       );
     }
 
-    return Container(
-      height: 120,
-      width: double.infinity,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text("No image selected"),
       ),
-      child: const Text("No image selected"),
     );
   }
 }
