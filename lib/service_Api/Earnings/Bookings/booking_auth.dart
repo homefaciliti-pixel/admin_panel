@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import '../../../service_model/earnings_model/Booking_model/booking_model.dart';
 
 class BookingAuth extends ChangeNotifier {
-
   static const String baseUrl =
       "https://adminbackend-1-h03r.onrender.com/api/earnings/bookings";
 
@@ -23,9 +22,7 @@ class BookingAuth extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      final response = await http.get(
-        Uri.parse(baseUrl),
-      );
+      final response = await http.get(Uri.parse(baseUrl));
 
       debugPrint(response.body);
 
@@ -33,21 +30,15 @@ class BookingAuth extends ChangeNotifier {
         final json = jsonDecode(response.body);
 
         totalBookingEarning =
-            (json["totalBookingEarnings"] as num?)
-                ?.toDouble() ??
-                0;
+            (json["totalBookingEarnings"] as num?)?.toDouble() ?? 0;
 
-        totalBookingCount =
-            json["totalTransactions"] ?? 0;
+        totalBookingCount = json["totalTransactions"] ?? 0;
 
-        final List list =
-            json["data"] ?? [];
+        final List list = json["data"] ?? [];
 
-        _allBookings =
-            list.map((e) => BookingModel.fromJson(e)).toList();
+        _allBookings = list.map((e) => BookingModel.fromJson(e)).toList();
 
-        bookingEarnings =
-            List.from(_allBookings);
+        bookingEarnings = List.from(_allBookings);
       }
     } catch (e) {
       error = e.toString();
@@ -63,12 +54,8 @@ class BookingAuth extends ChangeNotifier {
       bookingEarnings = List.from(_allBookings);
     } else {
       bookingEarnings = _allBookings.where((item) {
-        return item.transactionId
-            .toLowerCase()
-            .contains(value.toLowerCase()) ||
-            item.paymentMethod
-                .toLowerCase()
-                .contains(value.toLowerCase());
+        return item.transactionId.toLowerCase().contains(value.toLowerCase()) ||
+            item.paymentMethod.toLowerCase().contains(value.toLowerCase());
       }).toList();
     }
 

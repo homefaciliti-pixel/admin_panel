@@ -3,7 +3,7 @@ import 'dart:ui' as html;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../service_Api/Activepartners/active_partner_auth.dart';
-import '../../../service_model/Active_Partners_model/active_Partnermodel.dart';
+import '../../../service_model/active_partners_model/active_partner_model.dart';
 
 class ActivePartnerTable extends StatelessWidget {
   final List<ActivePartnerModel> partners;

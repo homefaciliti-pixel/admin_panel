@@ -16,9 +16,6 @@ class DashboardViewModel extends ChangeNotifier {
       headers: const {'Content-Type': 'application/json'},
     );
 
-    debugPrint("DASHBOARD STATUS => ${response.statusCode}");
-    debugPrint("DASHBOARD BODY => ${response.body}");
-
     final decoded = jsonDecode(response.body);
 
     if (decoded is Map<String, dynamic> && decoded['success'] == true) {

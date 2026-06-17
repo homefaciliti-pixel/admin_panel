@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/Settings models/review_model.dart';
-import '../../viewmodels/Settings_ViewModels/review_viewmodel.dart';
+import '../../service_Api/settings/review_viewmodel.dart';
 
 
 

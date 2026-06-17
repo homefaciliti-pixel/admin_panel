@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/Activepartners/active_partner_auth.dart';
-import '../../service_model/Active_Partners_model/active_Partnermodel.dart';
+import '../../service_model/active_partners_model/active_partner_model.dart';
 import '../../widgets/partner/active_partner/active_partner_table.dart';
 import '../dashboard/radar_map_widget.dart';
 
