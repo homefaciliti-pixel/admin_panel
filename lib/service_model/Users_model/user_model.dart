@@ -14,12 +14,20 @@ class UserModel {
   /// User address
   final String address;
 
+  /// User city
+  final String city;
+
+  /// User state
+  final String state;
+
   UserModel({
     required this.id,
     required this.name,
     required this.email,
     required this.mobile,
     required this.address,
+    required this.city,
+    required this.state,
   });
 
   /// Convert backend JSON into model
@@ -30,6 +38,8 @@ class UserModel {
       email: json['email'] ?? '',
       mobile: json['mobile'] ?? '',
       address: json['address'] ?? '',
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
     );
   }
 }

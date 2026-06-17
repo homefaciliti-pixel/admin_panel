@@ -20,8 +20,13 @@ class UserViewmodel extends ChangeNotifier {
   int currentPage = 1;
   int selectedEntries = 10;
 
-  /// Search text
+  /// Search texts
   String _searchText = '';
+  String _searchId = '';
+  String _searchMobile = '';
+  String _searchCity = '';
+  String _searchState = '';
+  bool showFilters = false;
 
   /// Total pages count
   int get totalPages {
@@ -80,16 +85,50 @@ class UserViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Apply search filter + pagination reset
+  /// Apply search filters + pagination reset
   void _applyFilters() {
     List<UserModel> result = List.from(_allUsers);
 
+    // 1. Keyword search (Name/Email/Address)
     if (_searchText.trim().isNotEmpty) {
       final q = _searchText.toLowerCase();
       result = result.where((user) {
         return user.name.toLowerCase().contains(q) ||
             user.email.toLowerCase().contains(q) ||
-            user.mobile.toLowerCase().contains(q) ||
+            user.address.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 2. ID Filter
+    if (_searchId.trim().isNotEmpty) {
+      final q = _searchId.trim();
+      result = result.where((user) {
+        return user.id.toString().contains(q);
+      }).toList();
+    }
+
+    // 3. Mobile Filter
+    if (_searchMobile.trim().isNotEmpty) {
+      final q = _searchMobile.trim().toLowerCase();
+      result = result.where((user) {
+        return user.mobile.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 4. City Filter
+    if (_searchCity.trim().isNotEmpty) {
+      final q = _searchCity.trim().toLowerCase();
+      result = result.where((user) {
+        return user.city.toLowerCase().contains(q) ||
+            user.address.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 5. State Filter
+    if (_searchState.trim().isNotEmpty) {
+      final q = _searchState.trim().toLowerCase();
+      result = result.where((user) {
+        return user.state.toLowerCase().contains(q) ||
             user.address.toLowerCase().contains(q);
       }).toList();
     }
@@ -106,9 +145,54 @@ class UserViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Search users
+  /// Toggle filters view
+  void toggleFilters() {
+    showFilters = !showFilters;
+    notifyListeners();
+  }
+
+  /// Clear all filters
+  void clearAllFilters() {
+    _searchText = '';
+    _searchId = '';
+    _searchMobile = '';
+    _searchCity = '';
+    _searchState = '';
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Search users by name/email keyword
   void searchUser(String value) {
     _searchText = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Search by ID
+  void searchById(String value) {
+    _searchId = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Search by Mobile
+  void searchByMobile(String value) {
+    _searchMobile = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Search by City
+  void searchByCity(String value) {
+    _searchCity = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Search by State
+  void searchByState(String value) {
+    _searchState = value;
     currentPage = 1;
     _applyFilters();
   }

@@ -54,6 +54,8 @@ class UserTable extends StatelessWidget {
                 _detailRow("Mobile", user.mobile),
                 _detailRow("Email", user.email),
                 _detailRow("Address", user.address),
+                if (user.city.isNotEmpty) _detailRow("City", user.city),
+                if (user.state.isNotEmpty) _detailRow("State", user.state),
               ],
             ),
           ),

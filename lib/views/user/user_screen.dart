@@ -3,8 +3,39 @@ import 'package:provider/provider.dart';
 import '../../service_Api/users/user_auth.dart';
 import '../../widgets/userTable/user_table.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
+
+  @override
+  State<UserScreen> createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
+  late TextEditingController _searchTextController;
+  late TextEditingController _idController;
+  late TextEditingController _mobileController;
+  late TextEditingController _cityController;
+  late TextEditingController _stateController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchTextController = TextEditingController();
+    _idController = TextEditingController();
+    _mobileController = TextEditingController();
+    _cityController = TextEditingController();
+    _stateController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchTextController.dispose();
+    _idController.dispose();
+    _mobileController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +74,7 @@ class UserScreen extends StatelessWidget {
                     SizedBox(
                       width: 220,
                       child: TextField(
+                        controller: _searchTextController,
                         onChanged: vm.searchUser,
                         decoration: InputDecoration(
                           hintText: "Search User",
@@ -60,8 +92,101 @@ class UserScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 10),
+
+                    /// FILTER TOGGLE BUTTON
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: vm.toggleFilters,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: vm.showFilters ? const Color(0xff111827) : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: vm.showFilters ? const Color(0xff111827) : Colors.grey.shade300,
+                            ),
+                          ),
+                          child: Icon(
+                            vm.showFilters ? Icons.filter_list_off : Icons.filter_list,
+                            color: vm.showFilters ? Colors.white : Colors.grey.shade700,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
+
+                /// DYNAMIC ADVANCED FILTERS PANEL
+                if (vm.showFilters) ...[
+                  const SizedBox(height: 15),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _buildFilterField(
+                          controller: _idController,
+                          hint: "Filter by ID",
+                          icon: Icons.badge_outlined,
+                          onChanged: vm.searchById,
+                        ),
+                        _buildFilterField(
+                          controller: _mobileController,
+                          hint: "Filter by Mobile",
+                          icon: Icons.phone_outlined,
+                          onChanged: vm.searchByMobile,
+                        ),
+                        _buildFilterField(
+                          controller: _cityController,
+                          hint: "Filter by City",
+                          icon: Icons.location_city_outlined,
+                          onChanged: vm.searchByCity,
+                        ),
+                        _buildFilterField(
+                          controller: _stateController,
+                          hint: "Filter by State",
+                          icon: Icons.map_outlined,
+                          onChanged: vm.searchByState,
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            _searchTextController.clear();
+                            _idController.clear();
+                            _mobileController.clear();
+                            _cityController.clear();
+                            _stateController.clear();
+                            vm.clearAllFilters();
+                          },
+                          icon: const Icon(Icons.clear_all_rounded, color: Colors.redAccent, size: 20),
+                          label: const Text(
+                            "Clear Filters",
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: 25),
 
@@ -213,6 +338,45 @@ class UserScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// Helper filter textfield builder
+  Widget _buildFilterField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required ValueChanged<String> onChanged,
+  }) {
+    return SizedBox(
+      width: 175,
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        style: const TextStyle(fontSize: 13),
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: Icon(icon, size: 16, color: Colors.grey.shade500),
+          filled: true,
+          fillColor: Colors.grey.shade50,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 8,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color(0xff111827)),
+          ),
+        ),
       ),
     );
   }
