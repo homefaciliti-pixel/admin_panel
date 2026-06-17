@@ -715,7 +715,7 @@ class BannerScreen extends StatelessWidget {
   }) {
     if (bytes != null) {
       return AspectRatio(
-        aspectRatio: 16 / 9,
+        aspectRatio: 1000 / 370,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.memory(
@@ -734,7 +734,7 @@ class BannerScreen extends StatelessWidget {
               : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$existingImage';
 
       return AspectRatio(
-        aspectRatio: 16 / 9,
+        aspectRatio: 1000 / 370,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
@@ -752,7 +752,7 @@ class BannerScreen extends StatelessWidget {
     }
 
     return AspectRatio(
-      aspectRatio: 16 / 9,
+      aspectRatio: 1000 / 370,
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
