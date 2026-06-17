@@ -13,27 +13,27 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   late TextEditingController _searchTextController;
   late TextEditingController _idController;
+  late TextEditingController _nameController;
   late TextEditingController _mobileController;
-  late TextEditingController _cityController;
-  late TextEditingController _stateController;
+  late TextEditingController _addressController;
 
   @override
   void initState() {
     super.initState();
     _searchTextController = TextEditingController();
     _idController = TextEditingController();
+    _nameController = TextEditingController();
     _mobileController = TextEditingController();
-    _cityController = TextEditingController();
-    _stateController = TextEditingController();
+    _addressController = TextEditingController();
   }
 
   @override
   void dispose() {
     _searchTextController.dispose();
     _idController.dispose();
+    _nameController.dispose();
     _mobileController.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -142,30 +142,30 @@ class _UserScreenState extends State<UserScreen> {
                           onChanged: vm.searchById,
                         ),
                         _buildFilterField(
+                          controller: _nameController,
+                          hint: "Filter by Name",
+                          icon: Icons.person_outline,
+                          onChanged: vm.searchByName,
+                        ),
+                        _buildFilterField(
                           controller: _mobileController,
                           hint: "Filter by Mobile",
                           icon: Icons.phone_outlined,
                           onChanged: vm.searchByMobile,
                         ),
                         _buildFilterField(
-                          controller: _cityController,
-                          hint: "Filter by City",
-                          icon: Icons.location_city_outlined,
-                          onChanged: vm.searchByCity,
-                        ),
-                        _buildFilterField(
-                          controller: _stateController,
-                          hint: "Filter by State",
-                          icon: Icons.map_outlined,
-                          onChanged: vm.searchByState,
+                          controller: _addressController,
+                          hint: "Filter by Address",
+                          icon: Icons.home_outlined,
+                          onChanged: vm.searchByAddress,
                         ),
                         TextButton.icon(
                           onPressed: () {
                             _searchTextController.clear();
                             _idController.clear();
+                            _nameController.clear();
                             _mobileController.clear();
-                            _cityController.clear();
-                            _stateController.clear();
+                            _addressController.clear();
                             vm.clearAllFilters();
                           },
                           icon: const Icon(Icons.clear_all_rounded, color: Colors.redAccent, size: 20),

@@ -23,9 +23,9 @@ class UserViewmodel extends ChangeNotifier {
   /// Search texts
   String _searchText = '';
   String _searchId = '';
+  String _searchName = '';
   String _searchMobile = '';
-  String _searchCity = '';
-  String _searchState = '';
+  String _searchAddress = '';
   bool showFilters = false;
 
   /// Total pages count
@@ -107,7 +107,15 @@ class UserViewmodel extends ChangeNotifier {
       }).toList();
     }
 
-    // 3. Mobile Filter
+    // 3. Name Filter
+    if (_searchName.trim().isNotEmpty) {
+      final q = _searchName.trim().toLowerCase();
+      result = result.where((user) {
+        return user.name.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 4. Mobile Filter
     if (_searchMobile.trim().isNotEmpty) {
       final q = _searchMobile.trim().toLowerCase();
       result = result.where((user) {
@@ -115,21 +123,11 @@ class UserViewmodel extends ChangeNotifier {
       }).toList();
     }
 
-    // 4. City Filter
-    if (_searchCity.trim().isNotEmpty) {
-      final q = _searchCity.trim().toLowerCase();
+    // 5. Address Filter
+    if (_searchAddress.trim().isNotEmpty) {
+      final q = _searchAddress.trim().toLowerCase();
       result = result.where((user) {
-        return user.city.toLowerCase().contains(q) ||
-            user.address.toLowerCase().contains(q);
-      }).toList();
-    }
-
-    // 5. State Filter
-    if (_searchState.trim().isNotEmpty) {
-      final q = _searchState.trim().toLowerCase();
-      result = result.where((user) {
-        return user.state.toLowerCase().contains(q) ||
-            user.address.toLowerCase().contains(q);
+        return user.address.toLowerCase().contains(q);
       }).toList();
     }
 
@@ -155,9 +153,9 @@ class UserViewmodel extends ChangeNotifier {
   void clearAllFilters() {
     _searchText = '';
     _searchId = '';
+    _searchName = '';
     _searchMobile = '';
-    _searchCity = '';
-    _searchState = '';
+    _searchAddress = '';
     currentPage = 1;
     _applyFilters();
   }
@@ -176,6 +174,13 @@ class UserViewmodel extends ChangeNotifier {
     _applyFilters();
   }
 
+  /// Search by Name
+  void searchByName(String value) {
+    _searchName = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
   /// Search by Mobile
   void searchByMobile(String value) {
     _searchMobile = value;
@@ -183,16 +188,9 @@ class UserViewmodel extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// Search by City
-  void searchByCity(String value) {
-    _searchCity = value;
-    currentPage = 1;
-    _applyFilters();
-  }
-
-  /// Search by State
-  void searchByState(String value) {
-    _searchState = value;
+  /// Search by Address
+  void searchByAddress(String value) {
+    _searchAddress = value;
     currentPage = 1;
     _applyFilters();
   }
