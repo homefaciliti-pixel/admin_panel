@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:admin_panel/service_Api/categories/categories_auth.dart';
 import '../../service_Api/services/services_auth.dart';
 import '../../service_model/service_model/service_model.dart';
 import '../../widgets/services/service_table.dart';
@@ -314,6 +315,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceAuth vm, {
         ServiceModel? item,
       }) {
+    final categoriesProvider =
+        Provider.of<AuthCategories>(context, listen: false);
+    if (categoriesProvider.categories.isEmpty) {
+      categoriesProvider.fetchCategories();
+    }
+
     final titleController = TextEditingController(text: item?.title ?? "");
     final categoryController = TextEditingController(
       text: item?.categoryId?.toString() ?? "",
@@ -346,8 +353,11 @@ class _ServiceScreenState extends State<ServiceScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setState) {
+        return Consumer<AuthCategories>(
+          builder: (dialogContext, catVm, child) {
+            final categoriesList = catVm.categories;
+            return StatefulBuilder(
+              builder: (context, setState) {
             Future<void> pickImage() async {
               final picker = ImagePicker();
               final XFile? picked =
@@ -425,7 +435,28 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       const SizedBox(height: 14),
                       _dialogField(titleController, "Title"),
                       const SizedBox(height: 14),
-                      _dialogField(categoryController, "Category ID"),
+                      categoriesList.isEmpty
+                          ? _dialogField(categoryController, "Category ID")
+                          : DropdownButtonFormField<String>(
+                              value: categoriesList.any((cat) => cat.id == categoryController.text)
+                                  ? categoryController.text
+                                  : null,
+                              decoration: const InputDecoration(
+                                labelText: "Category",
+                                border: OutlineInputBorder(),
+                              ),
+                              items: categoriesList.map((cat) {
+                                return DropdownMenuItem<String>(
+                                  value: cat.id,
+                                  child: Text('${cat.title} (ID: ${cat.id})'),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  categoryController.text = val ?? "";
+                                });
+                              },
+                            ),
                       const SizedBox(height: 14),
                       _dialogField(
                         priceController,
@@ -579,6 +610,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       rating: rating,
                       reviewsCount: reviewsCount,
                       serviceTime: serviceTime,
+                      status: item.status,
                       existingImageUrl: item?.imageUrl,
                     );
 
@@ -592,6 +624,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
             );
           },
         );
+      },
+    );
       },
     );
   }

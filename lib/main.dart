@@ -9,6 +9,7 @@ import 'package:admin_panel/service_Api/settings/banner_auth.dart';
 import 'package:admin_panel/service_Api/settings/city_auth.dart';
 import 'package:admin_panel/service_Api/settings/state_auth.dart';
 import 'package:admin_panel/service_Api/users/user_auth.dart';
+import 'package:admin_panel/service_Api/categories/categories_auth.dart';
 import 'package:admin_panel/viewmodels/Settings_ViewModels/notification_viewmodel.dart';
 import 'package:admin_panel/viewmodels/Settings_ViewModels/review_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
@@ -35,6 +36,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => UserViewmodel()),
 
         ChangeNotifierProvider(create: (_) => ServiceAuth()..fetchServices()),
+
+        ChangeNotifierProvider(create: (_) => AuthCategories()..fetchCategories()),
 
         ChangeNotifierProvider(create: (_) => OrderAuth()..fetchOrders()),
 

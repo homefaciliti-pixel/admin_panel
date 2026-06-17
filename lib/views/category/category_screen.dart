@@ -12,10 +12,8 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthCategories()..fetchCategories(),
-      child: Consumer<AuthCategories>(
-        builder: (context, vm, child) {
+    return Consumer<AuthCategories>(
+      builder: (context, vm, child) {
           if (vm.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -219,8 +217,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
   }
 
   void _showAddDialog(BuildContext context, AuthCategories vm) {

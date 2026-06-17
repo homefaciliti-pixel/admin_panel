@@ -255,6 +255,7 @@ class ServiceAuth extends ChangeNotifier {
     required double rating,
     required int reviewsCount,
     required String serviceTime,
+    required bool status,
     String? existingImageUrl,
   }) async {
     isLoading = true;
@@ -273,7 +274,7 @@ class ServiceAuth extends ChangeNotifier {
         'discount': discountPercent,
         'image': finalImageUrl,
         'description': description.trim(),
-        'status': false,
+        'status': status,
         'category_id': categoryId,
         'rating': rating,
         'time': serviceTime.trim(),
