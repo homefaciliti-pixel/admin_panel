@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/App_permission/app_permission.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -29,18 +30,24 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final success = await _authRepository.login(
+      final role = await _authRepository.login(
         email: email,
         password: password,
       );
 
-      if (success) {
-        AppPermission.role = selectedRole;
+      if (role != null) {
+        final prefs = await SharedPreferences.getInstance();
+
+        await prefs.setBool("isLoggedIn", true);
+        await prefs.setString("role", role);
+
+        AppPermission.role = role;
+
+        return true;
       } else {
         errorMessage = "Invalid email or password";
+        return false;
       }
-
-      return success;
     } catch (e) {
       errorMessage = "Something went wrong";
       return false;
@@ -48,5 +55,15 @@ class LoginViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.clear();
+
+    AppPermission.role = "";
+
+    notifyListeners();
   }
 }

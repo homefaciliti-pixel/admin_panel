@@ -4,15 +4,23 @@ class AuthRepository {
   /// future me yaha API call lagegi
   /// abhi dummy login use kar rahe hain
 
-  Future<bool> login({required String email, required String password}) async {
+  Future<String?> login({
+    required String email,
+    required String password,
+  }) async {
+
     await Future.delayed(const Duration(seconds: 1));
 
-    /// dummy validation
-    /// future me backend se replace hoga
-    if (email == "admin@gmail.com" && password == "123456") {
-      return true;
+    if (email == "superadmin@gmail.com" &&
+        password == "Home1184@*") {
+      return "super_admin";
     }
 
-    return false;
+    if (email == "admin@gmail.com" &&
+        password == "Home1184@") {
+      return "admin";
+    }
+
+    return null;
   }
 }

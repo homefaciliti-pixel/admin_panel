@@ -15,12 +15,26 @@ import 'package:admin_panel/service_Api/settings/review_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
 import 'package:admin_panel/viewmodels/reports_viewmodels/reports_viewmodel.dart';
 import 'package:admin_panel/views/auth%20screen/login_screen.dart';
+import 'package:admin_panel/views/mainScreen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'core/App_permission/app_permission.dart';
 import 'utils/app_scroll_behavior.dart';
 import 'service_Api/settings/navigation_viewmodel.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+
+  final isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+
+  final role = prefs.getString("role") ?? "";
+
+  AppPermission.role = role;
+
   runApp(
     MultiProvider(
       providers: [
@@ -37,7 +51,9 @@ void main() {
 
         ChangeNotifierProvider(create: (_) => ServiceAuth()..fetchServices()),
 
-        ChangeNotifierProvider(create: (_) => AuthCategories()..fetchCategories()),
+        ChangeNotifierProvider(
+          create: (_) => AuthCategories()..fetchCategories(),
+        ),
 
         ChangeNotifierProvider(create: (_) => OrderAuth()..fetchOrders()),
 
@@ -59,13 +75,15 @@ void main() {
 
         ChangeNotifierProvider(create: (_) => ActivePartnerAuth()),
       ],
-      child: const MyApp(),
+      child: MyApp(isLoggedIn: isLoggedIn),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +97,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: const LoginScreen(),
+      home: isLoggedIn ? const MainScreen() : const LoginScreen(),
     );
   }
 }

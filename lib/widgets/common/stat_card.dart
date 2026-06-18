@@ -56,8 +56,8 @@ class _StatCardState extends State<StatCard> {
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
-                  Color(0xff1E3A8A),
-                  Color(0xff2563EB),
+                  Color(0xFF1F5A93),
+                  Color(0xFF59B14C),
                 ],
               ),
               borderRadius: BorderRadius.circular(12),

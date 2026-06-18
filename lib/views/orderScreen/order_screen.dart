@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/Order/order_auth.dart';
@@ -604,31 +605,46 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       final dropdownValue =
                       hasMatchingPartner ? selectedMobile : null;
 
-                      return DropdownButtonFormField<String>(
-                        value: dropdownValue,
-                        hint: const Text(
-                          "Select Approved Partner",
-                        ),
-                        decoration: InputDecoration(
-                          labelText: "Select Partner",
-                          filled: true,
-                          fillColor: Colors.grey.shade50,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      return DropdownSearch<String>(
+                        selectedItem: dropdownValue,
+
+                        popupProps: PopupProps.menu(
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              hintText: "Search Partner...",
+                              prefixIcon: Icon(Icons.search),
+                            ),
                           ),
                         ),
-                        items: approved.map((partner) {
-                          return DropdownMenuItem<String>(
-                            value: partner.mobile,
-                            child: Text(
-                              "${partner.name} (${partner.mobile})",
+
+                        decoratorProps: DropDownDecoratorProps(
+                          decoration: InputDecoration(
+                            labelText: "Select Partner",
+                            filled: true,
+                            fillColor: Colors.grey.shade50,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
+                          ),
+                        ),
+
+                        items: (filter, infiniteScrollProps) {
+                          return approved
+                              .map((partner) =>
+                          "${partner.name} (${partner.mobile})")
+                              .toList();
+                        },
+
+                        onSaved: (val) {
                           if (val != null) {
+                            final mobile = val.substring(
+                              val.lastIndexOf('(') + 1,
+                              val.lastIndexOf(')'),
+                            );
+
                             setState(() {
-                              selectedMobile = val;
+                              selectedMobile = mobile;
                             });
                           }
                         },

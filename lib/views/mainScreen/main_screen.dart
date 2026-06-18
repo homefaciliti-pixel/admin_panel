@@ -70,8 +70,8 @@ class MainScreen extends StatelessWidget {
       case "Locality":
         return const LocalityScreen();
 
-       case "Reviews&Ratings":
-         return const ReviewsScreen();
+      case "Reviews&Ratings":
+        return const ReviewsScreen();
 
       case "Notifications":
         return const NotificationsScreen();
@@ -119,11 +119,7 @@ class MainScreen extends StatelessWidget {
                         gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xff0F172A),
-                            Color(0xff1E3A8A),
-                            Color(0xff2563EB),
-                          ],
+                          colors: [Color(0xFF1F5A93), Color(0xFF59B14C)],
                         ),
                         boxShadow: [
                           BoxShadow(
