@@ -14,6 +14,11 @@ class OrdersScreen extends StatefulWidget {
 
 class _OrdersScreenState extends State<OrdersScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _requestNoController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _localityController = TextEditingController();
+  final TextEditingController _vendorNumberController = TextEditingController();
   final ScrollController _horizontalController = ScrollController();
   bool _loaded = false;
 
@@ -31,6 +36,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _requestNoController.dispose();
+    _idController.dispose();
+    _cityController.dispose();
+    _localityController.dispose();
+    _vendorNumberController.dispose();
     _horizontalController.dispose();
     super.dispose();
   }
@@ -68,29 +78,133 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    width: 260,
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: vm.searchOrder,
-                      decoration: InputDecoration(
-                        hintText: "Search Order",
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 260,
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: vm.searchOrder,
+                          decoration: InputDecoration(
+                            hintText: "Search Order",
+                            prefixIcon: const Icon(Icons.search),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 10),
+
+                      /// FILTER TOGGLE BUTTON
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: vm.toggleFilters,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: vm.showFilters ? const Color(0xff111827) : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: vm.showFilters ? const Color(0xff111827) : Colors.grey.shade300,
+                              ),
+                            ),
+                            child: Icon(
+                              vm.showFilters ? Icons.filter_list_off : Icons.filter_list,
+                              color: vm.showFilters ? Colors.white : Colors.grey.shade700,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+
+              /// DYNAMIC ADVANCED FILTERS PANEL
+              if (vm.showFilters) ...[
+                const SizedBox(height: 15),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      _buildFilterField(
+                        controller: _requestNoController,
+                        hint: "Filter by Request No",
+                        icon: Icons.assignment_outlined,
+                        onChanged: vm.searchByRequestNo,
+                      ),
+                      _buildFilterField(
+                        controller: _idController,
+                        hint: "Filter by ID",
+                        icon: Icons.badge_outlined,
+                        onChanged: vm.searchById,
+                      ),
+                      _buildFilterField(
+                        controller: _cityController,
+                        hint: "Filter by City",
+                        icon: Icons.location_city_outlined,
+                        onChanged: vm.searchByCity,
+                      ),
+                      _buildFilterField(
+                        controller: _localityController,
+                        hint: "Filter by Locality",
+                        icon: Icons.pin_drop_outlined,
+                        onChanged: vm.searchByLocality,
+                      ),
+                      _buildFilterField(
+                        controller: _vendorNumberController,
+                        hint: "Filter by Vendor No",
+                        icon: Icons.person_pin_outlined,
+                        onChanged: vm.searchByVendorNumber,
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          _searchController.clear();
+                          _requestNoController.clear();
+                          _idController.clear();
+                          _cityController.clear();
+                          _localityController.clear();
+                          _vendorNumberController.clear();
+                          vm.clearAllFilters();
+                        },
+                        icon: const Icon(Icons.clear_all_rounded, color: Colors.redAccent, size: 20),
+                        label: const Text(
+                          "Clear Filters",
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
 
               const SizedBox(height: 20),
 
@@ -765,6 +879,45 @@ class _OrdersScreenState extends State<OrdersScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
+      ),
+    );
+  }
+
+  /// Helper filter textfield builder
+  Widget _buildFilterField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required ValueChanged<String> onChanged,
+  }) {
+    return SizedBox(
+      width: 175,
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        style: const TextStyle(fontSize: 13),
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: Icon(icon, size: 16, color: Colors.grey.shade500),
+          filled: true,
+          fillColor: Colors.grey.shade50,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 8,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color(0xff111827)),
+          ),
+        ),
       ),
     );
   }

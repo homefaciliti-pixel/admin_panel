@@ -22,6 +22,15 @@ class OrderAuth extends ChangeNotifier {
   final List<OrderModel> _allOrders = [];
   List<OrderModel> orders = [];
 
+  /// Advanced Search Filters state
+  String _searchText = '';
+  String _searchRequestNo = '';
+  String _searchId = '';
+  String _searchCity = '';
+  String _searchLocality = '';
+  String _searchVendorNumber = '';
+  bool showFilters = false;
+
   int get totalPages {
     if (orders.isEmpty) return 1;
     return (orders.length / selectedEntries).ceil();
@@ -81,11 +90,7 @@ class OrderAuth extends ChangeNotifier {
             dataList.map((e) => OrderModel.fromJson(e as Map<String, dynamic>)),
           );
 
-        orders = List.from(_allOrders);
-
-        if (currentPage > totalPages) {
-          currentPage = totalPages;
-        }
+        _applyFilters();
       } else {
         errorMessage = response.body;
       }
@@ -97,12 +102,14 @@ class OrderAuth extends ChangeNotifier {
     notifyListeners();
   }
 
-  void searchOrder(String value) {
-    if (value.trim().isEmpty) {
-      orders = List.from(_allOrders);
-    } else {
-      final keyword = value.toLowerCase();
-      orders = _allOrders.where((item) {
+  /// Compound in-memory filtering logic
+  void _applyFilters() {
+    List<OrderModel> result = List.from(_allOrders);
+
+    // 1. General search keyword (Name/Request No/City/Locality/Vendor/Address)
+    if (_searchText.trim().isNotEmpty) {
+      final keyword = _searchText.toLowerCase();
+      result = result.where((item) {
         return item.serviceRequestNumber.toLowerCase().contains(keyword) ||
             item.serviceName.toLowerCase().contains(keyword) ||
             item.city.toLowerCase().contains(keyword) ||
@@ -113,8 +120,117 @@ class OrderAuth extends ChangeNotifier {
       }).toList();
     }
 
-    currentPage = 1;
+    // 2. Service Request No filter
+    if (_searchRequestNo.trim().isNotEmpty) {
+      final q = _searchRequestNo.trim().toLowerCase();
+      result = result.where((item) {
+        return item.serviceRequestNumber.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 3. ID Filter
+    if (_searchId.trim().isNotEmpty) {
+      final q = _searchId.trim();
+      result = result.where((item) {
+        return item.id.toString().contains(q);
+      }).toList();
+    }
+
+    // 4. City Filter
+    if (_searchCity.trim().isNotEmpty) {
+      final q = _searchCity.trim().toLowerCase();
+      result = result.where((item) {
+        return item.city.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 5. Locality Filter
+    if (_searchLocality.trim().isNotEmpty) {
+      final q = _searchLocality.trim().toLowerCase();
+      result = result.where((item) {
+        return item.locality.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 6. Vendor Number Filter
+    if (_searchVendorNumber.trim().isNotEmpty) {
+      final q = _searchVendorNumber.trim().toLowerCase();
+      result = result.where((item) {
+        return item.vendorNumber.toLowerCase().contains(q) ||
+            item.vendorMobile.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    orders = result;
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+    if (currentPage < 1) {
+      currentPage = 1;
+    }
+
     notifyListeners();
+  }
+
+  /// Toggle filters panel visibility
+  void toggleFilters() {
+    showFilters = !showFilters;
+    notifyListeners();
+  }
+
+  /// Clear all active filters
+  void clearAllFilters() {
+    _searchText = '';
+    _searchRequestNo = '';
+    _searchId = '';
+    _searchCity = '';
+    _searchLocality = '';
+    _searchVendorNumber = '';
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Main search query updated
+  void searchOrder(String value) {
+    _searchText = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Filter by Service Request No
+  void searchByRequestNo(String value) {
+    _searchRequestNo = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Filter by ID
+  void searchById(String value) {
+    _searchId = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Filter by City
+  void searchByCity(String value) {
+    _searchCity = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Filter by Locality
+  void searchByLocality(String value) {
+    _searchLocality = value;
+    currentPage = 1;
+    _applyFilters();
+  }
+
+  /// Filter by Vendor Number
+  void searchByVendorNumber(String value) {
+    _searchVendorNumber = value;
+    currentPage = 1;
+    _applyFilters();
   }
 
   Future<bool> updateOrder(int id, Map<String, dynamic> updateFields) async {
