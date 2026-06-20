@@ -13,6 +13,8 @@ import 'package:admin_panel/service_Api/categories/categories_auth.dart';
 import 'package:admin_panel/service_Api/settings/notification_viewmodel.dart';
 import 'package:admin_panel/service_Api/settings/review_viewmodel.dart';
 import 'package:admin_panel/viewmodels/auth/login_viewmodel.dart';
+import 'package:admin_panel/viewmodels/profile/manage%20Admins/admin_viewmodel.dart';
+import 'package:admin_panel/viewmodels/profile/profile_viewmodel.dart';
 import 'package:admin_panel/viewmodels/reports_viewmodels/reports_viewmodel.dart';
 import 'package:admin_panel/views/auth%20screen/login_screen.dart';
 import 'package:admin_panel/views/mainScreen/main_screen.dart';
@@ -74,6 +76,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
 
         ChangeNotifierProvider(create: (_) => ActivePartnerAuth()),
+
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AdminViewModel()),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
     ),

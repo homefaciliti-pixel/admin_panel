@@ -113,15 +113,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: vm.showFilters ? const Color(0xff111827) : Colors.white,
+                              color: vm.showFilters
+                                  ? const Color(0xff111827)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: vm.showFilters ? const Color(0xff111827) : Colors.grey.shade300,
+                                color: vm.showFilters
+                                    ? const Color(0xff111827)
+                                    : Colors.grey.shade300,
                               ),
                             ),
                             child: Icon(
-                              vm.showFilters ? Icons.filter_list_off : Icons.filter_list,
-                              color: vm.showFilters ? Colors.white : Colors.grey.shade700,
+                              vm.showFilters
+                                  ? Icons.filter_list_off
+                                  : Icons.filter_list,
+                              color: vm.showFilters
+                                  ? Colors.white
+                                  : Colors.grey.shade700,
                               size: 20,
                             ),
                           ),
@@ -187,7 +195,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           _vendorNumberController.clear();
                           vm.clearAllFilters();
                         },
-                        icon: const Icon(Icons.clear_all_rounded, color: Colors.redAccent, size: 20),
+                        icon: const Icon(
+                          Icons.clear_all_rounded,
+                          color: Colors.redAccent,
+                          size: 20,
+                        ),
                         label: const Text(
                           "Clear Filters",
                           style: TextStyle(
@@ -196,7 +208,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ),
                         ),
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -490,32 +505,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   void _showAssignVendorSheet(
-
-      BuildContext context,
-      OrderAuth vm,
-      OrderModel item,
-      )
-
-
-   {
-
-
+    BuildContext context,
+    OrderAuth vm,
+    OrderModel item,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
-        String? selectedMobile = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-'
+        String? selectedMobile =
+            item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-'
             ? item.vendorMobile
             : null;
+        String? selectedVendorName;
 
         return StatefulBuilder(
           builder: (context, setState) {
-
-            final bool isAssigned = item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
-
-
-
+            final bool isAssigned =
+                item.vendorMobile.trim().isNotEmpty && item.vendorMobile != '-';
 
             return Container(
               padding: EdgeInsets.only(
@@ -558,9 +566,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     builder: (context, partnerAuth, child) {
                       if (partnerAuth.isLoading &&
                           partnerAuth.approvedPartners.isEmpty) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       final approved = partnerAuth.approvedPartners;
@@ -574,23 +580,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.red.shade200,
-                            ),
+                            border: Border.all(color: Colors.red.shade200),
                           ),
                           child: const Row(
                             children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.red,
-                              ),
+                              Icon(Icons.error_outline, color: Colors.red),
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   "No approved partners found.",
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                  ),
+                                  style: TextStyle(color: Colors.red),
                                 ),
                               ),
                             ],
@@ -599,11 +598,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       }
 
                       final hasMatchingPartner = approved.any(
-                            (p) => p.mobile == selectedMobile,
+                        (p) => p.mobile == selectedMobile,
                       );
 
-                      final dropdownValue =
-                      hasMatchingPartner ? selectedMobile : null;
+                      final dropdownValue = hasMatchingPartner
+                          ? selectedMobile
+                          : null;
 
                       return DropdownSearch<String>(
                         selectedItem: dropdownValue,
@@ -631,21 +631,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                         items: (filter, infiniteScrollProps) {
                           return approved
-                              .map((partner) =>
-                          "${partner.name} (${partner.mobile})")
+                              .map(
+                                (partner) =>
+                                    "${partner.name} (${partner.mobile})",
+                              )
                               .toList();
                         },
 
-                        onSaved: (val) {
+                        onSelected: (val) {
                           if (val != null) {
                             final mobile = val.substring(
                               val.lastIndexOf('(') + 1,
                               val.lastIndexOf(')'),
                             );
 
+                            final name = val
+                                .substring(0, val.lastIndexOf('('))
+                                .trim();
+
                             setState(() {
                               selectedMobile = mobile;
+                              selectedVendorName = name;
                             });
+
+                            print("Selected Mobile => $selectedMobile");
+                            print("Selected Name => $selectedVendorName");
                           }
                         },
                       );
@@ -658,10 +668,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     isAssigned
                         ? "Assigned to: ${item.vendorMobile}"
                         : "Select approved vendor to assign this order.",
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
 
                   const SizedBox(height: 20),
@@ -672,9 +679,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         child: OutlinedButton(
                           onPressed: () => Navigator.pop(context),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                           child: const Text("Cancel"),
                         ),
@@ -685,40 +690,36 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           onPressed: selectedMobile == null
                               ? null
                               : () async {
-                            final ok = await vm.assignVendor(
-                              item.id,
-                              selectedMobile!,
-                            );
+                                  final ok = await vm.assignVendor(
+                                    item.id,
+                                    selectedMobile!,
+                                    selectedVendorName ?? '',
+                                  );
 
-                            if (ok && mounted) {
-                              Navigator.pop(context);
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    vm.errorMessage ??
-                                        "Failed to assign vendor",
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          },
+                                  if (ok && mounted) {
+                                    Navigator.pop(context);
+                                  } else if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          vm.errorMessage ??
+                                              "Failed to assign vendor",
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                            const Color(0xff111827),
+                            backgroundColor: const Color(0xff111827),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                           child: const Text("Assign"),
                         ),
                       ),
                     ],
                   ),
-
 
                   if (isAssigned) ...[
                     const SizedBox(height: 12),
@@ -732,7 +733,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           } else if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(vm.errorMessage ?? "Failed to unassign vendor"),
+                                content: Text(
+                                  vm.errorMessage ??
+                                      "Failed to unassign vendor",
+                                ),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -766,8 +770,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final vendorController = TextEditingController(
       text: item.vendorMobile == '-' ? '' : item.vendorMobile,
     );
-
-
 
     final slotTimeController = TextEditingController(text: item.slotTime);
     final serviceDateController = TextEditingController(text: item.serviceDate);
@@ -812,22 +814,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onPressed: vm.isLoading
                   ? null
                   : () async {
-
-                final ok = await vm.updateOrder(
-                  item.id,
-                  {
-                    'status': statusController.text.trim(),
-                    'vendorMobile': vendorController.text.trim(),
-                    'slotTime': slotTimeController.text.trim(),
-                    'serviceDate': serviceDateController.text.trim(),
-                    'city': cityController.text.trim(),
-                    'locality': localityController.text.trim(),
-                    'address': addressController.text.trim(),
-                  },
-                );
-
-
-
+                      final ok = await vm.updateOrder(item.id, {
+                        'status': statusController.text.trim(),
+                        'vendorMobile': vendorController.text.trim(),
+                        'slotTime': slotTimeController.text.trim(),
+                        'serviceDate': serviceDateController.text.trim(),
+                        'city': cityController.text.trim(),
+                        'locality': localityController.text.trim(),
+                        'address': addressController.text.trim(),
+                      });
 
                       if (ok && context.mounted) {
                         Navigator.pop(dialogContext);

@@ -3,6 +3,7 @@ import 'package:admin_panel/views/Pages/pages_screen.dart';
 import 'package:admin_panel/views/auth%20screen/login_screen.dart';
 import 'package:admin_panel/views/category/category_screen.dart';
 import 'package:admin_panel/views/orderScreen/order_screen.dart';
+import 'package:admin_panel/views/profile%20screen/profile_screen.dart';
 import 'package:admin_panel/views/services/services_screen.dart';
 import 'package:admin_panel/views/settings/banner_screen.dart';
 import 'package:admin_panel/views/settings/city_screen.dart';
@@ -184,50 +185,62 @@ class MainScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white24,
-                                    width: 2,
+                          InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white24,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: const CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Color(0xff1E3A8A),
+                                    ),
                                   ),
                                 ),
-                                child: const CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: Colors.white,
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Color(0xff1E3A8A),
+                                if (isDesktop) ...[
+                                  const SizedBox(width: 10),
+                                  const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Admin",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Control Panel",
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                              if (isDesktop) ...[
-                                const SizedBox(width: 10),
-                                const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Admin",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Control Panel",
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                ],
                               ],
-                            ],
+                            ),
                           ),
                         ],
                       ),

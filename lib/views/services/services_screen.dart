@@ -379,7 +379,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     Uint8List.fromList(pickedImageBytes!),
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    height: 140,
+                    height: 150,
                   ),
                 );
               }

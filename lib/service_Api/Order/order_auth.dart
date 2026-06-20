@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import '../../service_model/order/order_model.dart';
 
 class OrderAuth extends ChangeNotifier {
@@ -264,23 +262,25 @@ class OrderAuth extends ChangeNotifier {
     }
   }
 
-
-
-
-
-
-  Future<bool> assignVendor(int id, String vendorNumber) async {
+  Future<bool> assignVendor(
+    int id,
+    String vendorNumber,
+    String vendorName,
+  ) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
+      final body = {
+        'vendorMobile': vendorNumber.trim(),
+        'vendorName': vendorName,
+      };
+
       final response = await http.put(
         Uri.parse('$_baseUrl/$id/assign'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'vendorMobile': vendorNumber.trim(),
-        }),
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
@@ -304,7 +304,7 @@ class OrderAuth extends ChangeNotifier {
   }
 
   Future<bool> unassignVendor(int id) async {
-    return assignVendor(id, '');
+    return assignVendor(id, '', '');
   }
 
   Future<bool> updateStatus(int id, String status) async {

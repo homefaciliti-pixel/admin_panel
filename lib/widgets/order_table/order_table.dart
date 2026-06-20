@@ -46,65 +46,25 @@ class OrderTable extends StatelessWidget {
                     color: Colors.blue.shade50,
                     child: const Row(
                       children: [
-                        Expanded(
-                          flex: 1,
-                          child: Text("ID"),
-                        ),
+                        Expanded(flex: 1, child: Text("ID")),
                         Expanded(
                           flex: 3,
                           child: Text("SERVICE REQUEST NUMBER"),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("SERVICE NAME"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("SERVICE AMOUNT"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("SLOT TIME"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("SERVICE DATE"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("CITY"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("LOCALITY"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("STATUS"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("VENDOR NUMBER"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("ASSIGN VENDOR"),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text("EDIT"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("CREATED AT"),
-                        ),
+                        Expanded(flex: 2, child: Text("SERVICE NAME")),
+                        Expanded(flex: 2, child: Text("SERVICE AMOUNT")),
+                        Expanded(flex: 2, child: Text("SLOT TIME")),
+                        Expanded(flex: 2, child: Text("SERVICE DATE")),
+                        Expanded(flex: 2, child: Text("CITY")),
+                        Expanded(flex: 2, child: Text("LOCALITY")),
+                        Expanded(flex: 2, child: Text("STATUS")),
+                        Expanded(flex: 2, child: Text("VENDOR NUMBER")),
+                        Expanded(flex: 2, child: Text("ASSIGN VENDOR")),
+                        Expanded(flex: 1, child: Text("EDIT")),
+                        Expanded(flex: 2, child: Text("CREATED AT")),
                       ],
                     ),
                   ),
-
-
-
-
 
                   const Divider(height: 1),
                   SizedBox(
