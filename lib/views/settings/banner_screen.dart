@@ -1,12 +1,11 @@
 import 'dart:typed_data';
-
 import 'package:admin_panel/core/App_permission/app_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/settings/banner_auth.dart';
+import '../../service_Api/settings/crop_banner_screen.dart';
 import '../../service_model/settings_model/banner_model.dart';
-
 
 class BannerScreen extends StatelessWidget {
   const BannerScreen({super.key});
@@ -92,18 +91,14 @@ class BannerScreen extends StatelessWidget {
                         children: [
                           const Text(
                             "Show",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(width: 10),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                              ),
+                              border: Border.all(color: Colors.grey.shade300),
                             ),
                             child: DropdownButton<int>(
                               value: vm.selectedEntries,
@@ -154,9 +149,7 @@ class BannerScreen extends StatelessWidget {
                 /// TABLE
                 if (vm.isLoading)
                   const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: Center(child: CircularProgressIndicator()),
                   )
                 else if (vm.errorMessage != null)
                   Expanded(
@@ -237,12 +230,15 @@ class BannerScreen extends StatelessWidget {
                                             Expanded(
                                               flex: 3,
                                               child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                                 child: Container(
                                                   height: 55,
                                                   width: 120,
                                                   color: Colors.grey.shade100,
-                                                  child: _bannerImage(item.image),
+                                                  child: _bannerImage(
+                                                    item.image,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -261,7 +257,9 @@ class BannerScreen extends StatelessWidget {
                                                 children: [
                                                   IconButton(
                                                     tooltip: "Edit",
-                                                    icon: const Icon(Icons.edit),
+                                                    icon: const Icon(
+                                                      Icons.edit,
+                                                    ),
                                                     onPressed: () {
                                                       _showEditDialog(
                                                         context,
@@ -270,21 +268,22 @@ class BannerScreen extends StatelessWidget {
                                                       );
                                                     },
                                                   ),
-                                                  if(AppPermission.isSuperAdmin)
-                                                  IconButton(
-                                                    tooltip: "Delete",
-                                                    icon: const Icon(
-                                                      Icons.delete,
-                                                      color: Colors.red,
+                                                  if (AppPermission
+                                                      .isSuperAdmin)
+                                                    IconButton(
+                                                      tooltip: "Delete",
+                                                      icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                      ),
+                                                      onPressed: () {
+                                                        _showDeleteDialog(
+                                                          context,
+                                                          vm,
+                                                          item,
+                                                        );
+                                                      },
                                                     ),
-                                                    onPressed: () {
-                                                      _showDeleteDialog(
-                                                        context,
-                                                        vm,
-                                                        item,
-                                                      );
-                                                    },
-                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -328,9 +327,7 @@ class BannerScreen extends StatelessWidget {
                         children: [
                           const Text(
                             "Page",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(width: 10),
                           Container(
@@ -353,9 +350,7 @@ class BannerScreen extends StatelessWidget {
                           const SizedBox(width: 12),
                           Text(
                             "/ ${vm.totalPages}",
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                            ),
+                            style: TextStyle(color: Colors.grey.shade700),
                           ),
                         ],
                       ),
@@ -368,9 +363,7 @@ class BannerScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
                               child: const Icon(Icons.chevron_left),
                             ),
@@ -383,9 +376,7 @@ class BannerScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
                               child: const Icon(Icons.chevron_right),
                             ),
@@ -415,8 +406,8 @@ class BannerScreen extends StatelessWidget {
     final fixedUrl = clean.startsWith('http://')
         ? clean.replaceFirst('http://', 'https://')
         : clean.startsWith('https://')
-            ? clean
-            : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$clean';
+        ? clean
+        : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$clean';
 
     return Image.network(
       fixedUrl,
@@ -490,19 +481,34 @@ class BannerScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () async {
                           final picker = ImagePicker();
+
                           final file = await picker.pickImage(
                             source: ImageSource.gallery,
-                            imageQuality: 85,
                           );
 
                           if (file != null) {
                             final bytes = await file.readAsBytes();
-                            setState(() {
-                              pickedFile = file;
-                              imageBytes = bytes;
-                            });
+
+                            final croppedBytes = await showDialog(
+                              context: context,
+                              builder: (_) => Dialog(
+                                child: SizedBox(
+                                  width: 900,
+                                  height: 600,
+                                  child: CropBannerScreen(imageBytes: bytes),
+                                ),
+                              ),
+                            );
+
+                            if (croppedBytes != null) {
+                              setState(() {
+                                imageBytes = croppedBytes;
+                                pickedFile = file;
+                              });
+                            }
                           }
                         },
+
                         icon: const Icon(Icons.image),
                         label: const Text("Pick Image *"),
                       ),
@@ -546,16 +552,14 @@ class BannerScreen extends StatelessWidget {
   }
 
   /// EDIT BANNER DIALOG
-  void _showEditDialog(
-      BuildContext context,
-      BannerAuth vm,
-      BannerModel item,
-      ) {
+  void _showEditDialog(BuildContext context, BannerAuth vm, BannerModel item) {
     final titleController = TextEditingController(text: item.title);
     final categoryController = TextEditingController(text: item.category);
     final badgeController = TextEditingController(text: item.badge);
     final subtitleController = TextEditingController(text: item.subtitle);
-    final buttonTextController = TextEditingController(text: item.buttonText.isEmpty ? 'Book Now' : item.buttonText);
+    final buttonTextController = TextEditingController(
+      text: item.buttonText.isEmpty ? 'Book Now' : item.buttonText,
+    );
     Uint8List? imageBytes;
     XFile? pickedFile;
 
@@ -612,17 +616,31 @@ class BannerScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () async {
                           final picker = ImagePicker();
+
                           final file = await picker.pickImage(
                             source: ImageSource.gallery,
-                            imageQuality: 85,
                           );
 
                           if (file != null) {
                             final bytes = await file.readAsBytes();
-                            setState(() {
-                              pickedFile = file;
-                              imageBytes = bytes;
-                            });
+
+                            final croppedBytes = await showDialog(
+                              context: context,
+                              builder: (_) => Dialog(
+                                child: SizedBox(
+                                  width: 900,
+                                  height: 600,
+                                  child: CropBannerScreen(imageBytes: bytes),
+                                ),
+                              ),
+                            );
+
+                            if (croppedBytes != null) {
+                              setState(() {
+                                imageBytes = croppedBytes;
+                                pickedFile = file;
+                              });
+                            }
                           }
                         },
                         icon: const Icon(Icons.image),
@@ -674,10 +692,10 @@ class BannerScreen extends StatelessWidget {
 
   /// DELETE CONFIRM
   void _showDeleteDialog(
-      BuildContext context,
-      BannerAuth vm,
-      BannerModel item,
-      ) {
+    BuildContext context,
+    BannerAuth vm,
+    BannerModel item,
+  ) {
     showDialog(
       context: context,
       builder: (_) {
@@ -709,19 +727,13 @@ class BannerScreen extends StatelessWidget {
   }
 
   /// Preview helper
-  static Widget _previewImage({
-    Uint8List? bytes,
-    String existingImage = '',
-  }) {
+  static Widget _previewImage({Uint8List? bytes, String existingImage = ''}) {
     if (bytes != null) {
       return AspectRatio(
         aspectRatio: 1000 / 370,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.memory(
-            bytes,
-            fit: BoxFit.cover,
-          ),
+          child: Image.memory(bytes, fit: BoxFit.cover),
         ),
       );
     }
@@ -730,8 +742,8 @@ class BannerScreen extends StatelessWidget {
       final fixedUrl = existingImage.startsWith('http://')
           ? existingImage.replaceFirst('http://', 'https://')
           : existingImage.startsWith('https://')
-              ? existingImage
-              : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$existingImage';
+          ? existingImage
+          : 'https://adminbackend-1-h03r.onrender.com/uploads/banners/$existingImage';
 
       return AspectRatio(
         aspectRatio: 1000 / 370,

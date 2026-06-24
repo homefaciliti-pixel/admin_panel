@@ -49,9 +49,7 @@ class BannerAuth extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(baseUrl),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        headers: const {'Content-Type': 'application/json'},
       );
 
       final decoded = jsonDecode(response.body);
@@ -175,7 +173,9 @@ class BannerAuth extends ChangeNotifier {
       request.fields['category'] = category;
       request.fields['badge'] = badge;
       request.fields['subtitle'] = subtitle;
-      request.fields['buttonText'] = buttonText.isEmpty ? 'Book Now' : buttonText;
+      request.fields['buttonText'] = buttonText.isEmpty
+          ? 'Book Now'
+          : buttonText;
 
       /// File field
       request.files.add(
@@ -229,7 +229,9 @@ class BannerAuth extends ChangeNotifier {
       request.fields['category'] = category;
       request.fields['badge'] = badge;
       request.fields['subtitle'] = subtitle;
-      request.fields['buttonText'] = buttonText.isEmpty ? 'Book Now' : buttonText;
+      request.fields['buttonText'] = buttonText.isEmpty
+          ? 'Book Now'
+          : buttonText;
 
       /// If new image selected, upload new file.
       /// Otherwise keep existing image path/url.
@@ -274,12 +276,8 @@ class BannerAuth extends ChangeNotifier {
     try {
       final response = await http.patch(
         Uri.parse('$baseUrl/$id'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'status': newStatus,
-        }),
+        headers: const {'Content-Type': 'application/json'},
+        body: jsonEncode({'status': newStatus}),
       );
 
       final decoded = jsonDecode(response.body);
@@ -302,9 +300,7 @@ class BannerAuth extends ChangeNotifier {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/$id'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        headers: const {'Content-Type': 'application/json'},
       );
 
       final decoded = jsonDecode(response.body);

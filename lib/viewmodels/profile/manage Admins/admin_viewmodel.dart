@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../service_model/magage_Admin/admin_model.dart';
 
-
 class AdminViewModel extends ChangeNotifier {
-
   final List<AdminModel> admins = [
-
     AdminModel(
       id: 1,
       name: "Amit Sharma",
@@ -36,4 +33,26 @@ class AdminViewModel extends ChangeNotifier {
     admins.removeWhere((e) => e.id == id);
     notifyListeners();
   }
+
+  void addAdmin(AdminModel admin) {
+    admins.add(admin);
+    notifyListeners();
+  }
+
+  void updateAdmin(AdminModel updatedAdmin) {
+
+    final index = admins.indexWhere(
+          (e) => e.id == updatedAdmin.id,
+    );
+
+    if (index != -1) {
+      admins[index] = updatedAdmin;
+      notifyListeners();
+    }
+  }
+
+
+
+
+
 }

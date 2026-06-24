@@ -45,6 +45,8 @@ dependencies:
   url_launcher: ^6.3.2
   dropdown_search: ^7.0.0
   shared_preferences: ^2.5.5
+  pro_image_editor: ^12.6.0
+  extended_image: ^10.0.1
 
 
 

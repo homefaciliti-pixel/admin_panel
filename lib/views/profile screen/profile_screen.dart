@@ -1,4 +1,5 @@
 import 'package:admin_panel/viewmodels/profile/profile_viewmodel.dart';
+import 'package:admin_panel/views/profile%20screen/manage_Admin%20screen/create%20admin/permission_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -216,12 +217,10 @@ class ProfileScreen extends StatelessWidget {
 
               children: [
                 _actionCard(
-
                   title: "Manage Admins",
                   icon: Icons.admin_panel_settings,
                   color: Colors.blue,
                   onTap: () {
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -235,7 +234,13 @@ class ProfileScreen extends StatelessWidget {
                   title: "Permissions",
                   icon: Icons.lock_outline,
                   color: Colors.orange,
-                  onTap: () {},
+                  onTap: () {
+
+                    Navigator.push(context,MaterialPageRoute(
+                        builder: (_)=>const PermissionsScreen()
+
+                    ));
+                  },
                 ),
 
                 _actionCard(
@@ -312,38 +317,23 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-
+            Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              elevation: 2,
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.lock_reset, color: Colors.blue),
-
                     title: const Text("Change Password"),
-
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-
-                    onTap: () {
-                      // Change Password Screen
-                    },
+                    onTap: () {},
                   ),
 
                   const Divider(height: 1),
 
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.red),
-
                     title: const Text(
                       "Logout",
                       style: TextStyle(
@@ -351,13 +341,11 @@ class ProfileScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     trailing: const Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
                       color: Colors.red,
                     ),
-
                     onTap: () {
                       _showLogoutDialog(context);
                     },
@@ -416,8 +404,6 @@ Widget _actionCard({
     ),
   );
 }
-
-
 
 Widget _infoTile(IconData icon, String title, String value) {
   return Padding(
