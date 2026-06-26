@@ -197,7 +197,7 @@ class PartnerTable extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      item.email,
+                                      item.category,
                                       style: TextStyle(
                                         color: Colors.grey.shade600,
                                         fontSize: 13,

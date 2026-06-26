@@ -24,6 +24,11 @@ class PartnerModel {
   final String gender;
   final String experience;
   final List<String> services;
+  final int categoryId;
+  final int subCategoryId;
+
+  final String category;
+  final String subCategory;
 
   final String aadhaarNumber;
   final String panNumber;
@@ -72,6 +77,10 @@ class PartnerModel {
     required this.gender,
     required this.experience,
     required this.services,
+    required this.categoryId,
+    required this.subCategoryId,
+    required this.category,
+    required this.subCategory,
     required this.aadhaarNumber,
     required this.panNumber,
     required this.bankName,
@@ -118,11 +127,17 @@ class PartnerModel {
       isApproved: json['isApproved'] == true,
       gender: safeString(json['gender']),
       experience: safeString(json['experience']),
+      categoryId: (json['category_id'] as num?)?.toInt() ?? 0,
+      subCategoryId: (json['sub_category_id'] as num?)?.toInt() ?? 0,
 
-      services: (json['services'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ??
+      category: safeString(json['category']),
+      subCategory: safeString(json['subCategory']),
+      services:
+          (json['services'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
           [],
+
 
       aadhaarNumber: safeString(json['aadhaarNumber']),
       panNumber: safeString(json['panNumber']),
@@ -130,9 +145,10 @@ class PartnerModel {
       accountNumber: safeString(json['accountNumber']),
       ifscCode: safeString(json['ifscCode']),
 
-      documents: (json['documents'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ??
+      documents:
+          (json['documents'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
           [],
 
       walletBalance: (json['walletBalance'] as num?)?.toDouble() ?? 0.0,
@@ -171,6 +187,11 @@ class PartnerModel {
       'isApproved': isApproved,
       'gender': gender,
       'experience': experience,
+      'category_id': categoryId,
+      'sub_category_id': subCategoryId,
+
+      'category': category,
+      'subCategory': subCategory,
       'services': services,
       'aadhaarNumber': aadhaarNumber,
       'panNumber': panNumber,
@@ -212,6 +233,11 @@ class PartnerModel {
     bool? isApproved,
     String? gender,
     String? experience,
+    int? categoryId,
+    int? subCategoryId,
+
+    String? category,
+    String? subCategory,
     List<String>? services,
     String? aadhaarNumber,
     String? panNumber,
@@ -246,11 +272,17 @@ class PartnerModel {
       aadhaarFrontImage: aadhaarFrontImage ?? this.aadhaarFrontImage,
       aadhaarBackImage: aadhaarBackImage ?? this.aadhaarBackImage,
       panCardImage: panCardImage ?? this.panCardImage,
-      policeVerificationImage: policeVerificationImage ?? this.policeVerificationImage,
+      policeVerificationImage:
+          policeVerificationImage ?? this.policeVerificationImage,
       status: status ?? this.status,
       isApproved: isApproved ?? this.isApproved,
       gender: gender ?? this.gender,
       experience: experience ?? this.experience,
+      categoryId: categoryId ?? this.categoryId,
+      subCategoryId: subCategoryId ?? this.subCategoryId,
+
+      category: category ?? this.category,
+      subCategory: subCategory ?? this.subCategory,
       services: services ?? this.services,
       aadhaarNumber: aadhaarNumber ?? this.aadhaarNumber,
       panNumber: panNumber ?? this.panNumber,

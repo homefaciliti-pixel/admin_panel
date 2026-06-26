@@ -29,6 +29,9 @@ class PartnerAuth extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
 
+  bool _approvedLoaded = false;
+  bool _pendingLoaded = false;
+
   /// pagination
   int selectedEntries = 10;
   int currentPage = 1;
@@ -125,8 +128,19 @@ class PartnerAuth extends ChangeNotifier {
   /// ===============================
   /// APPROVED LIST
   /// ===============================
-  Future<void> loadApprovedPartners() async {
+  Future<void> loadApprovedPartners({bool forceRefresh = false}) async {
+
+    if (_approvedLoaded && !forceRefresh) {
+      partners = List.from(approvedPartners);
+      currentPage = 1;
+      notifyListeners();
+      return;
+    }
+
     await loadAllPartners();
+
+    _approvedLoaded = true;
+
     partners = List.from(approvedPartners);
     currentPage = 1;
     notifyListeners();
@@ -135,13 +149,23 @@ class PartnerAuth extends ChangeNotifier {
   /// ===============================
   /// PENDING LIST
   /// ===============================
-  Future<void> loadPendingPartners() async {
+  Future<void> loadPendingPartners({bool forceRefresh = false}) async {
+
+    if (_pendingLoaded && !forceRefresh) {
+      partners = List.from(pendingPartners);
+      currentPage = 1;
+      notifyListeners();
+      return;
+    }
+
     await loadAllPartners();
+
+    _pendingLoaded = true;
+
     partners = List.from(pendingPartners);
     currentPage = 1;
     notifyListeners();
   }
-
   /// ===============================
   /// SEARCH APPROVED
   /// ===============================
@@ -251,7 +275,7 @@ class PartnerAuth extends ChangeNotifier {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json['success'] == true) {
-          await loadApprovedPartners();
+          await loadApprovedPartners(forceRefresh: true);
           return true;
         }
       }
@@ -274,7 +298,7 @@ class PartnerAuth extends ChangeNotifier {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json['success'] == true) {
-          await loadPendingPartners();
+          await loadPendingPartners(forceRefresh: true);
           return true;
         }
       }

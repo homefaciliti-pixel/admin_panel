@@ -1,4 +1,5 @@
 import 'package:admin_panel/service_Api/Activepartners/active_partner_auth.dart';
+import 'package:admin_panel/service_Api/Dashboard/dashboard_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Subscriptions/subscription_auth.dart';
 import 'package:admin_panel/service_Api/Order/order_auth.dart';
@@ -41,6 +42,10 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => DashboardViewModel()..fetchDashboard(),
+        ),
+
         /// navigation provider
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
 
@@ -80,8 +85,8 @@ Future<void> main() async {
 
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AdminViewModel()),
-        
-        ChangeNotifierProvider(create: (_)=> PermissionViewModel())
+
+        ChangeNotifierProvider(create: (_) => PermissionViewModel()),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
     ),

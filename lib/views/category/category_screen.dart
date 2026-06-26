@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:admin_panel/widgets/common/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,9 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AuthCategories>(
       builder: (context, vm, child) {
-          if (vm.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        if(vm.isLoading){
+          return const AppLoader();
+        }
 
           if (vm.errorMessage != null) {
             return Center(

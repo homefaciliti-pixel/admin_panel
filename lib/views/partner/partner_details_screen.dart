@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:http/http.dart' as http;
 
 import '../../service_model/partner/partner_model.dart';
-
 
 class PartnerDetailsScreen extends StatefulWidget {
   final PartnerModel partner;
@@ -38,7 +38,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           widget.partner.longitude != null &&
           widget.partner.latitude!.isNotEmpty &&
           widget.partner.longitude!.isNotEmpty) {
-        _resolveCurrentAddress(widget.partner.latitude!, widget.partner.longitude!);
+        _resolveCurrentAddress(
+          widget.partner.latitude!,
+          widget.partner.longitude!,
+        );
       }
 
       vm.getPartnerDetails(widget.partner.id).then((freshPartner) {
@@ -48,7 +51,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
               freshPartner.longitude != null &&
               freshPartner.latitude!.isNotEmpty &&
               freshPartner.longitude!.isNotEmpty) {
-            _resolveCurrentAddress(freshPartner.latitude!, freshPartner.longitude!);
+            _resolveCurrentAddress(
+              freshPartner.latitude!,
+              freshPartner.longitude!,
+            );
           }
         }
       });
@@ -67,10 +73,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$lat&lon=$lng'),
-        headers: {
-          'User-Agent': 'HomeFacilitiAdminPanel/1.0',
-        },
+        Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$lat&lon=$lng',
+        ),
+        headers: {'User-Agent': 'HomeFacilitiAdminPanel/1.0'},
       );
 
       if (response.statusCode == 200) {
@@ -104,10 +110,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   }
 
   void _showEditDialog(
-      BuildContext context,
-      PartnerAuth vm,
-      PartnerModel partner,
-      ) {
+    BuildContext context,
+    PartnerAuth vm,
+    PartnerModel partner,
+  ) {
     final nameController = TextEditingController(text: partner.name);
     final emailController = TextEditingController(text: partner.email);
     final mobileController = TextEditingController(text: partner.mobile);
@@ -116,11 +122,22 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     final localityController = TextEditingController(text: partner.locality);
     final addressController = TextEditingController(text: partner.address);
     final genderController = TextEditingController(text: partner.gender);
-    final experienceController = TextEditingController(text: partner.experience);
-    final aadhaarController = TextEditingController(text: partner.aadhaarNumber);
+    final experienceController = TextEditingController(
+      text: partner.experience,
+    );
+    final categoryController = TextEditingController(text: partner.category);
+
+    final subCategoryController = TextEditingController(
+      text: partner.subCategory,
+    );
+    final aadhaarController = TextEditingController(
+      text: partner.aadhaarNumber,
+    );
     final panController = TextEditingController(text: partner.panNumber);
     final bankController = TextEditingController(text: partner.bankName);
-    final accountController = TextEditingController(text: partner.accountNumber);
+    final accountController = TextEditingController(
+      text: partner.accountNumber,
+    );
     final ifscController = TextEditingController(text: partner.ifscCode);
 
     showDialog(
@@ -169,10 +186,28 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   TextField(
                     controller: experienceController,
                     decoration: const InputDecoration(labelText: "Experience"),
+
                   ),
+
+                  TextField(
+                    controller: categoryController,
+                    decoration: const InputDecoration(
+                      labelText: "Category",
+                    ),
+                  ),
+
+                  TextField(
+                    controller: subCategoryController,
+                    decoration: const InputDecoration(
+                      labelText: "Sub Category",
+                    ),
+                  ),
+
                   TextField(
                     controller: aadhaarController,
-                    decoration: const InputDecoration(labelText: "Aadhaar Number"),
+                    decoration: const InputDecoration(
+                      labelText: "Aadhaar Number",
+                    ),
                   ),
                   TextField(
                     controller: panController,
@@ -184,7 +219,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   ),
                   TextField(
                     controller: accountController,
-                    decoration: const InputDecoration(labelText: "Account Number"),
+                    decoration: const InputDecoration(
+                      labelText: "Account Number",
+                    ),
                   ),
                   TextField(
                     controller: ifscController,
@@ -211,6 +248,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   'address': addressController.text.trim(),
                   'gender': genderController.text.trim(),
                   'experience': experienceController.text.trim(),
+                  'category': categoryController.text.trim(),
+                  'subCategory': subCategoryController.text.trim(),
                   'aadhaarNumber': aadhaarController.text.trim(),
                   'panNumber': panController.text.trim(),
                   'bankName': bankController.text.trim(),
@@ -303,7 +342,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  partner.email,
+                                  partner.category,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.grey.shade700,
@@ -315,8 +354,12 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                   runSpacing: 10,
                                   children: [
                                     _statusChip(
-                                      text: partner.status ? "Active" : "Inactive",
-                                      color: partner.status ? Colors.green : Colors.red,
+                                      text: partner.status
+                                          ? "Active"
+                                          : "Inactive",
+                                      color: partner.status
+                                          ? Colors.green
+                                          : Colors.red,
                                     ),
                                     _statusChip(
                                       text: partner.isApproved
@@ -356,14 +399,19 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                               else
                                 ElevatedButton.icon(
                                   onPressed: () async {
-                                    final ok = await vm.approvePartner(partner.id);
+                                    final ok = await vm.approvePartner(
+                                      partner.id,
+                                    );
                                     if (ok && mounted) {
-                                      final fresh =
-                                      await vm.getPartnerDetails(partner.id);
+                                      final fresh = await vm.getPartnerDetails(
+                                        partner.id,
+                                      );
                                       if (fresh != null && mounted) {
                                         vm.selectPartner(fresh);
                                       }
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         const SnackBar(
                                           content: Text("Partner approved"),
                                         ),
@@ -383,10 +431,13 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                 ),
                               OutlinedButton.icon(
                                 onPressed: () async {
-                                  final ok = await vm.disapprovePartner(partner.id);
+                                  final ok = await vm.disapprovePartner(
+                                    partner.id,
+                                  );
                                   if (ok && mounted) {
-                                    final fresh =
-                                    await vm.getPartnerDetails(partner.id);
+                                    final fresh = await vm.getPartnerDetails(
+                                      partner.id,
+                                    );
                                     if (fresh != null && mounted) {
                                       vm.selectPartner(fresh);
                                     }
@@ -506,12 +557,12 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   /// TAB BUTTON
   /// =========================================
   Widget _tabButton(
-      BuildContext context,
-      PartnerAuth vm,
-      PartnerDetailTab tab,
-      String label,
-      IconData icon,
-      ) {
+    BuildContext context,
+    PartnerAuth vm,
+    PartnerDetailTab tab,
+    String label,
+    IconData icon,
+  ) {
     final selected = vm.currentTab == tab;
 
     return Padding(
@@ -589,9 +640,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
-          Text(
+          SelectableText(
             value.isEmpty ? "-" : value,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, height: 1.4),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -599,7 +650,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   }
 
   Widget _buildDetailTab(PartnerModel partner) {
-    final hasCoords = partner.latitude != null &&
+    final hasCoords =
+        partner.latitude != null &&
         partner.longitude != null &&
         partner.latitude!.isNotEmpty &&
         partner.longitude!.isNotEmpty;
@@ -628,7 +680,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
               _fieldCard("Longitude", partner.longitude ?? "-"),
               _fieldCard(
                 "Last Location Time",
-                (partner.locationTime != null && partner.locationTime!.isNotEmpty)
+                (partner.locationTime != null &&
+                        partner.locationTime!.isNotEmpty)
                     ? _formatLocationTime(partner.locationTime!)
                     : "-",
               ),
@@ -665,6 +718,11 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             children: [
               _fieldCard("Gender", partner.gender),
               _fieldCard("Experience", partner.experience),
+              _fieldCard("Category", partner.category),
+              _fieldCard("Sub Category", partner.subCategory),
+
+              _fieldCard("Category ID", partner.categoryId.toString()),
+              _fieldCard("Sub Category ID", partner.subCategoryId.toString()),
               _fieldCard("City", partner.city),
               _fieldCard("State", partner.state),
             ],
@@ -680,7 +738,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             runSpacing: 10,
             children: partner.services.isEmpty
                 ? [_smallInfoChip("No services added")]
-                : partner.services.map((service) => _smallInfoChip(service)).toList(),
+                : partner.services
+                      .map((service) => _smallInfoChip(service))
+                      .toList(),
           ),
         ],
       ),
@@ -717,7 +777,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             spacing: 16,
             runSpacing: 16,
             children: [
-
               _imageCard(
                 title: "Aadhaar Front",
                 imageUrl: partner.aadhaarFrontImage,
@@ -732,10 +791,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                 title: "Aadhaar Back",
                 imageUrl: partner.aadhaarBackImage,
               ),
-              _imageCard(
-                title: "PAN Card",
-                imageUrl: partner.panCardImage,
-              ),
+              _imageCard(title: "PAN Card", imageUrl: partner.panCardImage),
             ],
           ),
           const SizedBox(height: 20),
@@ -955,10 +1011,41 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             title,
             style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
+
           const SizedBox(height: 8),
-          Text(
-            value.isEmpty ? "-" : value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: SelectableText(
+                  value.isEmpty ? "-" : value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              if (value.isNotEmpty)
+                IconButton(
+                  tooltip: "Copy",
+                  splashRadius: 18,
+                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: value));
+
+                    if (!mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("$title copied"),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                ),
+            ],
           ),
         ],
       ),
@@ -968,10 +1055,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   /// =========================================
   /// IMAGE CARD
   /// =========================================
-  Widget _imageCard({
-    required String title,
-    required String imageUrl,
-  }) {
+  Widget _imageCard({required String title, required String imageUrl}) {
     return Container(
       width: 260,
       padding: const EdgeInsets.all(14),
@@ -985,10 +1069,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           ClipRRect(
@@ -999,15 +1080,15 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
               color: Colors.grey.shade200,
               child: imageUrl.isNotEmpty
                   ? Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Center(
-                  child: Icon(Icons.broken_image, size: 40),
-                ),
-              )
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Center(
+                        child: Icon(Icons.broken_image, size: 40),
+                      ),
+                    )
                   : const Center(
-                child: Icon(Icons.image_not_supported, size: 40),
-              ),
+                      child: Icon(Icons.image_not_supported, size: 40),
+                    ),
             ),
           ),
         ],
@@ -1116,7 +1197,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           const SizedBox(height: 10),
           ElevatedButton.icon(
             onPressed: () {
-              final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+              final url =
+                  'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
               html.window.open(url, '_blank');
             },
             icon: const Icon(Icons.map, size: 16),

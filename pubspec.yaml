@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.5.5
   pro_image_editor: ^12.6.0
   extended_image: ^10.0.1
+  shimmer: ^3.0.0
 
 
 

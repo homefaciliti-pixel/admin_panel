@@ -8,8 +8,11 @@ class ActivePartnerAuth extends ChangeNotifier {
   bool isLoading = false;
 
   List<ActivePartnerModel> partners = [];
+  bool _loaded = false;
+  Future<void> getActivePartners({bool forceRefresh = false}) async {
 
-  Future<void> getActivePartners() async {
+    if (_loaded && !forceRefresh) return;
+
     try {
       isLoading = true;
       notifyListeners();
@@ -26,6 +29,8 @@ class ActivePartnerAuth extends ChangeNotifier {
         partners = (data["data"] as List)
             .map((e) => ActivePartnerModel.fromJson(e))
             .toList();
+
+        _loaded = true;
       }
     } catch (e) {
       debugPrint("Active Partner Error: $e");

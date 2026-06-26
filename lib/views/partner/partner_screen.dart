@@ -1,3 +1,4 @@
+import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/partner/partner_auth.dart';
@@ -92,14 +93,12 @@ class _PartnerScreenState extends State<PartnerScreen> {
 
               /// PARTNER TABLE
               Expanded(
-                child: PartnerTable(
-                  // Important: yahan typed PartnerModel list bhejo
+                child: vm.isLoading
+                    ? const AppTableShimmer()
+                    : PartnerTable(
                   partners: vm.paginatedPartners,
-
                   vm: vm,
                   isPending: false,
-
-                  /// NAME CLICK
                   onPartnerTap: (PartnerModel item) {
                     Navigator.push(
                       context,
@@ -108,8 +107,6 @@ class _PartnerScreenState extends State<PartnerScreen> {
                       ),
                     );
                   },
-
-                  /// EDIT CLICK
                   onEditTap: (PartnerModel item) {
                     Navigator.push(
                       context,
