@@ -10,6 +10,7 @@ class BookingAuth extends ChangeNotifier {
 
   bool isLoading = false;
   String? error;
+  bool _loaded = false;
 
   List<BookingModel> _allBookings = [];
   List<BookingModel> bookingEarnings = [];
@@ -17,14 +18,14 @@ class BookingAuth extends ChangeNotifier {
   double totalBookingEarning = 0;
   int totalBookingCount = 0;
 
-  Future<void> loadBookings() async {
+  Future<void> loadBookings({bool forceRefresh = false}) async {
+    if (_loaded && !forceRefresh) return;
     try {
       isLoading = true;
+      error = null;
       notifyListeners();
 
       final response = await http.get(Uri.parse(baseUrl));
-
-      debugPrint(response.body);
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -39,6 +40,8 @@ class BookingAuth extends ChangeNotifier {
         _allBookings = list.map((e) => BookingModel.fromJson(e)).toList();
 
         bookingEarnings = List.from(_allBookings);
+
+        _loaded = true;
       }
     } catch (e) {
       error = e.toString();

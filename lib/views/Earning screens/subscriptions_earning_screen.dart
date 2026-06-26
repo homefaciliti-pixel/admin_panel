@@ -1,3 +1,4 @@
+import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,12 +12,16 @@ class SubscriptionsEarningScreen extends StatefulWidget {
       _SubscriptionsEarningScreenState();
 }
 
-class _SubscriptionsEarningScreenState extends State<SubscriptionsEarningScreen> {
+class _SubscriptionsEarningScreenState
+    extends State<SubscriptionsEarningScreen> {
   @override
   void initState() {
     super.initState();
 
     /// Screen open hote hi API call
+
+
+
     Future.microtask(() {
       context.read<SubscriptionAuth>().loadSubscriptions();
     });
@@ -90,11 +95,7 @@ class _SubscriptionsEarningScreenState extends State<SubscriptionsEarningScreen>
               /// LOADING / ERROR / EMPTY STATE
               /// =====================================
               if (vm.isLoading)
-                const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
+                const Expanded(child: AppTableShimmer(rows: 8, columns: 7))
               else if (vm.error != null)
                 Expanded(
                   child: Center(
@@ -105,103 +106,101 @@ class _SubscriptionsEarningScreenState extends State<SubscriptionsEarningScreen>
                   ),
                 )
               else if (vm.subscriptionEarnings.isEmpty)
-                  const Expanded(
-                    child: Center(
-                      child: Text("No Subscription Found"),
-                    ),
-                  )
-                else ...[
-                    /// =====================================
-                    /// SUMMARY CARDS
-                    /// =====================================
-                    Wrap(
-                      spacing: 20,
-                      runSpacing: 20,
-                      children: [
-                        _summaryCard(
-                          title: "Total Subscription Earnings",
-                          value:
+                const Expanded(
+                  child: Center(child: Text("No Subscription Found")),
+                )
+              else ...[
+                /// =====================================
+                /// SUMMARY CARDS
+                /// =====================================
+                Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  children: [
+                    _summaryCard(
+                      title: "Total Subscription Earnings",
+                      value:
                           "₹${vm.totalSubscriptionEarning.toStringAsFixed(0)}",
-                          icon: Icons.workspace_premium,
-                        ),
-                        _summaryCard(
-                          title: "Total Plans",
-                          value: "${vm.totalSubscriptionCount}",
-                          icon: Icons.receipt_long,
+                      icon: Icons.workspace_premium,
+                    ),
+                    _summaryCard(
+                      title: "Total Plans",
+                      value: "${vm.totalSubscriptionCount}",
+                      icon: Icons.receipt_long,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 25),
+
+                /// =====================================
+                /// SUBSCRIPTIONS TABLE
+                /// =====================================
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 25),
-
-                    /// =====================================
-                    /// SUBSCRIPTIONS TABLE
-                    /// =====================================
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width - 320,
                             ),
-                          ],
-                        ),
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  minWidth: MediaQuery.of(context).size.width - 320,
-                                ),
-                                child: DataTable(
-                                  headingRowColor: WidgetStateProperty.all(
-                                    const Color(0xff111827),
-                                  ),
-                                  headingTextStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  columns: const [
-                                    DataColumn(label: Text("ID")),
-                                    DataColumn(label: Text("PARTNER NAME")),
-                                    DataColumn(label: Text("AMOUNT")),
-                                    DataColumn(label: Text("PAYMENT METHOD")),
-                                    DataColumn(label: Text("PURCHASE DATE")),
-                                    DataColumn(label: Text("STATUS")),
-                                  ],
-                                  rows: vm.subscriptionEarnings.map((item) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(Text(item.id.toString())),
-                                        DataCell(Text(item.partnerName)),
-                                        DataCell(
-                                          Text("₹${item.amount.toStringAsFixed(0)}"),
-                                        ),
-                                        DataCell(Text(item.paymentMethod)),
-                                        DataCell(Text(item.purchaseDate)),
-                                        DataCell(Text(item.status)),
-                                      ],
-                                    );
-                                  }).toList(),
-                                ),
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                const Color(0xff111827),
                               ),
+                              headingTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              columns: const [
+                                DataColumn(label: Text("ID")),
+                                DataColumn(label: Text("PARTNER NAME")),
+                                DataColumn(label: Text("AMOUNT")),
+                                DataColumn(label: Text("PAYMENT METHOD")),
+                                DataColumn(label: Text("PURCHASE DATE")),
+                                DataColumn(label: Text("STATUS")),
+                              ],
+                              rows: vm.subscriptionEarnings.map((item) {
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(item.id.toString())),
+                                    DataCell(Text(item.partnerName)),
+                                    DataCell(
+                                      Text(
+                                        "₹${item.amount.toStringAsFixed(0)}",
+                                      ),
+                                    ),
+                                    DataCell(Text(item.paymentMethod)),
+                                    DataCell(Text(item.purchaseDate)),
+                                    DataCell(Text(item.status)),
+                                  ],
+                                );
+                              }).toList(),
                             ),
                           ),
                         ),
                       ),
-                    )
-
-
-                  ],
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         );
@@ -246,10 +245,7 @@ class _SubscriptionsEarningScreenState extends State<SubscriptionsEarningScreen>
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 6),
                 Text(

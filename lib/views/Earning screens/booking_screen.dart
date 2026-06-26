@@ -1,4 +1,5 @@
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
+import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,11 +90,7 @@ class _BookingScreenState extends State<BookingScreen> {
               /// LOADING / ERROR / EMPTY STATE
               /// =====================================
               if (vm.isLoading)
-                const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
+                const Expanded(child: AppTableShimmer(rows: 8, columns: 7))
               else if (vm.error != null)
                 Expanded(
                   child: Center(
@@ -104,105 +101,107 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                 )
               else if (vm.bookingEarnings.isEmpty)
-                  const Expanded(
-                    child: Center(
-                      child: Text("No Booking Found"),
+                const Expanded(child: Center(child: Text("No Booking Found")))
+              else ...[
+                /// =====================================
+                /// SUMMARY CARDS
+                /// =====================================
+                Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  children: [
+                    _summaryCard(
+                      title: "Total Booking Earnings",
+                      value: "₹${vm.totalBookingEarning.toStringAsFixed(0)}",
+                      icon: Icons.currency_rupee,
                     ),
-                  )
-                else ...[
-                    /// =====================================
-                    /// SUMMARY CARDS
-                    /// =====================================
-                    Wrap(
-                      spacing: 20,
-                      runSpacing: 20,
-                      children: [
-                        _summaryCard(
-                          title: "Total Booking Earnings",
-                          value: "₹${vm.totalBookingEarning.toStringAsFixed(0)}",
-                          icon: Icons.currency_rupee,
-                        ),
-                        _summaryCard(
-                          title: "Total Transactions",
-                          value: "${vm.totalBookingCount}",
-                          icon: Icons.receipt_long,
+                    _summaryCard(
+                      title: "Total Transactions",
+                      value: "${vm.totalBookingCount}",
+                      icon: Icons.receipt_long,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 25),
+
+                /// =====================================
+                /// BOOKINGS TABLE
+                /// =====================================
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 25),
-
-                    /// =====================================
-                    /// BOOKINGS TABLE
-                    /// =====================================
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowColor: WidgetStateProperty.all(
+                              const Color(0xff111827),
                             ),
-                          ],
-                        ),
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(
-                                headingRowColor: WidgetStateProperty.all(
-                                  const Color(0xff111827),
-                                ),
-                                headingTextStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                columns: const [
-                                  DataColumn(label: Text("TRANSACTION ID")),
-                                  DataColumn(label: Text("SERVICE AMOUNT")),
-                                  DataColumn(label: Text("PAYMENT METHOD")),
-                                  DataColumn(label: Text("EXTRA SERVICE AMOUNT")),
-                                  DataColumn(label: Text("EXTRA SERVICE PAYMENT METHOD")),
-                                  DataColumn(label: Text("TOTAL AMOUNT")),
-                                  DataColumn(label: Text("ORDER DATE")),
-                                ],
-                                rows: vm.bookingEarnings.map((item) {
-                                  return DataRow(
-                                    cells: [
-                                      DataCell(Text(item.transactionId)),
-                                      DataCell(
-                                        Text("₹${item.serviceAmount.toStringAsFixed(0)}"),
-                                      ),
-                                      DataCell(Text(item.paymentMethod)),
-                                      DataCell(
-                                        Text("₹${item.extraServiceAmount.toStringAsFixed(0)}"),
-                                      ),
-                                      DataCell(Text(item.extraServicePaymentMethod)),
-                                      DataCell(
-                                        Text("₹${item.totalAmount.toStringAsFixed(0)}"),
-                                      ),
-                                      DataCell(Text(item.orderDate)),
-                                    ],
-                                  );
-                                }).toList(),
+                            headingTextStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            columns: const [
+                              DataColumn(label: Text("TRANSACTION ID")),
+                              DataColumn(label: Text("SERVICE AMOUNT")),
+                              DataColumn(label: Text("PAYMENT METHOD")),
+                              DataColumn(label: Text("EXTRA SERVICE AMOUNT")),
+                              DataColumn(
+                                label: Text("EXTRA SERVICE PAYMENT METHOD"),
                               ),
-                            ),
+                              DataColumn(label: Text("TOTAL AMOUNT")),
+                              DataColumn(label: Text("ORDER DATE")),
+                            ],
+                            rows: vm.bookingEarnings.map((item) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(item.transactionId)),
+                                  DataCell(
+                                    Text(
+                                      "₹${item.serviceAmount.toStringAsFixed(0)}",
+                                    ),
+                                  ),
+                                  DataCell(Text(item.paymentMethod)),
+                                  DataCell(
+                                    Text(
+                                      "₹${item.extraServiceAmount.toStringAsFixed(0)}",
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(item.extraServicePaymentMethod),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      "₹${item.totalAmount.toStringAsFixed(0)}",
+                                    ),
+                                  ),
+                                  DataCell(Text(item.orderDate)),
+                                ],
+                              );
+                            }).toList(),
                           ),
                         ),
                       ),
-                    )
-
-
-                  ],
-
-
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         );
@@ -241,10 +240,7 @@ class _BookingScreenState extends State<BookingScreen> {
               color: const Color(0xff111827),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-            ),
+            child: Icon(icon, color: Colors.white),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -253,10 +249,7 @@ class _BookingScreenState extends State<BookingScreen> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 6),
                 Text(

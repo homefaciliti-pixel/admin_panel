@@ -13,6 +13,8 @@ class UserViewmodel extends ChangeNotifier {
   /// Selected user for details popup
   UserModel? selectedUser;
 
+  bool _usersLoaded = false;
+
   bool isLoading = false;
   String? errorMessage;
 
@@ -44,7 +46,8 @@ class UserViewmodel extends ChangeNotifier {
   }
 
   /// Fetch users from backend
-  Future<void> fetchUsers() async {
+  Future<void> fetchUsers({bool forceRefresh = false}) async {
+    if (_usersLoaded && !forceRefresh) return;
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -52,9 +55,7 @@ class UserViewmodel extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('https://adminbackend-1-h03r.onrender.com/api/users'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        headers: const {'Content-Type': 'application/json'},
       );
 
       final decoded = jsonDecode(response.body);
@@ -71,6 +72,8 @@ class UserViewmodel extends ChangeNotifier {
               .toList();
 
           _applyFilters();
+
+          _usersLoaded = true;
         } else {
           errorMessage = 'Users data format invalid hai';
         }
@@ -79,9 +82,11 @@ class UserViewmodel extends ChangeNotifier {
       }
     } catch (e) {
       errorMessage = 'API error: $e';
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
 
-    isLoading = false;
     notifyListeners();
   }
 
@@ -222,12 +227,8 @@ class UserViewmodel extends ChangeNotifier {
   Future<void> fetchUserDetails(int id) async {
     try {
       final response = await http.get(
-        Uri.parse(
-          'https://adminbackend-1-h03r.onrender.com/api/users/$id',
-        ),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        Uri.parse('https://adminbackend-1-h03r.onrender.com/api/users/$id'),
+        headers: const {'Content-Type': 'application/json'},
       );
 
       final decoded = jsonDecode(response.body);
@@ -265,9 +266,7 @@ class UserViewmodel extends ChangeNotifier {
     try {
       final response = await http.delete(
         Uri.parse('https://adminbackend-1-h03r.onrender.com/api/users/$id'),
-        headers: const {
-          'Content-Type': 'application/json',
-        },
+        headers: const {'Content-Type': 'application/json'},
       );
 
       final decoded = jsonDecode(response.body);

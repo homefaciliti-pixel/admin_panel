@@ -10,6 +10,7 @@ class SubscriptionAuth extends ChangeNotifier {
 
   bool isLoading = false;
   String? error;
+  bool _loaded = false;
 
   List<SubscriptionModel> _allSubscriptions = [];
   List<SubscriptionModel> subscriptionEarnings = [];
@@ -18,7 +19,8 @@ class SubscriptionAuth extends ChangeNotifier {
   double totalSubscriptionEarning = 0;
   int totalSubscriptionCount = 0;
 
-  Future<void> loadSubscriptions() async {
+  Future<void> loadSubscriptions({bool forceRefresh = false}) async {
+    if (_loaded && !forceRefresh ) return;
     try {
       isLoading = true;
       error = null;
@@ -49,6 +51,8 @@ class SubscriptionAuth extends ChangeNotifier {
         subscriptionEarnings = List.from(_allSubscriptions);
       } else {
         error = 'Subscription API error: ${response.statusCode}';
+
+        _loaded; true;
       }
     } catch (e) {
       error = e.toString();

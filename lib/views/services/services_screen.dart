@@ -64,8 +64,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     onPressed: vm.isLoading
                         ? null
                         : () {
-                      _showServiceDialog(context, vm);
-                    },
+                            _showServiceDialog(context, vm);
+                          },
                     icon: const Icon(Icons.add),
                     label: const Text("Add New"),
                     style: ElevatedButton.styleFrom(
@@ -98,13 +98,16 @@ class _ServiceScreenState extends State<ServiceScreen> {
                         DropdownMenuItem(value: 10, child: Text("10 Entries")),
                         DropdownMenuItem(value: 20, child: Text("20 Entries")),
                         DropdownMenuItem(value: 50, child: Text("50 Entries")),
-                        DropdownMenuItem(value: 100, child: Text("100 Entries")),
+                        DropdownMenuItem(
+                          value: 100,
+                          child: Text("100 Entries"),
+                        ),
                       ],
                       onChanged: vm.isLoading
                           ? null
                           : (value) {
-                        if (value != null) vm.changeEntries(value);
-                      },
+                              if (value != null) vm.changeEntries(value);
+                            },
                     ),
                   ),
                   const Spacer(),
@@ -137,65 +140,63 @@ class _ServiceScreenState extends State<ServiceScreen> {
               /// TABLE AREA
               Expanded(
                 child: vm.isLoading
-                    ? const Center(
-                  child: CircularProgressIndicator(),
-                )
+                    ? const Center(child: CircularProgressIndicator())
                     : vm.errorMessage != null
                     ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        vm.errorMessage!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.w600,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              vm.errorMessage!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {
+                                vm.fetchServices();
+                              },
+                              child: const Text("Retry"),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Scrollbar(
+                        controller: _horizontalController,
+                        thumbVisibility: true,
+                        trackVisibility: true,
+                        child: SingleChildScrollView(
+                          controller: _horizontalController,
+                          scrollDirection: Axis.horizontal,
+                          child: SizedBox(
+                            width: 1850,
+                            child: ServiceTable(
+                              vm: vm,
+                              onEdit: (item) {
+                                _showServiceDialog(context, vm, item: item);
+                              },
+                              onDelete: (item) async {
+                                final ok = await _showDeleteDialog(
+                                  context,
+                                  vm,
+                                  item.id,
+                                  item.title,
+                                );
+                                if (ok == true && mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Service deleted"),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () {
-                          vm.fetchServices();
-                        },
-                        child: const Text("Retry"),
-                      ),
-                    ],
-                  ),
-                )
-                    : Scrollbar(
-                  controller: _horizontalController,
-                  thumbVisibility: true,
-                  trackVisibility: true,
-                  child: SingleChildScrollView(
-                    controller: _horizontalController,
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: 1850,
-                      child: ServiceTable(
-                        vm: vm,
-                        onEdit: (item) {
-                          _showServiceDialog(context, vm, item: item);
-                        },
-                        onDelete: (item) async {
-                          final ok = await _showDeleteDialog(
-                            context,
-                            vm,
-                            item.id,
-                            item.title,
-                          );
-                          if (ok == true && mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Service deleted"),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ),
               ),
 
               const SizedBox(height: 15),
@@ -245,8 +246,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             onChanged: vm.isLoading
                                 ? null
                                 : (value) {
-                              if (value != null) vm.changeEntries(value);
-                            },
+                                    if (value != null) vm.changeEntries(value);
+                                  },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -311,12 +312,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   void _showServiceDialog(
-      BuildContext context,
-      ServiceAuth vm, {
-        ServiceModel? item,
-      }) {
-    final categoriesProvider =
-        Provider.of<AuthCategories>(context, listen: false);
+    BuildContext context,
+    ServiceAuth vm, {
+    ServiceModel? item,
+  }) {
+    final categoriesProvider = Provider.of<AuthCategories>(
+      context,
+      listen: false,
+    );
     if (categoriesProvider.categories.isEmpty) {
       categoriesProvider.fetchCategories();
     }
@@ -358,287 +361,309 @@ class _ServiceScreenState extends State<ServiceScreen> {
             final categoriesList = catVm.categories;
             return StatefulBuilder(
               builder: (context, setState) {
-            Future<void> pickImage() async {
-              final picker = ImagePicker();
-              final XFile? picked =
-              await picker.pickImage(source: ImageSource.gallery);
+                Future<void> pickImage() async {
+                  final picker = ImagePicker();
+                  final XFile? picked = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
 
-              if (picked != null) {
-                final bytes = await picked.readAsBytes();
-                setState(() {
-                  pickedImageBytes = bytes.toList();
-                });
-              }
-            }
+                  if (picked != null) {
+                    final bytes = await picked.readAsBytes();
+                    setState(() {
+                      pickedImageBytes = bytes.toList();
+                    });
+                  }
+                }
 
-            Widget buildImagePreview() {
-              if (pickedImageBytes != null && pickedImageBytes!.isNotEmpty) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.memory(
-                    Uint8List.fromList(pickedImageBytes!),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 150,
-                  ),
-                );
-              }
-
-              if (existingImageUrl != null && existingImageUrl.isNotEmpty) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.network(
-                    existingImageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 140,
-                    errorBuilder: (_, __, ___) {
-                      return const Center(
-                        child: Icon(Icons.image, size: 32),
-                      );
-                    },
-                  ),
-                );
-              }
-
-              return const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add_photo_alternate_outlined, size: 32),
-                  SizedBox(height: 8),
-                  Text("Tap to select image from gallery"),
-                ],
-              );
-            }
-
-            return AlertDialog(
-              title: Text(item == null ? "Add Service" : "Edit Service"),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                  width: 520,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: pickImage,
-                        child: Container(
-                          height: 140,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: buildImagePreview(),
-                        ),
+                Widget buildImagePreview() {
+                  if (pickedImageBytes != null &&
+                      pickedImageBytes!.isNotEmpty) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.memory(
+                        Uint8List.fromList(pickedImageBytes!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 150,
                       ),
-                      const SizedBox(height: 14),
-                      _dialogField(titleController, "Title"),
-                      const SizedBox(height: 14),
-                      categoriesList.isEmpty
-                          ? _dialogField(categoryController, "Category ID")
-                          : DropdownButtonFormField<String>(
-                              value: categoriesList.any((cat) => cat.id == categoryController.text)
-                                  ? categoryController.text
-                                  : null,
-                              decoration: const InputDecoration(
-                                labelText: "Category",
-                                border: OutlineInputBorder(),
+                    );
+                  }
+
+                  if (existingImageUrl != null && existingImageUrl.isNotEmpty) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.network(
+                        existingImageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 140,
+                        errorBuilder: (_, __, ___) {
+                          return const Center(
+                            child: Icon(Icons.image, size: 32),
+                          );
+                        },
+                      ),
+                    );
+                  }
+
+                  return const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_photo_alternate_outlined, size: 32),
+                      SizedBox(height: 8),
+                      Text("Tap to select image from gallery"),
+                    ],
+                  );
+                }
+
+                return AlertDialog(
+                  title: Text(item == null ? "Add Service" : "Edit Service"),
+                  content: SingleChildScrollView(
+                    child: SizedBox(
+                      width: 520,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: pickImage,
+                            child: Container(
+                              height: 140,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
-                              items: categoriesList.map((cat) {
-                                return DropdownMenuItem<String>(
-                                  value: cat.id,
-                                  child: Text('${cat.title} (ID: ${cat.id})'),
+                              child: buildImagePreview(),
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(titleController, "Title"),
+                          const SizedBox(height: 14),
+                          categoriesList.isEmpty
+                              ? _dialogField(categoryController, "Category ID")
+                              : DropdownButtonFormField<String>(
+                                  value:
+                                      categoriesList.any(
+                                        (cat) =>
+                                            cat.id == categoryController.text,
+                                      )
+                                      ? categoryController.text
+                                      : null,
+                                  decoration: const InputDecoration(
+                                    labelText: "Category",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  items: categoriesList.map((cat) {
+                                    return DropdownMenuItem<String>(
+                                      value: cat.id,
+                                      child: Text(
+                                        '${cat.title} (ID: ${cat.id})',
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      categoryController.text = val ?? "";
+                                    });
+                                  },
+                                ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            priceController,
+                            "Price",
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            cutPriceController,
+                            "Cut Price",
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            discountPercentController,
+                            "Discount %",
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            descriptionController,
+                            "Description",
+                            maxLines: 3,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            ratingController,
+                            "Rating",
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(
+                            reviewsController,
+                            "Reviews Count",
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 14),
+                          _dialogField(timeController, "Service Time"),
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Service Highlights",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey.shade800,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: highlightController,
+                                  decoration: const InputDecoration(
+                                    hintText: "Add highlight text",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  final text = highlightController.text.trim();
+                                  if (text.isNotEmpty) {
+                                    setState(() {
+                                      highlights.add(text);
+                                      highlightController.clear();
+                                    });
+                                  }
+                                },
+                                child: const Text("Add"),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          if (highlights.isNotEmpty)
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: highlights.asMap().entries.map((entry) {
+                                return Chip(
+                                  label: Text(entry.value),
+                                  deleteIcon: const Icon(Icons.close, size: 18),
+                                  onDeleted: () {
+                                    setState(() {
+                                      highlights.removeAt(entry.key);
+                                    });
+                                  },
                                 );
                               }).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  categoryController.text = val ?? "";
-                                });
-                              },
                             ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        priceController,
-                        "Price",
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        cutPriceController,
-                        "Cut Price",
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        discountPercentController,
-                        "Discount %",
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        descriptionController,
-                        "Description",
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        ratingController,
-                        "Rating",
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(
-                        reviewsController,
-                        "Reviews Count",
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 14),
-                      _dialogField(timeController, "Service Time"),
-                      const SizedBox(height: 16),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Service Highlights",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.grey.shade800,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: highlightController,
-                              decoration: const InputDecoration(
-                                hintText: "Add highlight text",
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              final text = highlightController.text.trim();
-                              if (text.isNotEmpty) {
-                                setState(() {
-                                  highlights.add(text);
-                                  highlightController.clear();
-                                });
-                              }
-                            },
-                            child: const Text("Add"),
-                          ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      if (highlights.isNotEmpty)
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: highlights.asMap().entries.map((entry) {
-                            return Chip(
-                              label: Text(entry.value),
-                              deleteIcon: const Icon(Icons.close, size: 18),
-                              onDeleted: () {
-                                setState(() {
-                                  highlights.removeAt(entry.key);
-                                });
-                              },
-                            );
-                          }).toList(),
-                        ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text("Cancel"),
-                ),
-                ElevatedButton(
-                  onPressed: vm.isLoading
-                      ? null
-                      : () async {
-                    final title = titleController.text.trim();
-                    final categoryId = categoryController.text.trim().isEmpty ? null : categoryController.text.trim();
-                    final price =
-                        double.tryParse(priceController.text.trim()) ?? 0;
-                    final cutPrice =
-                        double.tryParse(cutPriceController.text.trim()) ?? 0;
-                    final discountPercent =
-                        double.tryParse(discountPercentController.text.trim()) ?? 0;
-                    final description = descriptionController.text.trim();
-                    final rating =
-                        double.tryParse(ratingController.text.trim()) ?? 0;
-                    final reviewsCount =
-                        int.tryParse(reviewsController.text.trim()) ?? 0;
-                    final serviceTime = timeController.text.trim();
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text("Cancel"),
+                    ),
+                    ElevatedButton(
+                      onPressed: vm.isLoading
+                          ? null
+                          : () async {
+                              final title = titleController.text.trim();
+                              final categoryId =
+                                  categoryController.text.trim().isEmpty
+                                  ? null
+                                  : categoryController.text.trim();
+                              final price =
+                                  double.tryParse(
+                                    priceController.text.trim(),
+                                  ) ??
+                                  0;
+                              final cutPrice =
+                                  double.tryParse(
+                                    cutPriceController.text.trim(),
+                                  ) ??
+                                  0;
+                              final discountPercent =
+                                  double.tryParse(
+                                    discountPercentController.text.trim(),
+                                  ) ??
+                                  0;
+                              final description = descriptionController.text
+                                  .trim();
+                              final rating =
+                                  double.tryParse(
+                                    ratingController.text.trim(),
+                                  ) ??
+                                  0;
+                              final reviewsCount =
+                                  int.tryParse(reviewsController.text.trim()) ??
+                                  0;
+                              final serviceTime = timeController.text.trim();
 
-                    if (title.isEmpty || description.isEmpty) {
-                      return;
-                    }
+                              if (title.isEmpty || description.isEmpty) {
+                                return;
+                              }
 
-                    final ok = item == null
-                        ? await vm.addService(
-                      title: title,
-                      categoryId: categoryId,
-                      price: price,
-                      cutPrice: cutPrice,
-                      discountPercent: discountPercent,
-                      imageBytes: pickedImageBytes,
-                      description: description,
-                      highlights: highlights,
-                      rating: rating,
-                      reviewsCount: reviewsCount,
-                      serviceTime: serviceTime,
-                    )
-                        : await vm.updateService(
-                      id: item.id,
-                      title: title,
-                      categoryId: categoryId,
-                      price: price,
-                      cutPrice: cutPrice,
-                      discountPercent: discountPercent,
-                      imageBytes: pickedImageBytes,
-                      description: description,
-                      highlights: highlights,
-                      rating: rating,
-                      reviewsCount: reviewsCount,
-                      serviceTime: serviceTime,
-                      status: item.status,
-                      existingImageUrl: item.imageUrl,
-                    );
+                              final ok = item == null
+                                  ? await vm.addService(
+                                      title: title,
+                                      categoryId: categoryId,
+                                      price: price,
+                                      cutPrice: cutPrice,
+                                      discountPercent: discountPercent,
+                                      imageBytes: pickedImageBytes,
+                                      description: description,
+                                      highlights: highlights,
+                                      rating: rating,
+                                      reviewsCount: reviewsCount,
+                                      serviceTime: serviceTime,
+                                    )
+                                  : await vm.updateService(
+                                      id: item.id,
+                                      title: title,
+                                      categoryId: categoryId,
+                                      price: price,
+                                      cutPrice: cutPrice,
+                                      discountPercent: discountPercent,
+                                      imageBytes: pickedImageBytes,
+                                      description: description,
+                                      highlights: highlights,
+                                      rating: rating,
+                                      reviewsCount: reviewsCount,
+                                      serviceTime: serviceTime,
+                                      status: item.status,
+                                      existingImageUrl: item.imageUrl,
+                                    );
 
-                    if (ok && context.mounted) {
-                      Navigator.pop(dialogContext);
-                    }
-                  },
-                  child: Text(item == null ? "Save" : "Update"),
-                ),
-              ],
+                              if (ok && context.mounted) {
+                                Navigator.pop(dialogContext);
+                              }
+                            },
+                      child: Text(item == null ? "Save" : "Update"),
+                    ),
+                  ],
+                );
+              },
             );
           },
         );
       },
     );
-      },
-    );
   }
 
-
-
-
   Widget _dialogField(
-      TextEditingController controller,
-      String label, {
-        TextInputType keyboardType = TextInputType.text,
-        int maxLines = 1,
-      }) {
+    TextEditingController controller,
+    String label, {
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
@@ -651,11 +676,11 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   Future<bool?> _showDeleteDialog(
-      BuildContext context,
-      ServiceAuth vm,
-      int id,
-      String title,
-      ) {
+    BuildContext context,
+    ServiceAuth vm,
+    int id,
+    String title,
+  ) {
     return showDialog<bool>(
       context: context,
       builder: (_) {
