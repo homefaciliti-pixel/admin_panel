@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import '../../service_Api/users/user_auth.dart';
 import '../../service_model/Users_model/user_model.dart';
 
-
 class UserTable extends StatelessWidget {
   final List<UserModel> users;
   final UserViewmodel vm;
 
-  const UserTable({
-    super.key,
-    required this.users,
-    required this.vm,
-  });
+  const UserTable({super.key, required this.users, required this.vm});
 
   /// User detail popup
   void _showUserDetails(BuildContext context, UserModel user) {
@@ -51,7 +46,12 @@ class UserTable extends StatelessWidget {
 
                 _detailRow("ID", user.id.toString()),
                 _detailRow("Name", user.name),
-                _detailRow("Mobile", user.mobile),
+                _detailRow(
+                  "Mobile",
+                  user.countryCode.isNotEmpty
+                      ? "${user.countryCode} ${user.mobile}"
+                      : user.mobile,
+                ),
                 _detailRow("Email", user.email),
                 _detailRow("Address", user.address),
                 if (user.city.isNotEmpty) _detailRow("City", user.city),
@@ -113,10 +113,7 @@ class UserTable extends StatelessWidget {
         children: [
           /// Table header
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             decoration: const BoxDecoration(
               color: Color(0xff111827),
               borderRadius: BorderRadius.only(
@@ -204,17 +201,12 @@ class UserTable extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey.shade200,
-                      ),
+                      bottom: BorderSide(color: Colors.grey.shade200),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text("${index + 1}"),
-                      ),
+                      Expanded(flex: 1, child: Text("${index + 1}")),
                       Expanded(
                         flex: 3,
                         child: InkWell(
@@ -238,7 +230,9 @@ class UserTable extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          item.mobile,
+                          item.countryCode.isNotEmpty
+                              ? "${item.countryCode} ${item.mobile}"
+                              : item.mobile,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -256,18 +250,15 @@ class UserTable extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                     if(AppPermission.isSuperAdmin)
-                     Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          tooltip: "Delete",
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
+                      if (AppPermission.isSuperAdmin)
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            tooltip: "Delete",
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _showDeleteDialog(context, item),
                           ),
-                          onPressed: () => _showDeleteDialog(context, item),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -291,14 +282,10 @@ Widget _detailRow(String title, String value) {
           width: 100,
           child: Text(
             "$title :",
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
-        Expanded(
-          child: Text(value),
-        ),
+        Expanded(child: Text(value)),
       ],
     ),
   );

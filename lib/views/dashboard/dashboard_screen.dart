@@ -87,6 +87,15 @@ class DashboardScreen extends StatelessWidget {
                       Navigator.pushNamed(context, "/partners");
                     },
                   ),
+
+                  StatCard(
+                    title: "Pending Approval",
+                    value: "${vm.pendingApproval}",
+                    icon: Icons.person,
+                    onTap: () {
+                      Navigator.pushNamed(context, "/partners");
+                    },
+                  ),
                   StatCard(
                     title: "Active Partners",
                     value: "${vm.activePartners}",

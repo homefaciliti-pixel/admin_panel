@@ -21,6 +21,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   bool _initialized = false;
   String? _resolvedAddress;
   bool _isResolvingAddress = false;
+  bool _obscureConfirmPassword = true;
+
+  bool _obscurePassword = true;
 
   @override
   void didChangeDependencies() {
@@ -122,6 +125,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     final localityController = TextEditingController(text: partner.locality);
     final addressController = TextEditingController(text: partner.address);
     final genderController = TextEditingController(text: partner.gender);
+    final countryCodeController = TextEditingController(
+      text: partner.countryCode,
+    );
     final experienceController = TextEditingController(
       text: partner.experience,
     );
@@ -159,6 +165,13 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                     controller: emailController,
                     decoration: const InputDecoration(labelText: "Email"),
                   ),
+
+                  TextField(
+                    controller: countryCodeController,
+                    decoration: const InputDecoration(
+                      labelText: "Country Code",
+                    ),
+                  ),
                   TextField(
                     controller: mobileController,
                     decoration: const InputDecoration(labelText: "Mobile"),
@@ -186,14 +199,11 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   TextField(
                     controller: experienceController,
                     decoration: const InputDecoration(labelText: "Experience"),
-
                   ),
 
                   TextField(
                     controller: categoryController,
-                    decoration: const InputDecoration(
-                      labelText: "Category",
-                    ),
+                    decoration: const InputDecoration(labelText: "Category"),
                   ),
 
                   TextField(
@@ -459,6 +469,17 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                 icon: const Icon(Icons.block),
                                 label: const Text("Disapprove"),
                               ),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  _showResetPasswordDialog(
+                                    context,
+                                    vm,
+                                    partner,
+                                  );
+                                },
+                                icon: const Icon(Icons.lock_reset),
+                                label: const Text("Reset Password"),
+                              ),
                             ],
                           ),
                         ],
@@ -668,7 +689,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
               _fieldCard("Partner ID", partner.id.toString()),
               _fieldCard("Name", partner.name),
               _fieldCard("Email", partner.email),
-              _fieldCard("Mobile", partner.mobile),
+              _fieldCard("Mobile", "${partner.countryCode} ${partner.mobile}"),
               _fieldCard("City", partner.city),
               _fieldCard("State", partner.state),
               _fieldCard("Locality", partner.locality),
@@ -1238,5 +1259,118 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     } catch (_) {
       return timeStr;
     }
+  }
+
+  void _showResetPasswordDialog(
+    BuildContext context,
+    PartnerAuth vm,
+    PartnerModel partner,
+  ) {
+    final passwordController = TextEditingController();
+    final confirmController = TextEditingController();
+
+    bool obscurePassword = true;
+    bool obscureConfirmPassword = true;
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text("Reset Partner Password"),
+
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: "New Password",
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setDialogState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextField(
+                    controller: confirmController,
+                    obscureText: _obscureConfirmPassword,
+                    decoration: InputDecoration(
+                      labelText: "Confirm Password",
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setDialogState(() {
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+
+                ElevatedButton(
+                  onPressed: () async {
+                    if (passwordController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Enter password")),
+                      );
+                      return;
+                    }
+
+                    if (passwordController.text != confirmController.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Passwords do not match")),
+                      );
+                      return;
+                    }
+
+                    final message = await vm.changePartnerPassword(
+                      partnerId: partner.id,
+                      password: passwordController.text.trim(),
+                    );
+
+                    if (!context.mounted) return;
+
+                    Navigator.pop(context);
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(message)));
+                  },
+                  child: const Text("Reset"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

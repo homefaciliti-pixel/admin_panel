@@ -3,14 +3,34 @@ import 'package:admin_panel/views/profile%20screen/manage_Admin%20screen/create%
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/App_permission/app_permission.dart';
+import '../../viewmodels/auth/login_viewmodel.dart';
+import '../auth screen/login_screen.dart';
 import 'manage_Admin screen/manage_admin_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      context.read<ProfileViewModel>().loadProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<ProfileViewModel>(context);
+    final vm = context.watch<ProfileViewModel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      vm.loadProfile();
+    });
     return Scaffold(
       backgroundColor: const Color(0xfff5f7fb),
 
@@ -216,6 +236,7 @@ class ProfileScreen extends StatelessWidget {
               childAspectRatio: 3.3,
 
               children: [
+                if (AppPermission.isSuperAdmin)
                 _actionCard(
                   title: "Manage Admins",
                   icon: Icons.admin_panel_settings,
@@ -229,17 +250,18 @@ class ProfileScreen extends StatelessWidget {
                     );
                   },
                 ),
-
+                if (AppPermission.isSuperAdmin)
                 _actionCard(
                   title: "Permissions",
                   icon: Icons.lock_outline,
                   color: Colors.orange,
                   onTap: () {
-
-                    Navigator.push(context,MaterialPageRoute(
-                        builder: (_)=>const PermissionsScreen()
-
-                    ));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PermissionsScreen(),
+                      ),
+                    );
                   },
                 ),
 
@@ -449,11 +471,18 @@ void _showLogoutDialog(BuildContext context) {
 
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context);
+              final vm = context.read<LoginViewModel>();
 
-              // logout code
+              await vm.logout();
+
+              if (!context.mounted) return;
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                (route) => false,
+              );
             },
-
             child: const Text("Logout"),
           ),
         ],

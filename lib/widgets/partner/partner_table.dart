@@ -214,9 +214,10 @@ class PartnerTable extends StatelessWidget {
                       /// MOBILE
                       Expanded(
                         flex: 2,
-                        child: Text(item.mobile),
+                        child: Text(
+                          "${item.countryCode} ${item.mobile}",
+                        ),
                       ),
-
                       /// CITY
                       Expanded(
                         flex: 2,

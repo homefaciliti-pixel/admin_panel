@@ -19,6 +19,7 @@ class UserModel {
 
   /// User state
   final String state;
+  final String countryCode;
 
   UserModel({
     required this.id,
@@ -28,6 +29,7 @@ class UserModel {
     required this.address,
     required this.city,
     required this.state,
+    required this.countryCode,
   });
 
   /// Convert backend JSON into model
@@ -40,6 +42,7 @@ class UserModel {
       address: json['address'] ?? '',
       city: json['city'] ?? '',
       state: json['state'] ?? '',
+      countryCode: json['countryCode']?.toString() ?? '',
     );
   }
 }

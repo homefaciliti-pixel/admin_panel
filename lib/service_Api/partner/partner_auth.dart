@@ -4,21 +4,14 @@ import 'package:http/http.dart' as http;
 import '../../service_model/partner/partner_model.dart';
 
 /// Partner details screen tabs
-enum PartnerDetailTab {
-  detail,
-  additional,
-  kyc,
-  wallet,
-  reviews,
-  bookings,
-}
+enum PartnerDetailTab { detail, additional, kyc, wallet, reviews, bookings }
 
 class PartnerAuth extends ChangeNotifier {
-  /// ===============================
+  // country code
+
   /// BASE URL
-  /// ===============================
-  static const String _baseUrl =
-      'https://adminbackend-1-h03r.onrender.com/api';
+
+  static const String _baseUrl = 'https://adminbackend-1-h03r.onrender.com/api';
 
   /// ===============================
   /// LIST STATE
@@ -129,7 +122,6 @@ class PartnerAuth extends ChangeNotifier {
   /// APPROVED LIST
   /// ===============================
   Future<void> loadApprovedPartners({bool forceRefresh = false}) async {
-
     if (_approvedLoaded && !forceRefresh) {
       partners = List.from(approvedPartners);
       currentPage = 1;
@@ -150,7 +142,6 @@ class PartnerAuth extends ChangeNotifier {
   /// PENDING LIST
   /// ===============================
   Future<void> loadPendingPartners({bool forceRefresh = false}) async {
-
     if (_pendingLoaded && !forceRefresh) {
       partners = List.from(pendingPartners);
       currentPage = 1;
@@ -166,6 +157,7 @@ class PartnerAuth extends ChangeNotifier {
     currentPage = 1;
     notifyListeners();
   }
+
   /// ===============================
   /// SEARCH APPROVED
   /// ===============================
@@ -266,10 +258,7 @@ class PartnerAuth extends ChangeNotifier {
       final response = await http.put(
         Uri.parse('$_baseUrl/partners/$id'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'isApproved': true,
-          'status': true,
-        }),
+        body: jsonEncode({'isApproved': true, 'status': true}),
       );
 
       if (response.statusCode == 200) {
@@ -311,10 +300,7 @@ class PartnerAuth extends ChangeNotifier {
   /// ===============================
   /// UPDATE PARTNER
   /// ===============================
-  Future<bool> updatePartner(
-      int id,
-      Map<String, dynamic> updateFields,
-      ) async {
+  Future<bool> updatePartner(int id, Map<String, dynamic> updateFields) async {
     try {
       final response = await http.put(
         Uri.parse('$_baseUrl/partners/$id'),
@@ -401,5 +387,28 @@ class PartnerAuth extends ChangeNotifier {
       partners = List.from(pendingPartners);
     }
     notifyListeners();
+  }
+
+  Future<String> changePartnerPassword({
+    required int partnerId,
+    required String password,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$_baseUrl/partners/$partnerId/password"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"password": password}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data["success"] == true) {
+        return data["message"];
+      }
+
+      return data["message"] ?? "Failed to change password";
+    } catch (e) {
+      return e.toString();
+    }
   }
 }

@@ -82,6 +82,7 @@ class DashboardViewModel extends ChangeNotifier {
     final count = _amountByName('Active Partners');
     return count > 0 ? count : activePartnersList.length;
   }
+  int get pendingApproval => _amountByName('Pending Partners');
 
   int get totalOrders => _amountByName('Total Orders');
   int get todayOrders => _amountByName('Today Orders');

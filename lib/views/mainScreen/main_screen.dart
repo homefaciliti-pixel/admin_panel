@@ -13,6 +13,7 @@ import 'package:admin_panel/views/settings/state_screen.dart';
 import 'package:admin_panel/views/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import '../../service_Api/settings/navigation_viewmodel.dart';
 import '../../widgets/drawer/admin_drawer.dart';
@@ -24,8 +25,36 @@ import '../partner/pending_partner_screen.dart';
 import '../reports/reports_screen.dart';
 import '../settings/notifications_screen.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  String adminName = "Admin";
+  String adminRole = "Admin";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAdmin();
+  }
+
+  Future<void> _loadAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (!mounted) return;
+
+    setState(() {
+      adminName = prefs.getString("name") ?? "Admin";
+
+      final role = prefs.getString("role") ?? "admin";
+
+      adminRole = role == "super_admin" ? "Super Admin" : "Admin";
+    });
+  }
 
   Widget getScreen(String page) {
     switch (page) {
@@ -217,21 +246,21 @@ class MainScreen extends StatelessWidget {
                                 ),
                                 if (isDesktop) ...[
                                   const SizedBox(width: 10),
-                                  const Column(
+                                  Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Admin",
-                                        style: TextStyle(
+                                        adminName,
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        "Control Panel",
-                                        style: TextStyle(
+                                        adminRole,
+                                        style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 12,
                                         ),

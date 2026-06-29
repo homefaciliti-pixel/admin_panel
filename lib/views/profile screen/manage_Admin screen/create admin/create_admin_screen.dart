@@ -1,150 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../service_model/magage_Admin/admin_model.dart';
 import '../../../../viewmodels/profile/manage Admins/admin_viewmodel.dart';
 
 class CreateAdminScreen extends StatefulWidget {
-  final AdminModel? admin;
-
-  const CreateAdminScreen({super.key, this.admin});
+  const CreateAdminScreen({super.key});
 
   @override
   State<CreateAdminScreen> createState() => _CreateAdminScreenState();
 }
 
 class _CreateAdminScreenState extends State<CreateAdminScreen> {
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final phoneController = TextEditingController();
-  final passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  final Map<String, bool> permissions = {
-    "Categories": false,
-    "Services": false,
-    "Partners": false,
-    "Users": false,
-    "Bookings": false,
-    "Banners": false,
-    "Reports": false,
-  };
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AdminViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Create Admin")),
-
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "Admin Name",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: phoneController,
-              decoration: const InputDecoration(
-                labelText: "Phone Number",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
             const Text(
-              "Assign Permissions",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              "Admin Email",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 10),
 
-            ...permissions.entries.map(
-              (item) => CheckboxListTile(
-                value: item.value,
-                title: Text(item.key),
-
-                onChanged: (value) {
-                  setState(() {
-                    permissions[item.key] = value!;
-                  });
-                },
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                hintText: "Enter Admin Email",
+                border: OutlineInputBorder(),
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
             SizedBox(
               width: double.infinity,
-
+              height: 50,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: vm.isLoading
+                    ? null
+                    : () async {
+                        final email = emailController.text.trim();
 
-                  final vm = Provider.of<AdminViewModel>(
-                    context,
-                    listen: false,
-                  );
+                        if (email.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Please enter email")),
+                          );
+                          return;
+                        }
 
-                  if (widget.admin == null) {
+                        if (!email.contains("@")) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter valid email"),
+                            ),
+                          );
+                          return;
+                        }
 
-                    vm.addAdmin(
-                      AdminModel(
-                        id: DateTime.now().millisecondsSinceEpoch,
-                        name: nameController.text,
-                        email: emailController.text,
-                        role: "Admin",
-                        isActive: true,
-                      ),
-                    );
+                        final admin = await vm.createAdmin(email);
 
-                  } else {
+                        if (!mounted) return;
 
-                    vm.updateAdmin(
-                      AdminModel(
-                        id: widget.admin!.id,
-                        name: nameController.text,
-                        email: emailController.text,
-                        role: widget.admin!.role,
-                        isActive: widget.admin!.isActive,
-                      ),
-                    );
-                  }
+                        if (admin != null) {
+                          // Tumhara dialog wala code
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Failed to create admin"),
+                            ),
+                          );
+                        }
+                      },
 
-                  Navigator.pop(context);
-                },
-
-                child: Text(
-                  widget.admin == null ? "Create Admin" : "Update Admin",
-                ),
+                child: vm.isLoading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text("Create Admin"),
               ),
             ),
           ],

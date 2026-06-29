@@ -3,6 +3,7 @@ import 'package:admin_panel/service_Api/Dashboard/dashboard_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Subscriptions/subscription_auth.dart';
 import 'package:admin_panel/service_Api/Order/order_auth.dart';
+import 'package:admin_panel/service_Api/country%20provider/country_provider.dart';
 import 'package:admin_panel/service_Api/pages/page_auth.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
 import 'package:admin_panel/service_Api/services/services_auth.dart';
@@ -87,6 +88,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AdminViewModel()),
 
         ChangeNotifierProvider(create: (_) => PermissionViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => CountryProvider()..getCountries(),
+        ),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
     ),

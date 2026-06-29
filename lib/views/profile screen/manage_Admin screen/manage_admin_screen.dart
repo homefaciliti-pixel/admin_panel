@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../viewmodels/profile/manage Admins/admin_viewmodel.dart';
+import '../../../widgets/mange admi table/admin_table.dart';
 import 'create admin/create_admin_screen.dart';
 
-class ManageAdminScreen extends StatelessWidget {
+class ManageAdminScreen extends StatefulWidget {
   const ManageAdminScreen({super.key});
+
+  @override
+  State<ManageAdminScreen> createState() => _ManageAdminScreenState();
+}
+
+class _ManageAdminScreenState extends State<ManageAdminScreen> {
+  final Map<int, bool> _showPassword = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminViewModel>().fetchAdmins();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +37,14 @@ class ManageAdminScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const CreateAdminScreen()),
               );
-            },
 
+              await vm.fetchAdmins();
+            },
             icon: const Icon(Icons.add),
             label: const Text("Create Admin"),
           ),
@@ -33,47 +52,9 @@ class ManageAdminScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           Expanded(
-            child: ListView.builder(
-              itemCount: vm.admins.length,
-
-              itemBuilder: (context, index) {
-                final admin = vm.admins[index];
-
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text(admin.name[0])),
-
-                    title: Text(admin.name),
-
-                    subtitle: Text(admin.email),
-
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () {
-                            // Edit Screen
-                          },
-                        ),
-
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            vm.deleteAdmin(admin.id);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            child: vm.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : AdminTable(admins: vm.admins, vm: vm),
           ),
         ],
       ),

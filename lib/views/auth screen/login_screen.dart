@@ -97,11 +97,19 @@ class LoginScreen extends StatelessWidget {
                           /// EMAIL
                           TextFormField(
                             controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
-                              labelText: "Email ID",
-                              hintText: "Enter email id",
-                              prefixIcon: const Icon(Icons.email_outlined),
+                              labelText: vm.selectedRole == "super_admin"
+                                  ? "Email ID"
+                                  : "Username",
+                              hintText: vm.selectedRole == "super_admin"
+                                  ? "Enter email id"
+                                  : "Enter username",
+                              prefixIcon: Icon(
+                                vm.selectedRole == "super_admin"
+                                    ? Icons.email_outlined
+                                    : Icons.person_outline,
+                              ),
                               filled: true,
                               fillColor: Colors.grey.shade50,
                               border: OutlineInputBorder(
@@ -128,11 +136,16 @@ class LoginScreen extends StatelessWidget {
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "Please enter email id";
+                                return vm.selectedRole == "super_admin"
+                                    ? "Please enter email id"
+                                    : "Please enter username";
                               }
-                              if (!value.contains("@")) {
+
+                              if (vm.selectedRole == "super_admin" &&
+                                  !value.contains("@")) {
                                 return "Please enter valid email";
                               }
+
                               return null;
                             },
                           ),

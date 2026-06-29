@@ -28,11 +28,7 @@ class _StatCardState extends State<StatCard> {
 
     final card = AnimatedContainer(
       duration: const Duration(milliseconds: 220),
-      transform: Matrix4.translationValues(
-        0,
-        isHover ? -3 : 0,
-        0,
-      ),
+      transform: Matrix4.translationValues(0, isHover ? -3 : 0, 0),
       padding: EdgeInsets.all(small ? 12 : 16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -55,10 +51,7 @@ class _StatCardState extends State<StatCard> {
             width: small ? 42 : 50,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF1F5A93),
-                  Color(0xFF59B14C),
-                ],
+                colors: [Color(0xFF1F5A93), Color(0xFF59B14C)],
               ),
               borderRadius: BorderRadius.circular(12),
             ),
