@@ -1,19 +1,20 @@
+import 'package:admin_panel/views/support_Screens/support_detail_screen.dart';
 import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../service_Api/partner/partner_auth.dart';
-import '../../service_model/partner/partner_model.dart';
-import '../../widgets/partner/partner_table.dart';
-import 'partner_details_screen.dart';
+import '../../service_Api/support_auth.dart';
+import '../../service_model/support model/support_model.dart';
+import '../../widgets/support_Table/support_table.dart';
 
-class PartnerScreen extends StatefulWidget {
-  const PartnerScreen({super.key});
+
+class SupportScreen extends StatefulWidget {
+  const SupportScreen({super.key});
 
   @override
-  State<PartnerScreen> createState() => _PartnerScreenState();
+  State<SupportScreen> createState() => _SupportScreenState();
 }
 
-class _PartnerScreenState extends State<PartnerScreen> {
+class _SupportScreenState extends State<SupportScreen> {
   bool _loaded = false;
 
   @override
@@ -21,10 +22,9 @@ class _PartnerScreenState extends State<PartnerScreen> {
     super.didChangeDependencies();
 
     if (!_loaded) {
-      final vm = context.read<PartnerAuth>();
+      final vm = context.read<SupportAuth>();
 
-      // Approved partners load kar rahe hain
-      vm.loadApprovedPartners();
+      vm.loadSupportTickets();
 
       _loaded = true;
     }
@@ -32,7 +32,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PartnerAuth>(
+    return Consumer<SupportAuth>(
       builder: (context, vm, child) {
         return Container(
           width: double.infinity,
@@ -40,7 +40,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// PAGE HEADER
+              /// HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -48,7 +48,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Approved Partners",
+                        "Support Tickets",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        "Home >Approved Partners > List",
+                        "Home > Support > List",
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 14,
@@ -65,13 +65,13 @@ class _PartnerScreenState extends State<PartnerScreen> {
                     ],
                   ),
 
-                  /// SEARCH FIELD
+                  /// SEARCH
                   SizedBox(
                     width: 260,
                     child: TextField(
-                      onChanged: vm.searchPartner,
+                      onChanged: vm.searchTicket,
                       decoration: InputDecoration(
-                        hintText: "Search Partner",
+                        hintText: "Search Ticket",
                         prefixIcon: const Icon(Icons.search),
                         filled: true,
                         fillColor: Colors.white,
@@ -91,36 +91,79 @@ class _PartnerScreenState extends State<PartnerScreen> {
 
               const SizedBox(height: 25),
 
-              /// PARTNER TABLE
+              /// TABLE
               Expanded(
                 child: vm.isLoading
                     ? const AppTableShimmer()
-                    : PartnerTable(
-                  partners: vm.paginatedPartners,
+                    : SupportTable(
+                  tickets: vm.paginatedTickets,
                   vm: vm,
-                  isPending: false,
-                  onPartnerTap: (PartnerModel item) {
+
+                  /// VIEW
+                  onViewTap: (SupportModel ticket) {
+                    vm.selectTicket(ticket);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => PartnerDetailsScreen(partner: item),
+                        builder: (_) => SupportDetailsScreen(
+                          ticketId: ticket.id,
+                        ),
                       ),
                     );
                   },
-                  onEditTap: (PartnerModel item) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PartnerDetailsScreen(partner: item),
-                      ),
+
+                  /// DELETE
+                  onDeleteTap: (SupportModel ticket) async {
+                    final delete = await showDialog<bool>(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          title: const Text("Delete Ticket"),
+                          content: const Text(
+                            "Are you sure you want to delete this ticket?",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, false);
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: const Text("Delete"),
+                            ),
+                          ],
+                        );
+                      },
                     );
+
+                    if (delete == true) {
+                      final success =
+                      await vm.deleteTicket(ticket.id);
+
+                      if (success && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                            Text("Ticket deleted successfully"),
+                          ),
+                        );
+                      }
+                    }
                   },
                 ),
               ),
 
               const SizedBox(height: 18),
 
-              /// PAGINATION SECTION
+              /// PAGINATION
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 18,
@@ -131,7 +174,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withOpacity(.04),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -144,14 +187,20 @@ class _PartnerScreenState extends State<PartnerScreen> {
                       children: [
                         const Text(
                           "Show",
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey.shade300),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
                           ),
                           child: DropdownButton<int>(
                             value: vm.selectedEntries,
@@ -173,6 +222,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                         const Text("entries"),
                       ],
                     ),
+
                     Row(
                       children: [
                         InkWell(
@@ -182,12 +232,16 @@ class _PartnerScreenState extends State<PartnerScreen> {
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                             child: const Icon(Icons.chevron_left),
                           ),
                         ),
+
                         const SizedBox(width: 10),
+
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 18,
@@ -205,7 +259,9 @@ class _PartnerScreenState extends State<PartnerScreen> {
                             ),
                           ),
                         ),
+
                         const SizedBox(width: 10),
+
                         InkWell(
                           onTap: vm.nextPage,
                           borderRadius: BorderRadius.circular(10),
@@ -213,7 +269,9 @@ class _PartnerScreenState extends State<PartnerScreen> {
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                             child: const Icon(Icons.chevron_right),
                           ),

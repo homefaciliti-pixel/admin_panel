@@ -10,6 +10,7 @@ import 'package:admin_panel/views/settings/city_screen.dart';
 import 'package:admin_panel/views/settings/locality_screen.dart';
 import 'package:admin_panel/views/settings/reviews_screen.dart';
 import 'package:admin_panel/views/settings/state_screen.dart';
+import 'package:admin_panel/views/support_Screens/support_screen.dart';
 import 'package:admin_panel/views/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
       case "Category":
         return const CategoryScreen();
 
-      case "All Partners":
+      case"Approved Partners":
         return const PartnerScreen();
 
       case "Pending Approval":
@@ -114,6 +115,10 @@ class _MainScreenState extends State<MainScreen> {
 
       case "Active Partners":
         return const ActivePartnerScreen();
+
+
+      case "Support":
+        return const SupportScreen();
 
       default:
         return Center(

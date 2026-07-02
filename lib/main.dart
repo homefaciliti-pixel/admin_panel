@@ -10,6 +10,7 @@ import 'package:admin_panel/service_Api/services/services_auth.dart';
 import 'package:admin_panel/service_Api/settings/banner_auth.dart';
 import 'package:admin_panel/service_Api/settings/city_auth.dart';
 import 'package:admin_panel/service_Api/settings/state_auth.dart';
+import 'package:admin_panel/service_Api/support_auth.dart';
 import 'package:admin_panel/service_Api/users/user_auth.dart';
 import 'package:admin_panel/service_Api/categories/categories_auth.dart';
 import 'package:admin_panel/service_Api/settings/notification_viewmodel.dart';
@@ -86,10 +87,11 @@ Future<void> main() async {
 
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AdminViewModel()),
+        ChangeNotifierProvider(create: (_) => SupportAuth()),
 
         ChangeNotifierProvider(create: (_) => PermissionViewModel()),
-        ChangeNotifierProvider(
-          create: (_) => CountryProvider()..getCountries(),
+        ChangeNotifierProvider( create: (_) => CountryProvider()..getCountries(),
+
         ),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),

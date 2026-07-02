@@ -1,9 +1,11 @@
-import 'dart:ui' as html;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../service_Api/Activepartners/active_partner_auth.dart';
+import '../../../service_Api/partner/partner_auth.dart';
 import '../../../service_model/active_partners_model/active_partner_model.dart';
+import '../../../views/partner/partner_details_screen.dart';
 
 class ActivePartnerTable extends StatelessWidget {
   final List<ActivePartnerModel> partners;
@@ -107,7 +109,26 @@ class ActivePartnerTable extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = partners[index];
 
-                return Container(
+                return InkWell(
+                    onTap: () async {
+                      final partnerVm = context.read<PartnerAuth>();
+
+                      final partner = await partnerVm.getPartnerDetails(
+                        int.parse(item.partnerId),
+                      );
+
+                      if (partner != null && context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PartnerDetailsScreen(
+                              partner: partner,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 18,
                     vertical: 14,
@@ -256,7 +277,12 @@ class ActivePartnerTable extends StatelessWidget {
                       ),
                     ],
                   ),
+                )
                 );
+
+
+
+
               },
             ),
           ),

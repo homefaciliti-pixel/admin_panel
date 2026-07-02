@@ -60,8 +60,8 @@ class AdminDrawer extends StatelessWidget {
               menuTile(context, vm, "Dashboard", Icons.dashboard),
               menuTile(context, vm, "Category", Icons.category),
 
-              expansionMenu(context, vm, "Partner", Icons.people, [
-                "All Partners",
+              expansionMenu(context, vm, "Partners", Icons.people, [
+                "Approved Partners",
                 "Pending Approval",
                 "Active Partners",
               ]),
