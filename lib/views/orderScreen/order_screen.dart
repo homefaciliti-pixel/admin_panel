@@ -1,6 +1,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../service_Api/Order/order_auth.dart';
 import '../../service_Api/partner/partner_auth.dart';
 import '../../service_model/order/order_model.dart';
@@ -413,89 +415,124 @@ class _OrdersScreenState extends State<OrdersScreen> {
             constraints: const BoxConstraints(maxWidth: 900),
             child: Padding(
               padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Order Details",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Order Details",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: [
-                      _detailChip("Request No", item.serviceRequestNumber),
-                      _detailChip("Service", item.serviceName),
-                      _detailChip("Status", item.status),
-                      _detailChip(
-                        "Vendor",
-                        item.vendorNumber.isEmpty ? "-" : item.vendorNumber,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      _detailCard("ID", item.id.toString()),
-                      _detailCard(
-                        "Service Request No",
-                        item.serviceRequestNumber,
-                      ),
-                      _detailCard("Service Name", item.serviceName),
-                      _detailCard(
-                        "Service Amount",
-                        "₹${item.serviceAmount.toStringAsFixed(0)}",
-                      ),
-                      _detailCard("Slot Time", item.slotTime),
-                      _detailCard("Service Date", item.serviceDate),
-                      _detailCard("City", item.city),
-                      _detailCard("Locality", item.locality),
-                      _detailCard("Status", item.status),
-                      _detailCard(
-                        "Vendor Number",
-                        item.vendorNumber.isEmpty ? "-" : item.vendorNumber,
-                      ),
-                      _detailCard(
-                        "Vendor Mobile",
-                        item.vendorMobile.isEmpty ? "-" : item.vendorMobile,
-                      ),
-                      _detailCard("Created At", item.createdAt),
-                      _detailCard("Address", item.address),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff111827),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 14,
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
                         ),
-                      ),
-                      child: const Text("Close"),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 18),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: [
+                        _detailChip("Request No", item.serviceRequestNumber),
+                        _detailChip("Service", item.serviceName),
+                        _detailChip("Status", item.status),
+                        _detailChip(
+                          "Vendor",
+                          item.vendorNumber.isEmpty ? "-" : item.vendorNumber,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _section("Customer Details", [
+                          _detailCard("Customer Name", item.customerName),
+
+                          _detailCard("Customer Mobile", item.customerMobile),
+
+                          _detailCard("Address", item.address),
+                        ]),
+
+                        _section("Service Details", [
+                          _detailCard("Request No", item.serviceRequestNumber),
+
+                          _detailCard("Service", item.serviceName),
+
+                          _detailCard("Amount", "₹${item.serviceAmount}"),
+
+                          _detailCard("Date", item.serviceDate),
+
+                          _detailCard("Slot", item.slotTime),
+                        ]),
+
+                        _section("Partner Details", [
+                          _detailCard("Partner Name", item.vendorName),
+
+                          _detailCard("Partner Mobile", item.vendorMobile),
+
+                          _detailCard("Status", item.status),
+                        ]),
+
+                        _section("Payment Details", [
+                          _detailCard("Payment", item.paymentMethod),
+                        ]),
+
+                        _section("Location Details", [
+                          _detailCard("City", item.city),
+
+                          _detailCard("Locality", item.locality),
+                          _detailCard("Latitude", item.latitude.toString()),
+                          _detailCard("Longitude", item.longitude.toString()),
+                          _detailCard(
+                            "Address",
+                            item.address,
+                          ),
+                        ]),
+
+
+                        ElevatedButton.icon(
+                          onPressed: () {
+
+                            openMap(
+                              item.latitude,
+                              item.longitude,
+                            );
+
+                          },
+                          icon: const Icon(Icons.map),
+                          label: const Text(
+                            "Open Google Maps",
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff111827),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 14,
+                          ),
+                        ),
+                        child: const Text("Close"),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -503,6 +540,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
       },
     );
   }
+
+
 
   void _showAssignVendorSheet(
     BuildContext context,
@@ -653,9 +692,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               selectedMobile = mobile;
                               selectedVendorName = name;
                             });
-
-                            print("Selected Mobile => $selectedMobile");
-                            print("Selected Name => $selectedVendorName");
                           }
                         },
                       );
@@ -839,23 +875,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget _detailCard(String title, String value) {
     return Container(
       width: 260,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
+
       decoration: BoxDecoration(
         color: const Color(0xffF8FAFC),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value.isEmpty ? "-" : value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Text(title, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+
+          const SizedBox(height: 10),
+
+          SelectableText(
+            value,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -891,6 +928,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
         labelText: label,
         border: const OutlineInputBorder(),
       ),
+    );
+  }
+
+  Widget _section(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+
+        const SizedBox(height: 12),
+
+        Wrap(spacing: 16, runSpacing: 16, children: children),
+
+        const SizedBox(height: 25),
+      ],
     );
   }
 
@@ -930,6 +986,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
         ),
       ),
+    );
+  }
+
+
+
+  Future<void> openMap(
+      double lat,
+      double lng,
+      ) async {
+
+    final url = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
+    );
+
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
     );
   }
 }

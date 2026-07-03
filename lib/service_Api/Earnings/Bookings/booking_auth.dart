@@ -18,8 +18,7 @@ class BookingAuth extends ChangeNotifier {
   double totalBookingEarning = 0;
   int totalBookingCount = 0;
 
-  Future<void> loadBookings({bool forceRefresh = false}) async {
-    if (_loaded && !forceRefresh) return;
+  Future<void> loadBookings() async {
     try {
       isLoading = true;
       error = null;
@@ -40,8 +39,6 @@ class BookingAuth extends ChangeNotifier {
         _allBookings = list.map((e) => BookingModel.fromJson(e)).toList();
 
         bookingEarnings = List.from(_allBookings);
-
-        _loaded = true;
       }
     } catch (e) {
       error = e.toString();

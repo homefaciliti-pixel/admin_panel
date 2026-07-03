@@ -8,6 +8,8 @@ class OrderModel {
   final String city;
   final String locality;
   final String status;
+  final String customerName;
+  final String customerMobile;
 
   final String vendorName;
   final String vendorMobile;
@@ -16,6 +18,10 @@ class OrderModel {
 
   final String createdAt;
   final String address;
+  final String paymentMethod;
+  final double latitude;
+  final double longitude;
+  final String source;
 
   const OrderModel({
     required this.id,
@@ -30,11 +36,17 @@ class OrderModel {
 
     required this.vendorName,
     required this.vendorMobile,
+    required this.customerName,
+    required this.customerMobile,
 
     required this.vendorNumber,
 
     required this.createdAt,
     required this.address,
+    required this.paymentMethod,
+    required this.latitude,
+    required this.longitude,
+    required this.source,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -53,9 +65,19 @@ class OrderModel {
       vendorMobile: json['vendorMobile']?.toString() ?? '',
 
       vendorNumber: json['vendorMobile']?.toString() ?? '',
+      customerName: json['customerName']?.toString() ?? '',
+
+      customerMobile: json['customerMobile']?.toString() ?? '',
 
       createdAt: json['createdAt']?.toString() ?? '',
       address: json['address']?.toString() ?? '',
+      paymentMethod: json['paymentMethod']?.toString() ?? '',
+
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+
+      source: json['source']?.toString() ?? '',
     );
   }
 
@@ -72,11 +94,16 @@ class OrderModel {
       'status': status,
 
       'vendorName': vendorName,
-
       'vendorMobile': vendorNumber,
+      'customerName': customerName,
+      'customerMobile': customerMobile,
 
       'createdAt': createdAt,
       'address': address,
+      'paymentMethod': paymentMethod,
+      'latitude': latitude,
+      'longitude': longitude,
+      'source': source,
     };
   }
 
@@ -94,6 +121,12 @@ class OrderModel {
     String? vendorMobile,
     String? createdAt,
     String? address,
+    String? customerName,
+    String? customerMobile,
+    String? paymentMethod,
+    double? latitude,
+    double? longitude,
+    String? source,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -108,11 +141,21 @@ class OrderModel {
 
       vendorName: vendorName ?? this.vendorName,
       vendorMobile: vendorMobile ?? this.vendorMobile,
+      customerName: customerName ?? this.customerName,
+
+      customerMobile: customerMobile ?? this.customerMobile,
 
       vendorNumber: vendorName ?? this.vendorNumber,
 
       createdAt: createdAt ?? this.createdAt,
       address: address ?? this.address,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+
+      latitude: latitude ?? this.latitude,
+
+      longitude: longitude ?? this.longitude,
+
+      source: source ?? this.source,
     );
   }
 }

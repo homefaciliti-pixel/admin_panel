@@ -3,6 +3,8 @@ import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'booking_details_screen.dart';
+
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
 
@@ -158,6 +160,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                             columns: const [
+                              DataColumn(label: Text("CUSTOMER")),
                               DataColumn(label: Text("TRANSACTION ID")),
                               DataColumn(label: Text("SERVICE AMOUNT")),
                               DataColumn(label: Text("PAYMENT METHOD")),
@@ -171,7 +174,37 @@ class _BookingScreenState extends State<BookingScreen> {
                             rows: vm.bookingEarnings.map((item) {
                               return DataRow(
                                 cells: [
-                                  DataCell(Text(item.transactionId)),
+
+                                  DataCell(
+                                    Text(
+                                      item.userDetails?.name ?? "Deleted User",
+                                    ),
+                                  ),
+                                  DataCell(
+                                    InkWell(
+                                      onTap: () {
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                BookingDetailsScreen(
+                                                  booking: item,
+                                                ),
+                                          ),
+                                        );
+
+                                      },
+
+                                      child: Text(
+                                        item.transactionId,
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   DataCell(
                                     Text(
                                       "₹${item.serviceAmount.toStringAsFixed(0)}",

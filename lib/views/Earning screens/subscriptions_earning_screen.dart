@@ -1,3 +1,4 @@
+import 'package:admin_panel/views/partner/partner_details_screen.dart';
 import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +20,6 @@ class _SubscriptionsEarningScreenState
     super.initState();
 
     /// Screen open hote hi API call
-
-
 
     Future.microtask(() {
       context.read<SubscriptionAuth>().loadSubscriptions();
@@ -181,7 +180,31 @@ class _SubscriptionsEarningScreenState
                                 return DataRow(
                                   cells: [
                                     DataCell(Text(item.id.toString())),
-                                    DataCell(Text(item.partnerName)),
+                                    DataCell(
+                                      InkWell(
+                                        onTap: () {
+
+                                          if(item.partnerId == null) return;
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>PartnerDetailsScreen(
+                                                partner: item.partnerDetails!,
+                                              )
+                                            ),
+                                          );
+                                        },
+
+                                        child: Text(
+                                          item.partnerName,
+                                          style: const TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     DataCell(
                                       Text(
                                         "₹${item.amount.toStringAsFixed(0)}",

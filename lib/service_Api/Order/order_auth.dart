@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../../service_model/order/order_model.dart';
 
 class OrderAuth extends ChangeNotifier {
@@ -310,4 +311,21 @@ class OrderAuth extends ChangeNotifier {
   Future<bool> updateStatus(int id, String status) async {
     return updateOrder(id, {'status': status});
   }
+
+
+  Future<void> openMap(
+      double lat,
+      double lng,
+      ) async {
+
+    final url = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
+    );
+
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
 }
