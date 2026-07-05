@@ -5,8 +5,7 @@ import '../service_model/support model/support_detail_model.dart';
 import '../service_model/support model/support_model.dart';
 
 class SupportAuth extends ChangeNotifier {
-  static const String _baseUrl =
-      "https://adminbackend-1-h03r.onrender.com/api";
+  static const String _baseUrl = "https://adminbackend-1-h03r.onrender.com/api";
 
   final List<SupportModel> _allTickets = [];
   List<SupportModel> tickets = [];
@@ -20,7 +19,6 @@ class SupportAuth extends ChangeNotifier {
   SupportModel? selectedTicket;
 
   SupportDetailModel? ticketDetail;
-
 
   /// ===============================
   /// GETTERS
@@ -37,10 +35,7 @@ class SupportAuth extends ChangeNotifier {
 
     if (start >= tickets.length) return [];
 
-    return tickets.sublist(
-      start,
-      end > tickets.length ? tickets.length : end,
-    );
+    return tickets.sublist(start, end > tickets.length ? tickets.length : end);
   }
 
   /// ===============================
@@ -53,8 +48,7 @@ class SupportAuth extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      final response =
-      await http.get(Uri.parse("$_baseUrl/support"));
+      final response = await http.get(Uri.parse("$_baseUrl/support"));
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -64,9 +58,7 @@ class SupportAuth extends ChangeNotifier {
 
           _allTickets
             ..clear()
-            ..addAll(
-              list.map((e) => SupportModel.fromJson(e)).toList(),
-            );
+            ..addAll(list.map((e) => SupportModel.fromJson(e)).toList());
 
           tickets = List.from(_allTickets);
         } else {
@@ -156,8 +148,7 @@ class SupportAuth extends ChangeNotifier {
 
   Future<bool> deleteTicket(int id) async {
     try {
-      final response =
-      await http.delete(Uri.parse("$_baseUrl/support/$id"));
+      final response = await http.delete(Uri.parse("$_baseUrl/support/$id"));
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -184,6 +175,7 @@ class SupportAuth extends ChangeNotifier {
 
     return false;
   }
+
   /// ===============================
   /// GET SUPPORT DETAIL
   /// ===============================
@@ -193,8 +185,7 @@ class SupportAuth extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      final response =
-      await http.get(Uri.parse("$_baseUrl/support/$id"));
+      final response = await http.get(Uri.parse("$_baseUrl/support/$id"));
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -214,6 +205,7 @@ class SupportAuth extends ChangeNotifier {
 
     return false;
   }
+
   /// ===============================
   /// CLOSE TICKET
   /// ===============================
@@ -222,25 +214,19 @@ class SupportAuth extends ChangeNotifier {
     try {
       final response = await http.put(
         Uri.parse("$_baseUrl/support/$id"),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "status": "Closed",
-        }),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"status": "Closed"}),
       );
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
         if (json["success"] == true) {
-          final updated =
-          SupportDetailModel.fromJson(json["data"]);
+          final updated = SupportDetailModel.fromJson(json["data"]);
 
           ticketDetail = updated;
 
-          final index =
-          _allTickets.indexWhere((e) => e.id == id);
+          final index = _allTickets.indexWhere((e) => e.id == id);
 
           if (index != -1) {
             _allTickets[index] = SupportModel(
@@ -271,6 +257,7 @@ class SupportAuth extends ChangeNotifier {
 
     return false;
   }
+
   /// ===============================
   /// REFRESH
   /// ===============================
@@ -279,5 +266,4 @@ class SupportAuth extends ChangeNotifier {
     tickets = List.from(_allTickets);
     notifyListeners();
   }
-
 }

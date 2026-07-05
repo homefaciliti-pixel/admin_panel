@@ -29,7 +29,6 @@ class AppTableShimmer extends StatelessWidget {
       ),
       child: Column(
         children: [
-
           /// HEADER
           if (showHeader)
             Container(
@@ -53,62 +52,53 @@ class AppTableShimmer extends StatelessWidget {
                 itemBuilder: (_, index) {
                   return Container(
                     height: 70,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey.shade200,
-                        ),
+                        bottom: BorderSide(color: Colors.grey.shade200),
                       ),
                     ),
                     child: Row(
-                      children: List.generate(
-                        columns,
-                            (i) {
-
-                          /// First column = Avatar
-                          if (i == 1) {
-                            return Expanded(
-                              flex: 2,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 42,
-                                    height: 42,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        _line(90),
-                                        const SizedBox(height: 8),
-                                        _line(60),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-
+                      children: List.generate(columns, (i) {
+                        /// First column = Avatar
+                        if (i == 1) {
                           return Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: _line(60),
+                            flex: 2,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 42,
+                                  height: 42,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _line(90),
+                                      const SizedBox(height: 8),
+                                      _line(60),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           );
-                        },
-                      ),
+                        }
+
+                        return Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: _line(60),
+                          ),
+                        );
+                      }),
                     ),
                   );
                 },

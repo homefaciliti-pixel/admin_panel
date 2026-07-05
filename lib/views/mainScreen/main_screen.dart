@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
       case "Category":
         return const CategoryScreen();
 
-      case"Approved Partners":
+      case "Approved Partners":
         return const PartnerScreen();
 
       case "Pending Approval":
@@ -115,7 +115,6 @@ class _MainScreenState extends State<MainScreen> {
 
       case "Active Partners":
         return const ActivePartnerScreen();
-
 
       case "Support":
         return const SupportScreen();

@@ -6,7 +6,6 @@ import '../../service_Api/support_auth.dart';
 import '../../service_model/support model/support_model.dart';
 import '../../widgets/support_Table/support_table.dart';
 
-
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
@@ -96,69 +95,66 @@ class _SupportScreenState extends State<SupportScreen> {
                 child: vm.isLoading
                     ? const AppTableShimmer()
                     : SupportTable(
-                  tickets: vm.paginatedTickets,
-                  vm: vm,
+                        tickets: vm.paginatedTickets,
+                        vm: vm,
 
-                  /// VIEW
-                  onViewTap: (SupportModel ticket) {
-                    vm.selectTicket(ticket);
+                        /// VIEW
+                        onViewTap: (SupportModel ticket) {
+                          vm.selectTicket(ticket);
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SupportDetailsScreen(
-                          ticketId: ticket.id,
-                        ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  SupportDetailsScreen(ticketId: ticket.id),
+                            ),
+                          );
+                        },
+
+                        /// DELETE
+                        onDeleteTap: (SupportModel ticket) async {
+                          final delete = await showDialog<bool>(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: const Text("Delete Ticket"),
+                                content: const Text(
+                                  "Are you sure you want to delete this ticket?",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: const Text("Cancel"),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: const Text("Delete"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (delete == true) {
+                            final success = await vm.deleteTicket(ticket.id);
+
+                            if (success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Ticket deleted successfully"),
+                                ),
+                              );
+                            }
+                          }
+                        },
                       ),
-                    );
-                  },
-
-                  /// DELETE
-                  onDeleteTap: (SupportModel ticket) async {
-                    final delete = await showDialog<bool>(
-                      context: context,
-                      builder: (_) {
-                        return AlertDialog(
-                          title: const Text("Delete Ticket"),
-                          content: const Text(
-                            "Are you sure you want to delete this ticket?",
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text("Cancel"),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                              child: const Text("Delete"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-
-                    if (delete == true) {
-                      final success =
-                      await vm.deleteTicket(ticket.id);
-
-                      if (success && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                            Text("Ticket deleted successfully"),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                ),
               ),
 
               const SizedBox(height: 18),
@@ -187,20 +183,14 @@ class _SupportScreenState extends State<SupportScreen> {
                       children: [
                         const Text(
                           "Show",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(width: 10),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                            ),
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
                           child: DropdownButton<int>(
                             value: vm.selectedEntries,
@@ -232,9 +222,7 @@ class _SupportScreenState extends State<SupportScreen> {
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                              ),
+                              border: Border.all(color: Colors.grey.shade300),
                             ),
                             child: const Icon(Icons.chevron_left),
                           ),
@@ -269,9 +257,7 @@ class _SupportScreenState extends State<SupportScreen> {
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                              ),
+                              border: Border.all(color: Colors.grey.shade300),
                             ),
                             child: const Icon(Icons.chevron_right),
                           ),

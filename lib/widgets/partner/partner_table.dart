@@ -88,6 +88,15 @@ class PartnerTable extends StatelessWidget {
                   ),
                 ),
 
+                const Expanded(
+                  flex: 2,
+                  child: Text(
+                    "Payment",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+
+
 
                 if(!isPending)
                 const Expanded(
@@ -226,6 +235,32 @@ class PartnerTable extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: Text(item.state),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal:12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: item.isPaid == "Paid"
+                                ? Colors.green.shade100
+                                : Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            item.isPaid,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: item.isPaid == "Paid"
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
                       ),
 
 

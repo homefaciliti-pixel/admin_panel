@@ -61,4 +61,39 @@ class BookingAuth extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  bool showTodayOnly = false;
+
+
+  void filterTodayBookings() {
+
+    showTodayOnly = !showTodayOnly;
+
+
+    if(showTodayOnly){
+
+      final now = DateTime.now();
+
+      final today =
+          "${now.year}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')}";
+
+
+      bookingEarnings = _allBookings.where((item){
+
+        return item.orderDate == today;
+
+      }).toList();
+
+
+    }else{
+
+      bookingEarnings = List.from(_allBookings);
+
+    }
+
+
+    notifyListeners();
+  }
+
+
 }

@@ -2,7 +2,6 @@ import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
 import 'package:admin_panel/widgets/common/app_table_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'booking_details_screen.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -62,26 +61,68 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
 
                   /// SEARCH FIELD
-                  SizedBox(
-                    width: 260,
-                    child: TextField(
-                      /// Search booking by transaction id / payment method
-                      onChanged: vm.searchBookings,
-                      decoration: InputDecoration(
-                        hintText: "Search Booking",
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+                  Row(
+                    children: [
+
+                      SizedBox(
+                        width: 260,
+                        child: TextField(
+                          onChanged: vm.searchBookings,
+                          decoration: InputDecoration(
+                            hintText: "Search Booking",
+                            prefixIcon: const Icon(Icons.search),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+
+
+                      const SizedBox(width: 12),
+
+
+                      ElevatedButton.icon(
+                        onPressed: () {
+
+                          vm.filterTodayBookings();
+
+                        },
+                        icon: const Icon(
+                          Icons.today,
+                          size: 18,
+                        ),
+                        label: Text(
+                          vm.showTodayOnly
+                              ? "All Booking"
+                              : "Today",
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: vm.showTodayOnly
+                              ? Colors.green
+                              : const Color(0xff111827),
+
+                          foregroundColor: Colors.white,
+
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 16,
+                          ),
+
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+
+                    ],
                   ),
                 ],
               ),
@@ -174,7 +215,6 @@ class _BookingScreenState extends State<BookingScreen> {
                             rows: vm.bookingEarnings.map((item) {
                               return DataRow(
                                 cells: [
-
                                   DataCell(
                                     Text(
                                       item.userDetails?.name ?? "Deleted User",
@@ -183,7 +223,6 @@ class _BookingScreenState extends State<BookingScreen> {
                                   DataCell(
                                     InkWell(
                                       onTap: () {
-
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -193,7 +232,6 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 ),
                                           ),
                                         );
-
                                       },
 
                                       child: Text(

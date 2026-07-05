@@ -21,6 +21,9 @@ class OrderAuth extends ChangeNotifier {
   final List<OrderModel> _allOrders = [];
   List<OrderModel> orders = [];
 
+  // today order
+  bool showTodayOnly = false;
+
   /// Advanced Search Filters state
   String _searchText = '';
   String _searchRequestNo = '';
@@ -312,20 +315,34 @@ class OrderAuth extends ChangeNotifier {
     return updateOrder(id, {'status': status});
   }
 
-
-  Future<void> openMap(
-      double lat,
-      double lng,
-      ) async {
-
+  Future<void> openMap(double lat, double lng) async {
     final url = Uri.parse(
       "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
     );
 
-    await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    );
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
+  //Today orders
+
+  void filterTodayOrders() {
+    showTodayOnly = !showTodayOnly;
+
+    if (showTodayOnly) {
+      final now = DateTime.now();
+
+      final today =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+      orders = _allOrders.where((order) {
+        return order.serviceDate == today;
+      }).toList();
+    } else {
+      orders = List.from(_allOrders);
+    }
+
+    currentPage = 1;
+
+    notifyListeners();
+  }
 }

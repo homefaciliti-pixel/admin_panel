@@ -90,8 +90,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SupportAuth()),
 
         ChangeNotifierProvider(create: (_) => PermissionViewModel()),
-        ChangeNotifierProvider( create: (_) => CountryProvider()..getCountries(),
-
+        ChangeNotifierProvider(
+          create: (_) => CountryProvider()..getCountries(),
         ),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),

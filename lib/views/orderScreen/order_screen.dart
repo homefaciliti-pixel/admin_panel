@@ -83,30 +83,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
-                        width: 260,
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: vm.searchOrder,
-                          decoration: InputDecoration(
-                            hintText: "Search Order",
-                            prefixIcon: const Icon(Icons.search),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 12,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
 
-                      /// FILTER TOGGLE BUTTON
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -137,6 +114,61 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ),
                         ),
                       ),
+
+                      SizedBox(
+                        width: 260,
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: vm.searchOrder,
+                          decoration: InputDecoration(
+                            hintText: "Search Order",
+                            prefixIcon: const Icon(Icons.search),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+
+                      /// TODAY ORDER BUTTON
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          vm.filterTodayOrders();
+                        },
+                        icon: const Icon(
+                          Icons.today,
+                          size: 18,
+                        ),
+                        label: Text(
+                          vm.showTodayOnly
+                              ? "All Orders"
+                              : "Today",
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: vm.showTodayOnly
+                              ? Colors.green
+                              : const Color(0xff111827),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 14,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+
+                      /// FILTER TOGGLE BUTTON
+
                     ],
                   ),
                 ],
@@ -262,7 +294,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           child: DropdownButton<int>(
                             value: vm.selectedEntries,
                             underline: const SizedBox(),
-                            items: [10, 20, 50, 100].map((e) {
+                            items: [10, 20, 50, 100,200,500].map((e) {
                               return DropdownMenuItem(
                                 value: e,
                                 child: Text("$e"),
@@ -492,26 +524,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           _detailCard("Locality", item.locality),
                           _detailCard("Latitude", item.latitude.toString()),
                           _detailCard("Longitude", item.longitude.toString()),
-                          _detailCard(
-                            "Address",
-                            item.address,
-                          ),
+                          _detailCard("Address", item.address),
                         ]),
-
 
                         ElevatedButton.icon(
                           onPressed: () {
-
-                            openMap(
-                              item.latitude,
-                              item.longitude,
-                            );
-
+                            openMap(item.latitude, item.longitude);
                           },
                           icon: const Icon(Icons.map),
-                          label: const Text(
-                            "Open Google Maps",
-                          ),
+                          label: const Text("Open Google Maps"),
                         ),
                       ],
                     ),
@@ -540,8 +561,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       },
     );
   }
-
-
 
   void _showAssignVendorSheet(
     BuildContext context,
@@ -989,20 +1008,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-
-
-  Future<void> openMap(
-      double lat,
-      double lng,
-      ) async {
-
+  Future<void> openMap(double lat, double lng) async {
     final url = Uri.parse(
       "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
     );
 
-    await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    );
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 }

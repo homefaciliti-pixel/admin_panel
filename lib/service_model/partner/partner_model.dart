@@ -58,6 +58,7 @@ class PartnerModel {
   final String? longitude;
   final String? locationTime;
   final String countryCode;
+  final String isPaid;
 
   PartnerModel({
     required this.id,
@@ -102,7 +103,7 @@ class PartnerModel {
     this.longitude,
     this.locationTime,
     required this.countryCode,
-
+    required this.isPaid
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) {
@@ -141,7 +142,6 @@ class PartnerModel {
               .toList() ??
           [],
 
-
       aadhaarNumber: safeString(json['aadhaarNumber']),
       panNumber: safeString(json['panNumber']),
       bankName: safeString(json['bankName']),
@@ -170,6 +170,7 @@ class PartnerModel {
       locationTime: json['locationTime']?.toString(),
       countryCode: safeString(json['countryCode']),
 
+      isPaid: safeString(json['isPaid']),
     );
   }
 
@@ -218,6 +219,7 @@ class PartnerModel {
       'longitude': longitude,
       'locationTime': locationTime,
       'countryCode': countryCode,
+      'isPaid' : isPaid,
     };
   }
 
@@ -265,6 +267,7 @@ class PartnerModel {
     String? longitude,
     String? locationTime,
     String? countryCode,
+    String? isPaid,
   }) {
     return PartnerModel(
       id: id ?? this.id,
@@ -311,6 +314,7 @@ class PartnerModel {
       longitude: longitude ?? this.longitude,
       locationTime: locationTime ?? this.locationTime,
       countryCode: countryCode ?? this.countryCode,
+      isPaid: isPaid ?? this.isPaid,
     );
   }
 }

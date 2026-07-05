@@ -96,26 +96,28 @@ class _PartnerScreenState extends State<PartnerScreen> {
                 child: vm.isLoading
                     ? const AppTableShimmer()
                     : PartnerTable(
-                  partners: vm.paginatedPartners,
-                  vm: vm,
-                  isPending: false,
-                  onPartnerTap: (PartnerModel item) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PartnerDetailsScreen(partner: item),
+                        partners: vm.paginatedPartners,
+                        vm: vm,
+                        isPending: false,
+                        onPartnerTap: (PartnerModel item) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  PartnerDetailsScreen(partner: item),
+                            ),
+                          );
+                        },
+                        onEditTap: (PartnerModel item) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  PartnerDetailsScreen(partner: item),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                  onEditTap: (PartnerModel item) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PartnerDetailsScreen(partner: item),
-                      ),
-                    );
-                  },
-                ),
               ),
 
               const SizedBox(height: 18),

@@ -39,8 +39,7 @@ class SupportDetailModel {
       createdAt: json["createdAt"] ?? "",
       partnerId: json["partnerId"],
       partnerImage: json["partnerImage"] ?? "",
-      partnerDocuments:
-      List<String>.from(json["partnerDocuments"] ?? []),
+      partnerDocuments: List<String>.from(json["partnerDocuments"] ?? []),
       partner: json["partner"] == null
           ? null
           : PartnerModel.fromJson(json["partner"]),
@@ -86,8 +85,7 @@ class PartnerModel {
       aadharFront: json["aadharFront"] ?? "",
       aadharBack: json["aadharBack"] ?? "",
       panImage: json["panImage"] ?? "",
-      policeVerificationImage:
-      json["policeVerificationImage"] ?? "",
+      policeVerificationImage: json["policeVerificationImage"] ?? "",
       source: json["source"] ?? "",
     );
   }

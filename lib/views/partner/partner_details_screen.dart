@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:admin_panel/service_Api/partner/partner_auth.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:http/http.dart' as http;
-
 import '../../service_model/partner/partner_model.dart';
 
 class PartnerDetailsScreen extends StatefulWidget {
@@ -125,6 +124,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     final localityController = TextEditingController(text: partner.locality);
     final addressController = TextEditingController(text: partner.address);
     final genderController = TextEditingController(text: partner.gender);
+
     final countryCodeController = TextEditingController(
       text: partner.countryCode,
     );
@@ -145,139 +145,364 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
       text: partner.accountNumber,
     );
     final ifscController = TextEditingController(text: partner.ifscCode);
+    Uint8List? profileImageBytes;
+    Uint8List? aadhaarFrontBytes;
+    Uint8List? aadhaarBackBytes;
+    Uint8List? panImageBytes;
+    Uint8List? policeImageBytes;
+
+    Future<Uint8List?> pickImage() async {
+      final input = html.FileUploadInputElement();
+      input.accept = "image/*";
+      input.click();
+
+      await input.onChange.first;
+
+      final file = input.files?.first;
+      if (file == null) return null;
+
+      final reader = html.FileReader();
+      reader.readAsArrayBuffer(file);
+
+      await reader.onLoad.first;
+
+      return reader.result as Uint8List;
+    }
+
+    DataRow editRow(String title, TextEditingController controller) {
+      return DataRow(
+        cells: [
+          DataCell(
+            SizedBox(
+              width: 180,
+              child: Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+
+          DataCell(
+            SizedBox(
+              width: 450,
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: const Color(0xffF8FAFC),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget imagePickerBox(
+        String title,
+        Uint8List? imageBytes,
+        VoidCallback onTap,
+        ) {
+
+      return InkWell(
+        onTap: onTap,
+
+        child: Container(
+          width: 150,
+          height: 170,
+
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: Colors.grey.shade300,
+            ),
+          ),
+
+          child: Column(
+            children: [
+
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+
+                  child: imageBytes != null
+
+                      ? Image.memory(
+                    imageBytes,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  )
+
+                      : Container(
+                    color: Colors.grey.shade100,
+                    child: const Center(
+                      child: Icon(
+                        Icons.add_photo_alternate,
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+
+              Container(
+                height: 40,
+                alignment: Alignment.center,
+
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              )
+
+            ],
+          ),
+        ),
+      );
+
+    }
+
 
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog(
-          title: const Text("Edit Partner"),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: 500,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: "Name"),
-                  ),
-                  TextField(
-                    controller: emailController,
-                    decoration: const InputDecoration(labelText: "Email"),
-                  ),
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text("Edit Partner"),
+              content: SizedBox(
+                width: 850,
+                height: 650,
 
-                  TextField(
-                    controller: countryCodeController,
-                    decoration: const InputDecoration(
-                      labelText: "Country Code",
-                    ),
-                  ),
-                  TextField(
-                    controller: mobileController,
-                    decoration: const InputDecoration(labelText: "Mobile"),
-                  ),
-                  TextField(
-                    controller: cityController,
-                    decoration: const InputDecoration(labelText: "City"),
-                  ),
-                  TextField(
-                    controller: stateController,
-                    decoration: const InputDecoration(labelText: "State"),
-                  ),
-                  TextField(
-                    controller: localityController,
-                    decoration: const InputDecoration(labelText: "Locality"),
-                  ),
-                  TextField(
-                    controller: addressController,
-                    decoration: const InputDecoration(labelText: "Address"),
-                  ),
-                  TextField(
-                    controller: genderController,
-                    decoration: const InputDecoration(labelText: "Gender"),
-                  ),
-                  TextField(
-                    controller: experienceController,
-                    decoration: const InputDecoration(labelText: "Experience"),
-                  ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                  TextField(
-                    controller: categoryController,
-                    decoration: const InputDecoration(labelText: "Category"),
-                  ),
+                    children: [
+                      const Text(
+                        "Basic Details",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-                  TextField(
-                    controller: subCategoryController,
-                    decoration: const InputDecoration(
-                      labelText: "Sub Category",
-                    ),
-                  ),
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text("Field")),
+                          DataColumn(label: Text("Value")),
+                        ],
 
-                  TextField(
-                    controller: aadhaarController,
-                    decoration: const InputDecoration(
-                      labelText: "Aadhaar Number",
-                    ),
+                        rows: [
+                          editRow("Name", nameController),
+                          editRow("Email", emailController),
+                          editRow("Country Code", countryCodeController),
+                          editRow("Mobile", mobileController),
+                          editRow("City", cityController),
+                          editRow("State", stateController),
+                          editRow("Locality", localityController),
+                          editRow("Address", addressController),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const Text(
+                        "Work Details",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text("Field")),
+                          DataColumn(label: Text("Value")),
+                        ],
+
+                        rows: [
+                          editRow("Gender", genderController),
+                          editRow("Experience", experienceController),
+                          editRow("Category", categoryController),
+                          editRow("Sub Category", subCategoryController),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const Text(
+                        "KYC & Bank",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text("Field")),
+                          DataColumn(label: Text("Value")),
+                        ],
+
+                        rows: [
+                          editRow("Aadhaar", aadhaarController),
+                          editRow("PAN", panController),
+                          editRow("Bank", bankController),
+                          editRow("Account", accountController),
+                          editRow("IFSC", ifscController),
+                        ],
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      const Text(
+                        "Documents",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      Wrap(
+                        spacing: 15,
+                        runSpacing: 15,
+
+                        children: [
+                          imagePickerBox(
+                            "Profile",
+                            profileImageBytes,
+                                () async {
+
+                              final img = await pickImage();
+
+                              setDialogState(() {
+
+                                profileImageBytes = img;
+
+                              });
+
+                              debugPrint(
+                                  "PROFILE IMAGE SELECTED ${profileImageBytes?.length}"
+                              );
+
+                            },
+                          ),
+
+
+                          imagePickerBox(
+                            "Aadhaar Front",
+                            aadhaarFrontBytes,
+                                () async {
+                              aadhaarFrontBytes = await pickImage();
+                              setDialogState((){});
+                            },
+                          ),
+
+
+                          imagePickerBox(
+                            "Aadhaar Back",
+                            aadhaarBackBytes,
+                                () async {
+                              aadhaarBackBytes = await pickImage();
+                              setDialogState((){});
+                            },
+                          ),
+
+
+                          imagePickerBox(
+                            "PAN Card",
+                            panImageBytes,
+                                () async {
+                              panImageBytes = await pickImage();
+                              setDialogState((){});
+                            },
+                          ),
+
+
+                          imagePickerBox(
+                            "Police",
+                            policeImageBytes,
+                                () async {
+                              policeImageBytes = await pickImage();
+                              setDialogState((){});
+                            },
+                          ),
+
+                        ],
+                      )
+
+
+                    ],
                   ),
-                  TextField(
-                    controller: panController,
-                    decoration: const InputDecoration(labelText: "PAN Number"),
-                  ),
-                  TextField(
-                    controller: bankController,
-                    decoration: const InputDecoration(labelText: "Bank Name"),
-                  ),
-                  TextField(
-                    controller: accountController,
-                    decoration: const InputDecoration(
-                      labelText: "Account Number",
-                    ),
-                  ),
-                  TextField(
-                    controller: ifscController,
-                    decoration: const InputDecoration(labelText: "IFSC Code"),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final ok = await vm.updatePartner(partner.id, {
-                  'name': nameController.text.trim(),
-                  'email': emailController.text.trim(),
-                  'mobile': mobileController.text.trim(),
-                  'city': cityController.text.trim(),
-                  'state': stateController.text.trim(),
-                  'locality': localityController.text.trim(),
-                  'address': addressController.text.trim(),
-                  'gender': genderController.text.trim(),
-                  'experience': experienceController.text.trim(),
-                  'category': categoryController.text.trim(),
-                  'subCategory': subCategoryController.text.trim(),
-                  'aadhaarNumber': aadhaarController.text.trim(),
-                  'panNumber': panController.text.trim(),
-                  'bankName': bankController.text.trim(),
-                  'accountNumber': accountController.text.trim(),
-                  'ifscCode': ifscController.text.trim(),
-                });
 
-                if (ok && mounted) {
-                  final fresh = await vm.getPartnerDetails(partner.id);
-                  if (fresh != null && mounted) {
-                    vm.selectPartner(fresh);
-                  }
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text("Save"),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final ok = await vm.updatePartner(
+                      partner.id,
+                      {
+                        'name': nameController.text.trim(),
+                        'email': emailController.text.trim(),
+                        'mobile': mobileController.text.trim(),
+                        'countryCode': countryCodeController.text.trim(),
+                        'city': cityController.text.trim(),
+                        'state': stateController.text.trim(),
+                        'locality': localityController.text.trim(),
+                        'address': addressController.text.trim(),
+                        'gender': genderController.text.trim(),
+                        'experience': experienceController.text.trim(),
+                        'category': categoryController.text.trim(),
+                        'subCategory': subCategoryController.text.trim(),
+                        'aadhaarNumber': aadhaarController.text.trim(),
+                        'panNumber': panController.text.trim(),
+                        'bankName': bankController.text.trim(),
+                        'accountNumber': accountController.text.trim(),
+                        'ifscCode': ifscController.text.trim(),
+                      },
+
+                      profileImageBytes: profileImageBytes,
+                      aadhaarFrontBytes: aadhaarFrontBytes,
+                      aadhaarBackBytes: aadhaarBackBytes,
+                      panImageBytes: panImageBytes,
+                      policeImageBytes: policeImageBytes,
+                    );
+
+                    if (ok && mounted) {
+                      final fresh = await vm.getPartnerDetails(partner.id);
+                      if (fresh != null && mounted) {
+                        vm.selectPartner(fresh);
+                      }
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text("Save"),
+                ),
+              ],
+            );
+          },
         );
       },
     );

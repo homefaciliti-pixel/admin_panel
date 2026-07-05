@@ -3,31 +3,22 @@ import 'package:provider/provider.dart';
 
 import '../../service_Api/support_auth.dart';
 
-
 class SupportDetailsScreen extends StatefulWidget {
   final int ticketId;
 
-  const SupportDetailsScreen({
-    super.key,
-    required this.ticketId,
-  });
+  const SupportDetailsScreen({super.key, required this.ticketId});
 
   @override
-  State<SupportDetailsScreen> createState() =>
-      _SupportDetailsScreenState();
+  State<SupportDetailsScreen> createState() => _SupportDetailsScreenState();
 }
 
-class _SupportDetailsScreenState
-    extends State<SupportDetailsScreen> {
-
+class _SupportDetailsScreenState extends State<SupportDetailsScreen> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context
-          .read<SupportAuth>()
-          .getSupportDetails(widget.ticketId);
+      context.read<SupportAuth>().getSupportDetails(widget.ticketId);
     });
   }
 
@@ -35,46 +26,33 @@ class _SupportDetailsScreenState
   Widget build(BuildContext context) {
     return Consumer<SupportAuth>(
       builder: (context, vm, child) {
-
         if (vm.isLoading || vm.ticketDetail == null) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
         final ticket = vm.ticketDetail!;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              "Ticket #${ticket.id}",
-            ),
-          ),
+          appBar: AppBar(title: Text("Ticket #${ticket.id}")),
 
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
 
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 /// Status
-
                 Align(
                   alignment: Alignment.centerRight,
                   child: Chip(
-                    backgroundColor:
-                    ticket.status == "Open"
+                    backgroundColor: ticket.status == "Open"
                         ? Colors.green.shade100
                         : Colors.red.shade100,
 
-                    label: Text(
-                      ticket.status,
-                    ),
+                    label: Text(ticket.status),
                   ),
                 ),
 
@@ -82,10 +60,7 @@ class _SupportDetailsScreenState
 
                 const Text(
                   "User Information",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
                 const Divider(),
@@ -100,100 +75,65 @@ class _SupportDetailsScreenState
 
                 const Text(
                   "Issue Details",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
                 const Divider(),
 
-                Text(
-                  "Subject : ${ticket.subject}",
-                ),
+                Text("Subject : ${ticket.subject}"),
 
                 const SizedBox(height: 10),
 
-                Text(
-                  ticket.message,
-                ),
+                Text(ticket.message),
 
                 const SizedBox(height: 10),
 
-                Text(
-                  "Created : ${ticket.createdAt}",
-                ),
+                Text("Created : ${ticket.createdAt}"),
 
                 const SizedBox(height: 30),
 
                 if (ticket.partner != null) ...[
-
                   const Text(
                     "Partner Details",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
 
                   const Divider(),
 
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage:
-                    NetworkImage(
-                      ticket.partner!.image,
-                    ),
+                    backgroundImage: NetworkImage(ticket.partner!.image),
                   ),
 
                   const SizedBox(height: 15),
 
-                  Text(
-                    "Name : ${ticket.partner!.name}",
-                  ),
+                  Text("Name : ${ticket.partner!.name}"),
 
-                  Text(
-                    "Email : ${ticket.partner!.email}",
-                  ),
+                  Text("Email : ${ticket.partner!.email}"),
 
-                  Text(
-                    "Mobile : ${ticket.partner!.mobile}",
-                  ),
+                  Text("Mobile : ${ticket.partner!.mobile}"),
                 ],
 
                 const SizedBox(height: 35),
 
                 if (ticket.status == "Open")
-
                   SizedBox(
                     width: double.infinity,
 
                     child: ElevatedButton(
-
                       onPressed: () async {
+                        final success = await vm.closeTicket(ticket.id);
 
-                        final success =
-                        await vm.closeTicket(
-                            ticket.id);
-
-                        if (success &&
-                            context.mounted) {
-
-                          ScaffoldMessenger.of(
-                              context)
-                              .showSnackBar(
+                        if (success && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                "Ticket Closed Successfully",
-                              ),
+                              content: Text("Ticket Closed Successfully"),
                             ),
                           );
                         }
                       },
 
-                      child: const Text(
-                        "Close Ticket",
-                      ),
+                      child: const Text("Close Ticket"),
                     ),
                   ),
               ],

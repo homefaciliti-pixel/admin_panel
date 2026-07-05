@@ -36,8 +36,6 @@ class AdminDrawer extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// LOGO
-
-
               Center(
                 child: Image.asset(
                   'assets/images/logo3.png',

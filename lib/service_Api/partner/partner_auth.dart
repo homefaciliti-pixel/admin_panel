@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../../service_model/partner/partner_model.dart';
 
 /// Partner details screen tabs
@@ -300,41 +303,147 @@ class PartnerAuth extends ChangeNotifier {
   /// ===============================
   /// UPDATE PARTNER
   /// ===============================
-  Future<bool> updatePartner(int id, Map<String, dynamic> updateFields) async {
+  Future<bool> updatePartner(
+    int id,
+    Map<String, dynamic> updateFields, {
+    Uint8List? profileImageBytes,
+    Uint8List? aadhaarFrontBytes,
+    Uint8List? aadhaarBackBytes,
+    Uint8List? panImageBytes,
+    Uint8List? policeImageBytes,
+  }) async {
     try {
-      final response = await http.put(
+      var request = http.MultipartRequest(
+        "PUT",
         Uri.parse('$_baseUrl/partners/$id'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(updateFields),
       );
+      request.headers.addAll({
+        "Accept": "application/json",
+      });
+
+      updateFields.forEach((key, value) {
+
+        if(value != null && value.toString().isNotEmpty){
+
+          request.fields[key.toString()] =
+              value.toString();
+
+        }
+
+      });
+
+
+      //updateFields.forEach((key, value) {
+      //   request.fields[key] = value.toString();
+      // });
+
+
+
+
+
+      debugPrint("SEND FILES");
+      if(profileImageBytes != null){
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "image",
+            profileImageBytes!,
+            filename: "profile.jpg",
+          ),
+        );
+
+      }
+      debugPrint(
+          "SEND FILES => ${request.files.map((e)=>e.field).toList()}"
+      );
+      final streamedResponse = await request.send();
+
+      if(aadhaarFrontBytes != null){
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "aadharFront",
+            aadhaarFrontBytes!,
+            filename: "aadhaar_front.jpg",
+          ),
+        );
+
+      }
+
+
+      if(aadhaarBackBytes != null){
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "aadharBack",
+            aadhaarBackBytes!,
+            filename: "aadhaar_back.jpg",
+          ),
+        );
+
+      }
+
+
+      if(panImageBytes != null){
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "panImage",
+            panImageBytes!,
+            filename: "pan.jpg",
+          ),
+        );
+
+      }
+
+
+      if(policeImageBytes != null){
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "policeVerificationImage",
+            policeImageBytes!,
+            filename: "police.jpg",
+          ),
+        );
+
+      }
+
+
+
+      final response = await http.Response.fromStream(streamedResponse);
+      debugPrint("UPDATE STATUS = ${response.statusCode}");
+      debugPrint("UPDATE BODY = ${response.body}");
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
-        if (json['success'] == true) {
-          final updated = PartnerModel.fromJson(json['data']);
+        if (json["success"] == true) {
+          final updated = PartnerModel.fromJson(json["data"]);
 
           final allIndex = _allPartners.indexWhere((e) => e.id == id);
+
           if (allIndex != -1) {
             _allPartners[allIndex] = updated;
           }
 
           final partnerIndex = partners.indexWhere((e) => e.id == id);
+
           if (partnerIndex != -1) {
             partners[partnerIndex] = updated;
           }
 
-          if (selectedPartner != null && selectedPartner!.id == id) {
-            selectedPartner = updated;
-          }
+          selectedPartner = updated;
 
           notifyListeners();
+
           return true;
         }
       }
     } catch (e) {
-      debugPrint('updatePartner error: $e');
+      debugPrint("updatePartner error $e");
     }
+
     return false;
   }
 
