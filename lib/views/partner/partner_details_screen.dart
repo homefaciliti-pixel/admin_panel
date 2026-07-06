@@ -166,7 +166,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
       await reader.onLoad.first;
 
-      return reader.result as Uint8List;
+      return Uint8List.fromList(
+        reader.result as List<int>,
+      );
     }
 
     DataRow editRow(String title, TextEditingController controller) {
@@ -466,18 +468,28 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                       {
                         'name': nameController.text.trim(),
                         'email': emailController.text.trim(),
-                        'mobile': mobileController.text.trim(),
+
+                        // mobile me +91 double mat bhejna
+                        'mobile': mobileController.text
+                            .replaceAll(countryCodeController.text.trim(), '')
+                            .trim(),
+
                         'countryCode': countryCodeController.text.trim(),
+
                         'city': cityController.text.trim(),
                         'state': stateController.text.trim(),
                         'locality': localityController.text.trim(),
                         'address': addressController.text.trim(),
+
                         'gender': genderController.text.trim(),
                         'experience': experienceController.text.trim(),
+
                         'category': categoryController.text.trim(),
                         'subCategory': subCategoryController.text.trim(),
+
                         'aadhaarNumber': aadhaarController.text.trim(),
                         'panNumber': panController.text.trim(),
+
                         'bankName': bankController.text.trim(),
                         'accountNumber': accountController.text.trim(),
                         'ifscCode': ifscController.text.trim(),
@@ -500,6 +512,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   },
                   child: const Text("Save"),
                 ),
+
+
               ],
             );
           },
@@ -553,14 +567,28 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                           CircleAvatar(
                             radius: 50,
                             backgroundColor: Colors.grey.shade200,
-                            backgroundImage: partner.image.isNotEmpty
-                                ? NetworkImage(partner.image)
-                                : null,
-                            child: partner.image.isEmpty
-                                ? const Icon(Icons.person, size: 42)
-                                : null,
-                          ),
 
+                            child: ClipOval(
+                              child: partner.image.isNotEmpty
+                                  ? Image.network(
+                                partner.image,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.person,
+                                    size: 42,
+                                  );
+                                },
+                              )
+                                  : const Icon(
+                                Icons.person,
+                                size: 42,
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 20),
 
                           /// NAME + EMAIL + BADGES
