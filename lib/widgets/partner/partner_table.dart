@@ -38,7 +38,7 @@ class PartnerTable extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -50,10 +50,7 @@ class PartnerTable extends StatelessWidget {
           /// HEADER
           /// =========================
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             decoration: const BoxDecoration(
               color: Color(0xff111827),
               borderRadius: BorderRadius.only(
@@ -82,52 +79,53 @@ class PartnerTable extends StatelessWidget {
 
                 const Expanded(
                   flex: 2,
-                  child: Text(
-                    "State",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("State", style: TextStyle(color: Colors.white)),
                 ),
 
                 const Expanded(
                   flex: 2,
-                  child: Text(
-                    "Payment",
-                    style: TextStyle(color: Colors.white),
+                  child: Text("Payment", style: TextStyle(color: Colors.white)),
+                ),
+
+                if (!isPending)
+                  const Expanded(
+                    flex: 3,
+                    child: Text(
+                      "Location (Lat/Lng)",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-
-
-
-                if(!isPending)
-                const Expanded(
-                  flex: 3,
-                  child: Text("Location (Lat/Lng)", style: TextStyle(color: Colors.white)),
-                ),
-                if(!isPending)
-                const Expanded(
-                  flex: 3,
-                  child: Text("Last Active", style: TextStyle(color: Colors.white)),
-                ),
+                if (!isPending)
+                  const Expanded(
+                    flex: 3,
+                    child: Text(
+                      "Last Active",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 const Expanded(
                   flex: 2,
-                  child: Text("Created At", style: TextStyle(color: Colors.white)),
-                ),
-                if(!isPending)
-                const Expanded(
-                  flex: 1,
-                  child: Text("Status", style: TextStyle(color: Colors.white)),
-                ),
-                if(!isPending)
-                const Expanded(
-                  flex: 1,
-                  child: Text("Edit", style: TextStyle(color: Colors.white)),
-                ),
-                const Expanded(
-                  flex: 1,
                   child: Text(
-                    "Delete",
+                    "Created At",
                     style: TextStyle(color: Colors.white),
                   ),
+                ),
+                if (!isPending)
+                  const Expanded(
+                    flex: 1,
+                    child: Text(
+                      "Status",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                if (!isPending)
+                  const Expanded(
+                    flex: 1,
+                    child: Text("Edit", style: TextStyle(color: Colors.white)),
+                  ),
+                const Expanded(
+                  flex: 1,
+                  child: Text("Delete", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -156,10 +154,7 @@ class PartnerTable extends StatelessWidget {
                   child: Row(
                     children: [
                       /// SERIAL NO
-                      Expanded(
-                        flex: 1,
-                        child: Text("${index + 1}"),
-                      ),
+                      Expanded(flex: 1, child: Text("${index + 1}")),
 
                       /// PARTNER NAME + EMAIL
                       Expanded(
@@ -176,7 +171,8 @@ class PartnerTable extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => PartnerDetailsScreen(partner: item),
+                                builder: (_) =>
+                                    PartnerDetailsScreen(partner: item),
                               ),
                             );
                           },
@@ -223,24 +219,17 @@ class PartnerTable extends StatelessWidget {
                       /// MOBILE
                       Expanded(
                         flex: 2,
-                        child: Text(
-                          "${item.countryCode} ${item.mobile}",
-                        ),
+                        child: Text("${item.countryCode} ${item.mobile}"),
                       ),
+
                       /// CITY
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.city),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.state),
-                      ),
+                      Expanded(flex: 2, child: Text(item.city)),
+                      Expanded(flex: 2, child: Text(item.state)),
                       Expanded(
                         flex: 2,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal:12,
+                            horizontal: 12,
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
@@ -263,114 +252,117 @@ class PartnerTable extends StatelessWidget {
                         ),
                       ),
 
-
-
                       /// LOCATION (LAT/LNG)
-                      if(!isPending)
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          (item.latitude != null && item.longitude != null && item.latitude!.isNotEmpty && item.longitude!.isNotEmpty)
-                              ? "${item.latitude}, ${item.longitude}"
-                              : "-",
-                          style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
+                      if (!isPending)
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            (item.latitude != null &&
+                                    item.longitude != null &&
+                                    item.latitude!.isNotEmpty &&
+                                    item.longitude!.isNotEmpty)
+                                ? "${item.latitude}, ${item.longitude}"
+                                : "-",
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
-                      ),
 
                       /// LAST ACTIVE TIME
-                      if(!isPending)
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          (item.locationTime != null && item.locationTime!.isNotEmpty)
-                              ? _formatLocationTime(item.locationTime!)
-                              : "-",
-                          style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
+                      if (!isPending)
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            (item.locationTime != null &&
+                                    item.locationTime!.isNotEmpty)
+                                ? _formatLocationTime(item.locationTime!)
+                                : "-",
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
-                      ),
 
                       /// CREATED AT
-                      Expanded(
-                        flex: 2,
-                        child: Text(item.createdAt),
-                      ),
-
+                      Expanded(flex: 2, child: Text(item.createdAt)),
 
                       /// STATUS SWITCH
                       if (!isPending)
-                      Expanded(
-                        flex: 1,
-                        child: Switch(
-                          value: item.status,
-                          onChanged: (value) async {
-                            // Status change API call
-                            await vm.updatePartner(item.id, {
-                              'status': value,
-                            });
-                          },
+                        Expanded(
+                          flex: 1,
+                          child: Switch(
+                            value: item.status,
+                            onChanged: (value) async {
+                              // Status change API call
+                              await vm.updatePartner(item.id, {
+                                'status': value,
+                              });
+                            },
+                          ),
                         ),
-                      ),
 
                       /// EDIT ICON
                       if (!isPending)
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            // Agar callback diya hai to use karo
-                            if (onEditTap != null) {
-                              onEditTap!(item);
-                              return;
-                            }
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              // Agar callback diya hai to use karo
+                              if (onEditTap != null) {
+                                onEditTap!(item);
+                                return;
+                              }
 
-                            // Fallback: details screen
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => PartnerDetailsScreen(partner: item),
-                              ),
-                            );
-                          },
+                              // Fallback: details screen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      PartnerDetailsScreen(partner: item),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
 
                       if (AppPermission.isSuperAdmin)
-
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          onPressed: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: const Text("Delete Partner"),
-                                content: const Text(
-                                  "Are you sure you want to delete this partner?",
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text("Delete Partner"),
+                                  content: const Text(
+                                    "Are you sure you want to delete this partner?",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: const Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: const Text("Delete"),
+                                    ),
+                                  ],
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, false),
-                                    child: const Text("Cancel"),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => Navigator.pop(context, true),
-                                    child: const Text("Delete"),
-                                  ),
-                                ],
-                              ),
-                            );
+                              );
 
-                            if (confirm == true) {
-                              await vm.deletePartner(item.id);
-                            }
-                          },
+                              if (confirm == true) {
+                                await vm.deletePartner(item.id);
+                              }
+                            },
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 );

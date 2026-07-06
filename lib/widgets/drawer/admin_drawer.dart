@@ -104,16 +104,30 @@ class AdminDrawer extends StatelessWidget {
     String title,
     IconData icon,
   ) {
-    bool selected = vm.currentPage == title;
+    final bool selected = vm.currentPage == title;
 
-    return ListTile(
-      tileColor: selected ? AppColors.primary : null,
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: () {
-        vm.changePage(title);
-        closeDrawerIfMobile(context);
-      },
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: selected
+            ? Colors.white.withValues(alpha: 0.18)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.white),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        onTap: () {
+          vm.changePage(title);
+          closeDrawerIfMobile(context);
+        },
+      ),
     );
   }
 
@@ -130,16 +144,30 @@ class AdminDrawer extends StatelessWidget {
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: const TextStyle(color: Colors.white)),
       children: items.map((item) {
-        bool selected = vm.currentPage == item;
+        final bool selected = vm.currentPage == item;
 
-        return ListTile(
-          tileColor: selected ? AppColors.primary : null,
-          contentPadding: const EdgeInsets.only(left: 40),
-          title: Text(item, style: const TextStyle(color: Colors.white70)),
-          onTap: () {
-            vm.changePage(item);
-            closeDrawerIfMobile(context);
-          },
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          decoration: BoxDecoration(
+            color: selected
+                ? Colors.white.withValues(alpha: 0.18)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.only(left: 40),
+            title: Text(
+              item,
+              style: TextStyle(
+                color: selected ? Colors.white : Colors.white70,
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            onTap: () {
+              vm.changePage(item);
+              closeDrawerIfMobile(context);
+            },
+          ),
         );
       }).toList(),
     );

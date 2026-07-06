@@ -166,9 +166,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
       await reader.onLoad.first;
 
-      return Uint8List.fromList(
-        reader.result as List<int>,
-      );
+      return Uint8List.fromList(reader.result as List<int>);
     }
 
     DataRow editRow(String title, TextEditingController controller) {
@@ -208,11 +206,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     }
 
     Widget imagePickerBox(
-        String title,
-        Uint8List? imageBytes,
-        VoidCallback onTap,
-        ) {
-
+      String title,
+      Uint8List? imageBytes,
+      VoidCallback onTap,
+    ) {
       return InkWell(
         onTap: onTap,
 
@@ -222,14 +219,11 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: Colors.grey.shade300,
-            ),
+            border: Border.all(color: Colors.grey.shade300),
           ),
 
           child: Column(
             children: [
-
               Expanded(
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(
@@ -237,25 +231,19 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   ),
 
                   child: imageBytes != null
-
                       ? Image.memory(
-                    imageBytes,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  )
-
+                          imageBytes,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )
                       : Container(
-                    color: Colors.grey.shade100,
-                    child: const Center(
-                      child: Icon(
-                        Icons.add_photo_alternate,
-                        size: 40,
-                      ),
-                    ),
-                  ),
+                          color: Colors.grey.shade100,
+                          child: const Center(
+                            child: Icon(Icons.add_photo_alternate, size: 40),
+                          ),
+                        ),
                 ),
               ),
-
 
               Container(
                 height: 40,
@@ -269,15 +257,12 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                     fontSize: 12,
                   ),
                 ),
-              )
-
+              ),
             ],
           ),
         ),
       );
-
     }
-
 
     showDialog(
       context: context,
@@ -387,70 +372,47 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                         runSpacing: 15,
 
                         children: [
-                          imagePickerBox(
-                            "Profile",
-                            profileImageBytes,
-                                () async {
+                          imagePickerBox("Profile", profileImageBytes, () async {
+                            final img = await pickImage();
 
-                              final img = await pickImage();
+                            setDialogState(() {
+                              profileImageBytes = img;
+                            });
 
-                              setDialogState(() {
-
-                                profileImageBytes = img;
-
-                              });
-
-                              debugPrint(
-                                  "PROFILE IMAGE SELECTED ${profileImageBytes?.length}"
-                              );
-
-                            },
-                          ),
-
+                            debugPrint(
+                              "PROFILE IMAGE SELECTED ${profileImageBytes?.length}",
+                            );
+                          }),
 
                           imagePickerBox(
                             "Aadhaar Front",
                             aadhaarFrontBytes,
-                                () async {
+                            () async {
                               aadhaarFrontBytes = await pickImage();
-                              setDialogState((){});
+                              setDialogState(() {});
                             },
                           ),
-
 
                           imagePickerBox(
                             "Aadhaar Back",
                             aadhaarBackBytes,
-                                () async {
+                            () async {
                               aadhaarBackBytes = await pickImage();
-                              setDialogState((){});
+                              setDialogState(() {});
                             },
                           ),
 
+                          imagePickerBox("PAN Card", panImageBytes, () async {
+                            panImageBytes = await pickImage();
+                            setDialogState(() {});
+                          }),
 
-                          imagePickerBox(
-                            "PAN Card",
-                            panImageBytes,
-                                () async {
-                              panImageBytes = await pickImage();
-                              setDialogState((){});
-                            },
-                          ),
-
-
-                          imagePickerBox(
-                            "Police",
-                            policeImageBytes,
-                                () async {
-                              policeImageBytes = await pickImage();
-                              setDialogState((){});
-                            },
-                          ),
-
+                          imagePickerBox("Police", policeImageBytes, () async {
+                            policeImageBytes = await pickImage();
+                            setDialogState(() {});
+                          }),
                         ],
-                      )
-
-
+                      ),
                     ],
                   ),
                 ),
@@ -502,18 +464,22 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                       policeImageBytes: policeImageBytes,
                     );
 
-                    if (ok && mounted) {
+                    if (!context.mounted) return;
+
+                    if (ok) {
                       final fresh = await vm.getPartnerDetails(partner.id);
-                      if (fresh != null && mounted) {
+
+                      if (!context.mounted) return;
+
+                      if (fresh != null) {
                         vm.selectPartner(fresh);
                       }
+
                       Navigator.pop(context);
                     }
                   },
                   child: const Text("Save"),
                 ),
-
-
               ],
             );
           },
@@ -554,7 +520,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 16,
                             offset: const Offset(0, 6),
                           ),
@@ -571,22 +537,20 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                             child: ClipOval(
                               child: partner.image.isNotEmpty
                                   ? Image.network(
-                                partner.image,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                                      partner.image,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
 
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(
-                                    Icons.person,
-                                    size: 42,
-                                  );
-                                },
-                              )
-                                  : const Icon(
-                                Icons.person,
-                                size: 42,
-                              ),
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Icon(
+                                              Icons.person,
+                                              size: 42,
+                                            );
+                                          },
+                                    )
+                                  : const Icon(Icons.person, size: 42),
                             ),
                           ),
                           const SizedBox(width: 20),
@@ -665,13 +629,17 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                     final ok = await vm.approvePartner(
                                       partner.id,
                                     );
-                                    if (ok && mounted) {
+                                    if (ok && context.mounted) {
                                       final fresh = await vm.getPartnerDetails(
                                         partner.id,
                                       );
-                                      if (fresh != null && mounted) {
+
+                                      if (!context.mounted) return;
+
+                                      if (fresh != null) {
                                         vm.selectPartner(fresh);
                                       }
+
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
@@ -697,13 +665,18 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                                   final ok = await vm.disapprovePartner(
                                     partner.id,
                                   );
-                                  if (ok && mounted) {
+
+                                  if (ok && context.mounted) {
                                     final fresh = await vm.getPartnerDetails(
                                       partner.id,
                                     );
-                                    if (fresh != null && mounted) {
+
+                                    if (!context.mounted) return;
+
+                                    if (fresh != null) {
                                       vm.selectPartner(fresh);
                                     }
+
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text("Partner disapproved"),
@@ -751,7 +724,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -1246,7 +1219,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1356,7 +1329,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   ? Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
+                      errorBuilder: (_, _, _) => const Center(
                         child: Icon(Icons.broken_image, size: 40),
                       ),
                     )
@@ -1442,7 +1415,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -1521,9 +1494,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   ) {
     final passwordController = TextEditingController();
     final confirmController = TextEditingController();
-
-    bool obscurePassword = true;
-    bool obscureConfirmPassword = true;
 
     showDialog(
       context: context,

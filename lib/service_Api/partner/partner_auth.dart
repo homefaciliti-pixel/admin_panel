@@ -303,20 +303,18 @@ class PartnerAuth extends ChangeNotifier {
   /// ===============================
   /// UPDATE PARTNER
   Future<bool> updatePartner(
-      int id,
-      Map<String, dynamic> updateFields, {
-        Uint8List? profileImageBytes,
-        Uint8List? aadhaarFrontBytes,
-        Uint8List? aadhaarBackBytes,
-        Uint8List? panImageBytes,
-        Uint8List? policeImageBytes,
-      }) async {
-
+    int id,
+    Map<String, dynamic> updateFields, {
+    Uint8List? profileImageBytes,
+    Uint8List? aadhaarFrontBytes,
+    Uint8List? aadhaarBackBytes,
+    Uint8List? panImageBytes,
+    Uint8List? policeImageBytes,
+  }) async {
     debugPrint("🔥🔥 NEW UPDATE FUNCTION RUNNING 🔥🔥");
     debugPrint("UPDATE FIELDS RECEIVED => $updateFields");
 
     try {
-
       final response = await http.put(
         Uri.parse('$_baseUrl/partners/$id'),
 
@@ -328,52 +326,27 @@ class PartnerAuth extends ChangeNotifier {
         body: jsonEncode(updateFields),
       );
 
+      debugPrint("UPDATE STATUS = ${response.statusCode}");
 
-      debugPrint(
-        "UPDATE STATUS = ${response.statusCode}",
-      );
-
-      debugPrint(
-        "UPDATE BODY = ${response.body}",
-      );
-
+      debugPrint("UPDATE BODY = ${response.body}");
 
       if (response.statusCode == 200) {
-
         final json = jsonDecode(response.body);
 
-
         if (json["success"] == true) {
+          final updated = PartnerModel.fromJson(json["data"]);
 
-          final updated =
-          PartnerModel.fromJson(
-            json["data"],
-          );
-
-
-          final allIndex =
-          _allPartners.indexWhere(
-                (e) => e.id == id,
-          );
-
+          final allIndex = _allPartners.indexWhere((e) => e.id == id);
 
           if (allIndex != -1) {
-            _allPartners[allIndex] =
-                updated;
+            _allPartners[allIndex] = updated;
           }
 
-
-          final partnerIndex =
-          partners.indexWhere(
-                (e) => e.id == id,
-          );
-
+          final partnerIndex = partners.indexWhere((e) => e.id == id);
 
           if (partnerIndex != -1) {
-            partners[partnerIndex] =
-                updated;
+            partners[partnerIndex] = updated;
           }
-
 
           selectedPartner = updated;
 
@@ -382,15 +355,9 @@ class PartnerAuth extends ChangeNotifier {
           return true;
         }
       }
-
     } catch (e) {
-
-      debugPrint(
-        "updatePartner error $e",
-      );
-
+      debugPrint("updatePartner error $e");
     }
-
 
     return false;
   }

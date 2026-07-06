@@ -16,7 +16,7 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     super.initState();
 
-    /// Screen open hote hi API call
+    /// Screen open hotee hi API call
     Future.microtask(() {
       context.read<BookingAuth>().loadBookings();
     });
@@ -63,7 +63,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   /// SEARCH FIELD
                   Row(
                     children: [
-
                       SizedBox(
                         width: 260,
                         child: TextField(
@@ -85,25 +84,14 @@ class _BookingScreenState extends State<BookingScreen> {
                         ),
                       ),
 
-
                       const SizedBox(width: 12),
-
 
                       ElevatedButton.icon(
                         onPressed: () {
-
                           vm.filterTodayBookings();
-
                         },
-                        icon: const Icon(
-                          Icons.today,
-                          size: 18,
-                        ),
-                        label: Text(
-                          vm.showTodayOnly
-                              ? "All Booking"
-                              : "Today",
-                        ),
+                        icon: const Icon(Icons.today, size: 18),
+                        label: Text(vm.showTodayOnly ? "All Booking" : "Today"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: vm.showTodayOnly
                               ? Colors.green
@@ -121,7 +109,6 @@ class _BookingScreenState extends State<BookingScreen> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ],
@@ -180,7 +167,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -296,7 +283,7 @@ class _BookingScreenState extends State<BookingScreen> {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

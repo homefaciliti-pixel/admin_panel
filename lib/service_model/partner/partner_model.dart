@@ -103,7 +103,7 @@ class PartnerModel {
     this.longitude,
     this.locationTime,
     required this.countryCode,
-    required this.isPaid
+    required this.isPaid,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) {
@@ -219,7 +219,7 @@ class PartnerModel {
       'longitude': longitude,
       'locationTime': locationTime,
       'countryCode': countryCode,
-      'isPaid' : isPaid,
+      'isPaid': isPaid,
     };
   }
 

@@ -21,15 +21,10 @@ class _PartnerScreenState extends State<PartnerScreen> {
     super.didChangeDependencies();
 
     if (!_loaded) {
-
       _loaded = true;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-
-        context
-            .read<PartnerAuth>()
-            .loadApprovedPartners();
-
+        context.read<PartnerAuth>().loadApprovedPartners();
       });
     }
   }
