@@ -40,8 +40,11 @@ class _PartnerScreenState extends State<PartnerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// PAGE HEADER
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

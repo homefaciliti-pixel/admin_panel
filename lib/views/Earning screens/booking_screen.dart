@@ -35,8 +35,11 @@ class _BookingScreenState extends State<BookingScreen> {
               /// =====================================
               /// PAGE HEADER
               /// =====================================
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   /// LEFT TITLE
                   Column(

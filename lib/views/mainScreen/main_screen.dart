@@ -182,41 +182,47 @@ class _MainScreenState extends State<MainScreen> {
                             "Admin Panel",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 24,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
                             ),
                           ),
                           const Spacer(),
-                          Container(
-                            width: isDesktop ? 280 : 180,
-                            height: 44,
-                            padding: const EdgeInsets.symmetric(horizontal: 14),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.14),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.12),
+                          if (constraints.maxWidth > 600)
+                            Container(
+                              width: isDesktop ? 280 : 180,
+                              height: 44,
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.14),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.12),
+                                ),
                               ),
-                            ),
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  size: 20,
-                                  color: Colors.white70,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  "Search...",
-                                  style: TextStyle(
+                              child: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.search,
+                                    size: 20,
                                     color: Colors.white70,
-                                    fontSize: 14,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Search...",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else
+                            IconButton(
+                              icon: const Icon(Icons.search, color: Colors.white70),
+                              onPressed: () {},
                             ),
-                          ),
                           const SizedBox(width: 16),
                           InkWell(
                             borderRadius: BorderRadius.circular(12),
