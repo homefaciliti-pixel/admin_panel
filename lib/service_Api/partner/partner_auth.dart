@@ -311,7 +311,7 @@ class PartnerAuth extends ChangeNotifier {
     Uint8List? panImageBytes,
     Uint8List? policeImageBytes,
   }) async {
-    debugPrint("🔥🔥 NEW UPDATE FUNCTION RUNNING 🔥🔥");
+    debugPrint(" NEW UPDATE FUNCTION RUNNING ");
     debugPrint("UPDATE FIELDS RECEIVED => $updateFields");
 
     try {

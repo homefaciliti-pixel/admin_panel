@@ -126,9 +126,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => RecentOrderViewModel()),
         ChangeNotifierProvider(create: (_) => VisitViewModel()),
         ChangeNotifierProvider(create: (_) => AssignPartnerViewModel()),
-        ChangeNotifierProvider(
-          create: (_) => AmcReportViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => AmcReportViewModel()),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
     ),

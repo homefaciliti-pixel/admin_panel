@@ -15,6 +15,13 @@ import 'package:admin_panel/views/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Amc/view/Orders/amc_orders_screen.dart';
+import '../../Amc/view/Partner payment/partner_payment_screen.dart';
+import '../../Amc/view/amc_dashboard_view/active_amc/active_amc_screen.dart';
+import '../../Amc/view/amc_dashboard_view/admin_amc_dashboard.dart';
+import '../../Amc/view/expired/expired_amc_screen.dart';
+import '../../Amc/view/reports/reports_screen.dart';
+import '../../Amc/view/visitHistoryScreen/visit_history_screen.dart';
 import '../../core/theme/app_colors.dart';
 import '../../service_Api/settings/navigation_viewmodel.dart';
 import '../../widgets/drawer/admin_drawer.dart';
@@ -118,6 +125,27 @@ class _MainScreenState extends State<MainScreen> {
 
       case "Support":
         return const SupportScreen();
+      case "AMC Dashboard":
+        return const AdminAmcDashboard();
+
+      case "AMC Orders":
+        return const AmcOrdersScreen();
+
+      case "Active AMC":
+        return const ActiveAmcScreen();
+
+      case "Expired AMC":
+        return const ExpiredAmcScreen();
+
+      case "Partner Payments":
+        return const PartnerPaymentScreen();
+
+
+      case "AMC Reports":
+        return const AmcReportsScreen();
+
+      case "Visit History":
+        return const VisitHistoryScreen();
 
       default:
         return Center(
@@ -157,7 +185,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.12),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 14,
                             offset: const Offset(0, 4),
                           ),
@@ -193,10 +221,10 @@ class _MainScreenState extends State<MainScreen> {
                             height: 44,
                             padding: const EdgeInsets.symmetric(horizontal: 14),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.14),
+                              color: Colors.white.withValues(alpha: 0.14),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.12),
+                                color: Colors.white.withValues(alpha: 0.12),
                               ),
                             ),
                             child: const Row(
