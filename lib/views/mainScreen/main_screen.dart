@@ -140,7 +140,6 @@ class _MainScreenState extends State<MainScreen> {
       case "Partner Payments":
         return const PartnerPaymentScreen();
 
-
       case "AMC Reports":
         return const AmcReportsScreen();
 

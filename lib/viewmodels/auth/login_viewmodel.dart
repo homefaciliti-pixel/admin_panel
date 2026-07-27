@@ -44,6 +44,29 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+
+
+      /// STATIC ADMIN LOGIN
+      if (selectedRole == "admin") {
+        if (email == "kashish@gmail.com" &&
+            password == "HF@309014") {
+          final prefs = await SharedPreferences.getInstance();
+
+          await prefs.setBool("isLoggedIn", true);
+          await prefs.setString("role", "admin");
+          await prefs.setString("name", "Admin");
+          await prefs.setString("username", "admin");
+          await prefs.setString("email", email);
+          await prefs.setInt("adminId", 1);
+
+          AppPermission.role = "admin";
+
+          return true;
+        }
+
+        errorMessage = "Invalid email or password";
+        return false;
+      }
       /// SUPER ADMIN LOGIN (Static)
       if (selectedRole == "super_admin") {
         final result = await _authRepository.login(
