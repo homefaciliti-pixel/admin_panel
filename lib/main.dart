@@ -1,3 +1,7 @@
+import 'package:admin_panel/Amc/AMC_ViewModel/dashboard_viewmodel/admin_amc_dashboard_viewmodel.dart';
+import 'package:admin_panel/Amc/AMC_ViewModel/expired/expired_amc_viewmodel.dart';
+import 'package:admin_panel/Amc/AMC_ViewModel/expired/renew_amc_viewmodel.dart';
+import 'package:admin_panel/Amc/AMC_ViewModel/orders/amc_view_model.dart';
 import 'package:admin_panel/service_Api/Activepartners/active_partner_auth.dart';
 import 'package:admin_panel/service_Api/Dashboard/dashboard_auth.dart';
 import 'package:admin_panel/service_Api/Earnings/Bookings/booking_auth.dart';
@@ -26,6 +30,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Amc/AMC_ViewModel/assign partner viewmodel/assign_partner_viewmodel.dart';
+import 'Amc/AMC_ViewModel/dashboard_viewmodel/active_amc_viewmodel.dart';
+import 'Amc/AMC_ViewModel/book_service/book_service_viewmodel.dart';
+import 'Amc/AMC_ViewModel/dashboard_viewmodel/recent_order_viewmodel.dart';
+import 'Amc/AMC_ViewModel/dashboard_viewmodel/today_visit_viewmodel.dart';
+import 'Amc/AMC_ViewModel/partner Payment/partner_payment_viewmodel.dart';
+import 'Amc/AMC_ViewModel/reports/report_viewmodel.dart';
+import 'Amc/AMC_ViewModel/service_history/service_history_viewmodel.dart';
 import 'core/App_permission/app_permission.dart';
 import 'utils/app_scroll_behavior.dart';
 import 'service_Api/settings/navigation_viewmodel.dart';
@@ -55,6 +67,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => PartnerAuth()),
 
         ChangeNotifierProvider(create: (_) => BookingAuth()),
+
         ChangeNotifierProvider(create: (_) => SubscriptionAuth()),
 
         ChangeNotifierProvider(create: (_) => UserViewmodel()),
@@ -86,12 +99,35 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ActivePartnerAuth()),
 
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+
         ChangeNotifierProvider(create: (_) => AdminViewModel()),
+
         ChangeNotifierProvider(create: (_) => SupportAuth()),
 
         ChangeNotifierProvider(create: (_) => PermissionViewModel()),
+
         ChangeNotifierProvider(
           create: (_) => CountryProvider()..getCountries(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ActiveAmcViewModel()..fetchActiveAmc(),
+        ),
+        ChangeNotifierProvider(create: (_) => DashboardAmcViewModel()),
+
+        ChangeNotifierProvider(create: (_) => BookServiceViewModel()),
+
+        ChangeNotifierProvider(create: (_) => ServiceHistoryViewModel()),
+
+        ChangeNotifierProvider(create: (_) => ExpiredAmcViewModel()),
+        ChangeNotifierProvider(create: (_) => RenewAmcViewModel()),
+        ChangeNotifierProvider(create: (_) => AmcOrderViewModel()),
+
+        ChangeNotifierProvider(create: (_) => PartnerPaymentViewModel()),
+        ChangeNotifierProvider(create: (_) => RecentOrderViewModel()),
+        ChangeNotifierProvider(create: (_) => VisitViewModel()),
+        ChangeNotifierProvider(create: (_) => AssignPartnerViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => AmcReportViewModel(),
         ),
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
@@ -112,7 +148,9 @@ class MyApp extends StatelessWidget {
       scrollBehavior: AppScrollBehavior(),
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(1.0)),
           child: child!,
         );
       },

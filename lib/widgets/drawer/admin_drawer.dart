@@ -67,7 +67,28 @@ class AdminDrawer extends StatelessWidget {
                 expansionMenu(context, vm, "Earnings", Icons.currency_rupee, [
                   "Bookings",
                   "Subscriptions",
+                  "",
                 ]),
+
+              if (AppPermission.isSuperAdmin)
+                expansionMenu(
+                  context,
+                  vm,
+                  "AMC Management",
+                  Icons.workspace_premium,
+                  [
+                    "AMC Dashboard",
+                    "Active AMC",
+                    "Expired AMC",
+                    "AMC Orders",
+                    "Visit History",
+                    "Partner Payments",
+                    "AMC Ledger",
+                    "Renew History",
+                    "Calendar",
+                    "AMC Reports",
+                  ],
+                ),
 
               menuTile(context, vm, "Users", Icons.person),
 
