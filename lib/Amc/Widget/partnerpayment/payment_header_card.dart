@@ -10,18 +10,12 @@ class PaymentHeaderCard extends StatelessWidget {
   });
 
   Color get statusColor {
-    switch (payment.status) {
-      case "Paid":
+    switch (payment.status.toLowerCase()) {
+      case "released":
         return Colors.green;
 
-      case "Pending":
+      case "pending":
         return Colors.orange;
-
-      case "Processing":
-        return Colors.blue;
-
-      case "Failed":
-        return Colors.red;
 
       default:
         return Colors.grey;
@@ -29,18 +23,12 @@ class PaymentHeaderCard extends StatelessWidget {
   }
 
   IconData get statusIcon {
-    switch (payment.status) {
-      case "Paid":
+    switch (payment.status.toLowerCase()) {
+      case "released":
         return Icons.check_circle;
 
-      case "Pending":
+      case "pending":
         return Icons.pending_actions;
-
-      case "Processing":
-        return Icons.sync;
-
-      case "Failed":
-        return Icons.cancel;
 
       default:
         return Icons.info;
@@ -73,22 +61,28 @@ class PaymentHeaderCard extends StatelessWidget {
 
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
                   Text(
-                    payment.paymentId,
+                    "Payment #${payment.paymentId}",
                     style: const TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 6),
 
                   Text(
-                    "Order : ${payment.orderId}",
+                    "Partner : ${payment.partnerName}",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  Text(
+                    "Phone : ${payment.partnerPhone}",
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
@@ -96,6 +90,13 @@ class PaymentHeaderCard extends StatelessWidget {
 
                   Text(
                     "AMC : ${payment.amcId}",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  Text(
+                    "Visit ID : ${payment.visitId}",
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
@@ -114,10 +115,38 @@ class PaymentHeaderCard extends StatelessWidget {
 
                       const SizedBox(width: 6),
 
-                      Text(payment.paymentDate),
+                      Text(
+                        payment.createdAt
+                            .toLocal()
+                            .toString()
+                            .split(" ")
+                            .first,
+                      ),
 
                     ],
                   ),
+
+                  if (payment.releasedAt != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+
+                          const Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: Colors.green,
+                          ),
+
+                          const SizedBox(width: 6),
+
+                          Text(
+                            "Released : ${payment.releasedAt!.toLocal().toString().split(' ').first}",
+                          ),
+
+                        ],
+                      ),
+                    ),
 
                 ],
               ),
@@ -133,7 +162,7 @@ class PaymentHeaderCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(25),
               ),
               child: Text(
-                payment.status,
+                payment.status.toUpperCase(),
                 style: TextStyle(
                   color: statusColor,
                   fontWeight: FontWeight.bold,

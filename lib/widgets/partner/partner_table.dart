@@ -5,6 +5,102 @@ import '../../core/App_permission/app_permission.dart';
 import '../../service_model/partner/partner_model.dart';
 import '../../views/partner/partner_details_screen.dart';
 
+
+
+
+
+
+const _headerColor = Color(0xff111827);
+const _borderColor = Color(0xffE5E7EB);
+const _hoverColor = Color(0xffF9FAFB);
+
+class TableStatusBadge extends StatelessWidget {
+  final bool active;
+
+  const TableStatusBadge({
+    super.key,
+    required this.active,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: active
+            ? Colors.green.shade50
+            : Colors.red.shade50,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.circle,
+            size: 8,
+            color: active
+                ? Colors.green
+                : Colors.red,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            active ? "Active" : "Inactive",
+            style: TextStyle(
+              fontSize: 12,
+              color: active
+                  ? Colors.green.shade700
+                  : Colors.red.shade700,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TableActionButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const TableActionButton({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: color.withOpacity(.08),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
 class PartnerTable extends StatelessWidget {
   // PartnerModel ki typed list
   final List<PartnerModel> partners;
@@ -44,6 +140,9 @@ class PartnerTable extends StatelessWidget {
           ),
         ],
       ),
+
+
+
       child: Column(
         children: [
           /// =========================
@@ -143,8 +242,8 @@ class PartnerTable extends StatelessWidget {
 
                 return Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 14,
+                    horizontal: 16,
+                    vertical: 8,
                   ),
                   decoration: BoxDecoration(
                     border: Border(
@@ -179,7 +278,7 @@ class PartnerTable extends StatelessWidget {
                           child: Row(
                             children: [
                               CircleAvatar(
-                                radius: 24,
+                                radius: 18,
                                 backgroundColor: Colors.grey.shade200,
                                 backgroundImage: item.image.isNotEmpty
                                     ? NetworkImage(item.image)
@@ -188,7 +287,7 @@ class PartnerTable extends StatelessWidget {
                                     ? const Icon(Icons.person)
                                     : null,
                               ),
-                              const SizedBox(width: 14),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +296,7 @@ class PartnerTable extends StatelessWidget {
                                       item.name,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 15,
+                                        fontSize: 13,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -265,7 +364,7 @@ class PartnerTable extends StatelessWidget {
                                 : "-",
                             style: TextStyle(
                               color: Colors.grey.shade800,
-                              fontSize: 13,
+                              fontSize: 11,
                             ),
                           ),
                         ),
@@ -395,4 +494,6 @@ class PartnerTable extends StatelessWidget {
       return timeStr;
     }
   }
+
+
 }

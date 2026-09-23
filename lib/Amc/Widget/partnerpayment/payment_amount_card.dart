@@ -45,68 +45,78 @@ class PaymentAmountCard extends StatelessWidget {
 
             const Divider(height: 25),
 
-            _amountRow(
-              "Service Amount",
-              payment.serviceAmount,
-              Colors.black,
+            _infoRow(
+              "Partner",
+              payment.partnerName,
+            ),
+
+            _infoRow(
+              "AMC ID",
+              payment.amcId,
+            ),
+
+            _infoRow(
+              "Visit ID",
+              payment.visitId.toString(),
             ),
 
             _amountRow(
-              "Platform Commission",
-              payment.commission,
-              Colors.red,
-            ),
-
-            const Divider(),
-
-            _amountRow(
-              "Payable Amount",
-              payment.payableAmount,
+              "Amount",
+              payment.amount,
               Colors.green,
               isBold: true,
             ),
 
-            const SizedBox(height: 18),
+            const Divider(),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-
-                  const Icon(
-                    Icons.account_balance,
-                    color: Colors.green,
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  const Text(
-                    "Payment Method",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  Text(
-                    payment.paymentMethod,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                ],
-              ),
+            _infoRow(
+              "Status",
+              payment.status.toUpperCase(),
             ),
+
+            _infoRow(
+              "Created",
+              payment.createdAt
+                  .toLocal()
+                  .toString()
+                  .split(" ")
+                  .first,
+            ),
+
+            if (payment.releasedAt != null)
+              _infoRow(
+                "Released",
+                payment.releasedAt!
+                    .toLocal()
+                    .toString()
+                    .split(" ")
+                    .first,
+              ),
 
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const Spacer(),
+
+          Text(value),
+
+        ],
       ),
     );
   }
@@ -125,21 +135,20 @@ class PaymentAmountCard extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 15,
               fontWeight:
-              isBold ? FontWeight.bold : FontWeight.w500,
+              isBold ? FontWeight.bold : FontWeight.w600,
             ),
           ),
 
           const Spacer(),
 
           Text(
-            "₹${amount.toStringAsFixed(0)}",
+            "₹${amount.toStringAsFixed(2)}",
             style: TextStyle(
               color: color,
-              fontSize: 16,
+              fontSize: 17,
               fontWeight:
-              isBold ? FontWeight.bold : FontWeight.w600,
+              isBold ? FontWeight.bold : FontWeight.w700,
             ),
           ),
 

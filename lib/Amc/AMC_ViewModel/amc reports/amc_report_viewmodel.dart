@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../Amc_Model/report_model.dart';
-import '../../Service_api/reports/report_service.dart';
+
+import '../../Amc_Model/amc_report_model.dart';
+import '../../Service_api/amc_reports/amc_report_service.dart';
+
 
 class AmcReportViewModel extends ChangeNotifier {
   final AmcReportService _service = AmcReportService();
@@ -14,13 +16,13 @@ class AmcReportViewModel extends ChangeNotifier {
   AmcReportModel? _report;
   AmcReportModel? get report => _report;
 
-  Future<void> fetchReport() async {
+  Future<void> fetchReports() async {
     try {
       _loading = true;
       _error = null;
       notifyListeners();
 
-      _report = await _service.fetchReport();
+      _report = await _service.getReports();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -30,6 +32,6 @@ class AmcReportViewModel extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    await fetchReport();
+    await fetchReports();
   }
 }

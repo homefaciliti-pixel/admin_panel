@@ -10,18 +10,12 @@ class PaymentTransactionCard extends StatelessWidget {
   });
 
   Color get statusColor {
-    switch (payment.status) {
-      case "Paid":
+    switch (payment.status.toLowerCase()) {
+      case "released":
         return Colors.green;
 
-      case "Pending":
+      case "pending":
         return Colors.orange;
-
-      case "Processing":
-        return Colors.blue;
-
-      case "Failed":
-        return Colors.red;
 
       default:
         return Colors.grey;
@@ -66,67 +60,85 @@ class PaymentTransactionCard extends StatelessWidget {
 
             _infoRow(
               Icons.payment,
-              "Method",
-              payment.paymentMethod,
+              "Payment ID",
+              payment.paymentId.toString(),
             ),
 
             _infoRow(
-              Icons.numbers,
-              "Transaction ID",
-              payment.transactionId.isEmpty
-                  ? "Not Generated"
-                  : payment.transactionId,
+              Icons.receipt,
+              "Razorpay Payment",
+              payment.razorpayPaymentId ?? "N/A",
+            ),
+
+            _infoRow(
+              Icons.shopping_bag,
+              "Razorpay Order",
+              payment.razorpayOrderId ?? "N/A",
             ),
 
             _infoRow(
               Icons.calendar_today,
-              "Payment Date",
-              payment.paymentDate,
+              "Created",
+              payment.createdAt
+                  .toLocal()
+                  .toString()
+                  .split(" ")
+                  .first,
             ),
 
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                children: [
-
-                  const Icon(
-                    Icons.verified,
-                    color: Colors.blue,
-                    size: 18,
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  const SizedBox(
-                    width: 120,
-                    child: Text(
-                      "Status",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(.15),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      payment.status,
-                      style: TextStyle(
-                        color: statusColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                ],
+            if (payment.releasedAt != null)
+              _infoRow(
+                Icons.check_circle,
+                "Released",
+                payment.releasedAt!
+                    .toLocal()
+                    .toString()
+                    .split(" ")
+                    .first,
               ),
+
+            const SizedBox(height: 10),
+
+            Row(
+              children: [
+
+                const Icon(
+                  Icons.verified,
+                  color: Colors.blue,
+                  size: 18,
+                ),
+
+                const SizedBox(width: 10),
+
+                const SizedBox(
+                  width: 120,
+                  child: Text(
+                    "Status",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    payment.status.toUpperCase(),
+                    style: TextStyle(
+                      color: statusColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+              ],
             ),
 
           ],
@@ -154,7 +166,7 @@ class PaymentTransactionCard extends StatelessWidget {
           const SizedBox(width: 10),
 
           SizedBox(
-            width: 120,
+            width: 130,
             child: Text(
               title,
               style: const TextStyle(

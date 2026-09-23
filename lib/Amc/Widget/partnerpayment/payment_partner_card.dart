@@ -53,8 +53,8 @@ class PaymentPartnerCard extends StatelessWidget {
                   backgroundColor: Colors.blue.shade100,
                   child: const Icon(
                     Icons.person,
-                    size: 32,
                     color: Colors.blue,
+                    size: 30,
                   ),
                 ),
 
@@ -92,15 +92,9 @@ class PaymentPartnerCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             _infoRow(
-              Icons.badge,
-              "Partner ID",
-              payment.partnerId,
-            ),
-
-            _infoRow(
-              Icons.receipt_long,
-              "Order ID",
-              payment.orderId,
+              Icons.payment,
+              "Payment ID",
+              payment.paymentId.toString(),
             ),
 
             _infoRow(
@@ -110,10 +104,37 @@ class PaymentPartnerCard extends StatelessWidget {
             ),
 
             _infoRow(
-              Icons.shopping_bag,
-              "Total Orders",
-              "${payment.totalOrders}",
+              Icons.home_repair_service,
+              "Visit ID",
+              payment.visitId.toString(),
             ),
+
+            _infoRow(
+              Icons.currency_rupee,
+              "Amount",
+              "₹${payment.amount.toStringAsFixed(2)}",
+            ),
+
+            _infoRow(
+              Icons.calendar_today,
+              "Created",
+              payment.createdAt
+                  .toLocal()
+                  .toString()
+                  .split(" ")
+                  .first,
+            ),
+
+            if (payment.releasedAt != null)
+              _infoRow(
+                Icons.check_circle,
+                "Released",
+                payment.releasedAt!
+                    .toLocal()
+                    .toString()
+                    .split(" ")
+                    .first,
+              ),
 
           ],
         ),

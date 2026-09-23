@@ -1,14 +1,14 @@
-import 'package:admin_panel/Amc/view/Partner%20payment/partner_payment_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../AMC_ViewModel/partner Payment/ReleasePaymentViewModel.dart';
 import '../../AMC_ViewModel/partner Payment/partner_payment_viewmodel.dart';
 import '../../Widget/common resuse/aap_empty_view.dart';
 import '../../Widget/common resuse/app_loading_view.dart';
 import '../../Widget/common resuse/app_search_field.dart';
-
 import '../../Widget/partnerpayment/partner_payment_card.dart';
 import '../../Widget/partnerpayment/payment_summary_card.dart';
-
+import '../Partner payment/partner_payment_details_screen.dart';
 
 class PartnerPaymentScreen extends StatefulWidget {
   const PartnerPaymentScreen({super.key});
@@ -20,7 +20,6 @@ class PartnerPaymentScreen extends StatefulWidget {
 
 class _PartnerPaymentScreenState
     extends State<PartnerPaymentScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +31,6 @@ class _PartnerPaymentScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FA),
 
@@ -69,46 +67,40 @@ class _PartnerPaymentScreenState
             const SizedBox(height: 20),
 
             AppSearchField(
-              hint: "Search Partner / Payment ID / Order ID",
+              hint: "Search Partner / Phone / AMC ID",
               onChanged: (value) {
                 context
                     .read<PartnerPaymentViewModel>()
                     .search(value);
               },
             ),
+
+            const SizedBox(height: 20),
+
             Consumer<PartnerPaymentViewModel>(
-              builder: (_, vm, _) {
+              builder: (_, vm, __) {
                 return PaymentSummaryCard(
-                  pendingAmount: vm.totalPendingAmount,
-                  paidAmount: vm.totalPaidAmount,
+                  pendingAmount: vm.pendingAmount,
+                  paidAmount: vm.releasedAmount,
                   totalPartners: vm.totalPartners,
                   totalPayments: vm.totalPayments,
                 );
               },
             ),
 
-
-
-
             const SizedBox(height: 20),
 
             Consumer<PartnerPaymentViewModel>(
-              builder: (context, vm, child) {
-
+              builder: (_, vm, __) {
                 return Wrap(
                   spacing: 10,
-                  runSpacing: 10,
                   children: [
 
                     _chip(vm, "All"),
 
                     _chip(vm, "Pending"),
 
-                    _chip(vm, "Paid"),
-
-                    _chip(vm, "Processing"),
-
-                    _chip(vm, "Failed"),
+                    _chip(vm, "Released"),
 
                   ],
                 );
@@ -119,16 +111,22 @@ class _PartnerPaymentScreenState
 
             Expanded(
               child: Consumer<PartnerPaymentViewModel>(
-                builder: (context, vm, child) {
+                builder: (_, vm, __) {
 
                   if (vm.loading) {
                     return const AppLoadingView();
                   }
 
-                  if (vm.filteredList.isEmpty) {
+                  if (vm.error != null) {
+                    return Center(
+                      child: Text(vm.error!),
+                    );
+                  }
+
+                  if (vm.filteredPayments.isEmpty) {
                     return const AppEmptyView(
                       title: "No Payments Found",
-                      icon: Icons.account_balance_wallet_outlined,
+                      icon: Icons.account_balance_wallet,
                     );
                   }
 
@@ -138,19 +136,18 @@ class _PartnerPaymentScreenState
 
                     child: ListView.builder(
 
-                      itemCount: vm.filteredList.length,
+                      itemCount: vm.filteredPayments.length,
 
-                      itemBuilder: (context, index) {
+                      itemBuilder: (_, index) {
 
                         final payment =
-                        vm.filteredList[index];
+                        vm.filteredPayments[index];
 
                         return PartnerPaymentCard(
 
                           payment: payment,
 
                           onView: () {
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -160,20 +157,52 @@ class _PartnerPaymentScreenState
                                     ),
                               ),
                             );
-
                           },
 
-                          onMarkPaid: () async {
+                          onMarkPaid: payment.status
+                              .toLowerCase() ==
+                              "pending"
+                              ? () async {
 
-                            await vm.markAsPaid(
+                            final releaseVm =
+                            context.read<
+                                ReleasePaymentViewModel>();
+
+                            final success =
+                            await releaseVm
+                                .releasePayment(
                               payment.paymentId,
-                              "TXN${DateTime.now().millisecondsSinceEpoch}",
                             );
 
-                          },
+                            if (success) {
 
+                              ScaffoldMessenger.of(
+                                  context)
+                                  .showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Payment released successfully",
+                                  ),
+                                ),
+                              );
+
+                              vm.fetchPayments();
+
+                            } else {
+
+                              ScaffoldMessenger.of(
+                                  context)
+                                  .showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    releaseVm.message,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                              : null,
                         );
-
                       },
                     ),
                   );
@@ -192,15 +221,11 @@ class _PartnerPaymentScreenState
       String status,
       ) {
     return FilterChip(
-
       label: Text(status),
-
       selected: vm.selectedStatus == status,
-
       onSelected: (_) {
         vm.changeStatus(status);
       },
-
     );
   }
 }

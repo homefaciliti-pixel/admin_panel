@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../AMC_ViewModel/amc reports/amc_report_viewmodel.dart';
 
-import '../../AMC_ViewModel/reports/report_viewmodel.dart';
+import '../../Widget/common resuse/aap_empty_view.dart';
 import '../../Widget/common resuse/app_loading_view.dart';
+
 import '../../Widget/reports/report_summary_card.dart';
 
 class AmcReportsScreen extends StatefulWidget {
@@ -22,7 +24,7 @@ class _AmcReportsScreenState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AmcReportViewModel>().fetchReport();
+      context.read<AmcReportViewModel>().fetchReports();
     });
   }
 
@@ -30,8 +32,11 @@ class _AmcReportsScreenState
   Widget build(BuildContext context) {
 
     return Scaffold(
-
       backgroundColor: const Color(0xffF5F7FA),
+
+      appBar: AppBar(
+        title: const Text("AMC Reports"),
+      ),
 
       body: Consumer<AmcReportViewModel>(
         builder: (context, vm, child) {
@@ -46,36 +51,32 @@ class _AmcReportsScreenState
             );
           }
 
-          final report = vm.report;
-
-          if (report == null) {
-            return const Center(
-              child: Text("No Report Found"),
+          if (vm.report == null) {
+            return const AppEmptyView(
+              title: "No Report Found",
+              icon: Icons.analytics_outlined,
             );
           }
 
+          final report = vm.report!;
+
           return RefreshIndicator(
-
             onRefresh: vm.refresh,
-
             child: SingleChildScrollView(
-
               physics:
               const AlwaysScrollableScrollPhysics(),
 
               padding: const EdgeInsets.all(20),
 
               child: Column(
-
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
-
                 children: [
 
                   const Text(
-                    "AMC Reports",
+                    "AMC Reports Dashboard",
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -83,36 +84,30 @@ class _AmcReportsScreenState
                   const SizedBox(height: 8),
 
                   const Text(
-                    "Overview of subscriptions, revenue & payouts",
+                    "Overview of AMC performance",
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 16,
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 24),
 
                   GridView.count(
-
+                    crossAxisCount: 2,
                     shrinkWrap: true,
-
                     physics:
                     const NeverScrollableScrollPhysics(),
-
-                    crossAxisCount: 2,
-
-                    mainAxisSpacing: 18,
-
-                    crossAxisSpacing: 18,
-
-                    childAspectRatio: 2.1,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 2.3,
 
                     children: [
 
                       ReportSummaryCard(
                         title: "Subscriptions",
-                        value: report.totalSubscriptions.toString(),
-                        icon: Icons.assignment,
+                        value:
+                        report.totalSubscriptions.toString(),
+                        icon: Icons.subscriptions,
                         color: Colors.blue,
                       ),
 
@@ -126,7 +121,8 @@ class _AmcReportsScreenState
 
                       ReportSummaryCard(
                         title: "Visits",
-                        value: report.totalVisits.toString(),
+                        value:
+                        report.totalVisits.toString(),
                         icon: Icons.home_repair_service,
                         color: Colors.orange,
                       ),
@@ -134,46 +130,47 @@ class _AmcReportsScreenState
                       ReportSummaryCard(
                         title: "Payout Released",
                         value:
-                        "₹${report.totalPayoutsReleased.toStringAsFixed(0)}",
+                        "₹${report.totalPayoutsReleased.toStringAsFixed(2)}",
                         icon: Icons.payments,
-                        color: Colors.deepPurple,
+                        color: Colors.purple,
                       ),
-
                     ],
                   ),
 
                   const SizedBox(height: 30),
 
                   Card(
-                    child: SizedBox(
-                      height: 220,
-                      child: Center(
-                        child: Text(
-                          "Revenue Chart\n(Coming Soon)",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: const [
 
-                  const SizedBox(height: 20),
-
-                  Card(
-                    child: SizedBox(
-                      height: 180,
-                      child: Center(
-                        child: Text(
-                          "Monthly Report\n(Coming Soon)",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 18,
+                          Icon(
+                            Icons.bar_chart,
+                            size: 70,
+                            color: Colors.grey,
                           ),
-                        ),
+
+                          SizedBox(height: 16),
+
+                          Text(
+                            "Revenue & Analytics Charts",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+
+                          SizedBox(height: 8),
+
+                          Text(
+                            "Charts will appear automatically when backend provides monthly analytics.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

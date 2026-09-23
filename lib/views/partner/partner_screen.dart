@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../service_Api/partner/partner_auth.dart';
 import '../../service_model/partner/partner_model.dart';
+import '../../widgets/partner/partner_filter_bar.dart';
 import '../../widgets/partner/partner_table.dart';
 import 'partner_details_screen.dart';
 
@@ -23,8 +24,14 @@ class _PartnerScreenState extends State<PartnerScreen> {
     if (!_loaded) {
       _loaded = true;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<PartnerAuth>().loadApprovedPartners();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final vm = context.read<PartnerAuth>();
+
+        // Category / State / City / Locality backend se load honge
+        await vm.loadFilterOptions();
+
+        // Approved partners load honge
+        await vm.loadApprovedPartners();
       });
     }
   }
@@ -39,59 +46,69 @@ class _PartnerScreenState extends State<PartnerScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// PAGE HEADER
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
+              Row(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Approved Partners",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Approved Partners",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff111827),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        "Home >Approved Partners > List",
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          "Manage all approved partners",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
 
-                  /// SEARCH FIELD
-                  SizedBox(
-                    width: 260,
-                    child: TextField(
-                      onChanged: vm.searchPartner,
-                      decoration: InputDecoration(
-                        hintText: "Search Partner",
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xffECFDF5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.verified,
+                          color: Colors.green,
+                          size: 18,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+                        const SizedBox(width: 8),
+                        Text(
+                          "${vm.paginatedPartners.length} Approved",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff047857),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 18),
 
-              const SizedBox(height: 25),
+              const PartnerFilterBar(),
+
+              const SizedBox(height: 18),
 
               /// PARTNER TABLE
               Expanded(
@@ -135,7 +152,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -160,7 +177,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                           child: DropdownButton<int>(
                             value: vm.selectedEntries,
                             underline: const SizedBox(),
-                            items: [10, 20, 50, 100].map((e) {
+                            items: [10, 20, 50, 100, 200, 500,].map((e) {
                               return DropdownMenuItem(
                                 value: e,
                                 child: Text("$e"),
@@ -202,7 +219,7 @@ class _PartnerScreenState extends State<PartnerScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            "${vm.currentPage}",
+                            "${vm.currentPage}/${vm.totalPages}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

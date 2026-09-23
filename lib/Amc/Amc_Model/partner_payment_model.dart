@@ -1,79 +1,62 @@
-import 'package:flutter/foundation.dart';
-
-@immutable
 class PartnerPaymentModel {
-  final String paymentId;
-  final String partnerId;
-  final String partnerName;
-  final String partnerPhone;
-
-  final String orderId;
+  final int id;
+  final int visitId;
   final String amcId;
-
-  final int totalOrders;
-
-  final double serviceAmount;
-  final double commission;
-  final double payableAmount;
-
-  final String paymentMethod;
-  final String transactionId;
-
-  final String paymentDate;
+  final String partnerPhone;
+  final String partnerName;
+  final double amount;
   final String status;
 
+  final DateTime createdAt;
+  final DateTime? releasedAt;
+
+  final int paymentId;
+
+  final String? razorpayPaymentId;
+  final String? razorpayOrderId;
+
   const PartnerPaymentModel({
-    required this.paymentId,
-    required this.partnerId,
-    required this.partnerName,
-    required this.partnerPhone,
-    required this.orderId,
+    required this.id,
+    required this.visitId,
     required this.amcId,
-    required this.totalOrders,
-    required this.serviceAmount,
-    required this.commission,
-    required this.payableAmount,
-    required this.paymentMethod,
-    required this.transactionId,
-    required this.paymentDate,
+    required this.partnerPhone,
+    required this.partnerName,
+    required this.amount,
     required this.status,
+    required this.createdAt,
+    required this.paymentId,
+    this.releasedAt,
+    this.razorpayPaymentId,
+    this.razorpayOrderId,
   });
 
-  factory PartnerPaymentModel.fromJson(Map<String, dynamic> json) {
+  factory PartnerPaymentModel.fromJson(
+      Map<String, dynamic> json) {
     return PartnerPaymentModel(
-      paymentId: json["paymentId"] ?? "",
-      partnerId: json["partnerId"] ?? "",
-      partnerName: json["partnerName"] ?? "",
-      partnerPhone: json["partnerPhone"] ?? "",
-      orderId: json["orderId"] ?? "",
+      id: json["id"] ?? 0,
+      visitId: json["visitId"] ?? 0,
       amcId: json["amcId"] ?? "",
-      totalOrders: json["totalOrders"] ?? 0,
-      serviceAmount: (json["serviceAmount"] ?? 0).toDouble(),
-      commission: (json["commission"] ?? 0).toDouble(),
-      payableAmount: (json["payableAmount"] ?? 0).toDouble(),
-      paymentMethod: json["paymentMethod"] ?? "",
-      transactionId: json["transactionId"] ?? "",
-      paymentDate: json["paymentDate"] ?? "",
+      partnerPhone: json["partnerPhone"] ?? "",
+      partnerName: json["partnerName"] ?? "",
+      amount:
+      double.tryParse(json["amount"].toString()) ??
+          0.0,
       status: json["status"] ?? "",
-    );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "paymentId": paymentId,
-      "partnerId": partnerId,
-      "partnerName": partnerName,
-      "partnerPhone": partnerPhone,
-      "orderId": orderId,
-      "amcId": amcId,
-      "totalOrders": totalOrders,
-      "serviceAmount": serviceAmount,
-      "commission": commission,
-      "payableAmount": payableAmount,
-      "paymentMethod": paymentMethod,
-      "transactionId": transactionId,
-      "paymentDate": paymentDate,
-      "status": status,
-    };
+      createdAt:
+      DateTime.parse(json["createdAt"]),
+
+      releasedAt: json["releasedAt"] != null
+          ? DateTime.parse(json["releasedAt"])
+          : null,
+
+      paymentId: json["paymentId"] ?? 0,
+
+      razorpayPaymentId:
+      json["razorpayPaymentId"]?.toString(),
+
+      razorpayOrderId:
+      json["razorpayOrderId"]?.toString(),
+    );
   }
 }

@@ -1,226 +1,147 @@
 import 'package:flutter/material.dart';
+
 import '../../Amc_Model/partner_payment_model.dart';
+import '../../Service_api/payment services/partner_payment_service.dart';
 
 class PartnerPaymentViewModel extends ChangeNotifier {
+  final PartnerPaymentService _service = PartnerPaymentService();
 
   bool _loading = false;
   bool get loading => _loading;
 
-  final List<PartnerPaymentModel> _paymentList = [];
-  List<PartnerPaymentModel> get paymentList => _paymentList;
+  String? _error;
+  String? get error => _error;
 
-  List<PartnerPaymentModel> _filteredList = [];
-  List<PartnerPaymentModel> get filteredList => _filteredList;
+  List<PartnerPaymentModel> _payments = [];
+  List<PartnerPaymentModel> get payments => _payments;
+
+  List<PartnerPaymentModel> _filteredPayments = [];
+  List<PartnerPaymentModel> get filteredPayments => _filteredPayments;
 
   String _selectedStatus = "All";
   String get selectedStatus => _selectedStatus;
 
+  /// =========================
+  /// Fetch Payments
+  /// =========================
   Future<void> fetchPayments() async {
+    try {
+      _loading = true;
+      _error = null;
+      notifyListeners();
 
-    _loading = true;
-    notifyListeners();
+      _payments = await _service.fetchPayments();
 
-    await Future.delayed(const Duration(seconds: 1));
-
-    _paymentList.clear();
-
-    _paymentList.addAll([
-
-      const PartnerPaymentModel(
-        paymentId: "PAY001",
-        partnerId: "P001",
-        partnerName: "Rahul Sharma",
-        partnerPhone: "9876543210",
-        orderId: "ORD1001",
-        amcId: "AMC001",
-        totalOrders: 12,
-        serviceAmount: 6000,
-        commission: 1500,
-        payableAmount: 4500,
-        paymentMethod: "Bank Transfer",
-        transactionId: "",
-        paymentDate: "20 Jul 2026",
-        status: "Pending",
-      ),
-
-      const PartnerPaymentModel(
-        paymentId: "PAY002",
-        partnerId: "P002",
-        partnerName: "Mohit Kumar",
-        partnerPhone: "9876500000",
-        orderId: "ORD1002",
-        amcId: "AMC002",
-        totalOrders: 8,
-        serviceAmount: 4200,
-        commission: 1050,
-        payableAmount: 3150,
-        paymentMethod: "UPI",
-        transactionId: "TXN102545",
-        paymentDate: "18 Jul 2026",
-        status: "Paid",
-      ),
-
-      const PartnerPaymentModel(
-        paymentId: "PAY003",
-        partnerId: "P003",
-        partnerName: "Aman Verma",
-        partnerPhone: "9988776655",
-        orderId: "ORD1003",
-        amcId: "AMC003",
-        totalOrders: 15,
-        serviceAmount: 7500,
-        commission: 1875,
-        payableAmount: 5625,
-        paymentMethod: "Bank Transfer",
-        transactionId: "",
-        paymentDate: "22 Jul 2026",
-        status: "Processing",
-      ),
-
-      const PartnerPaymentModel(
-        paymentId: "PAY004",
-        partnerId: "P004",
-        partnerName: "Deepak Singh",
-        partnerPhone: "9871234567",
-        orderId: "ORD1004",
-        amcId: "AMC004",
-        totalOrders: 10,
-        serviceAmount: 5000,
-        commission: 1250,
-        payableAmount: 3750,
-        paymentMethod: "Bank Transfer",
-        transactionId: "",
-        paymentDate: "23 Jul 2026",
-        status: "Failed",
-      ),
-
-    ]);
-
-    _filteredList = List.from(_paymentList);
-
-    _loading = false;
-    notifyListeners();
-  }
-
-  void search(String value) {
-
-    if (value.isEmpty) {
-      changeStatus(_selectedStatus);
-      return;
+      _applyFilters();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _loading = false;
+      notifyListeners();
     }
-
-    _filteredList = _paymentList.where((e) {
-
-      final match =
-
-          e.partnerName
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-
-              e.partnerPhone.contains(value) ||
-
-              e.paymentId
-                  .toLowerCase()
-                  .contains(value.toLowerCase()) ||
-
-              e.orderId
-                  .toLowerCase()
-                  .contains(value.toLowerCase()) ||
-
-              e.amcId
-                  .toLowerCase()
-                  .contains(value.toLowerCase());
-
-      if (_selectedStatus == "All") {
-        return match;
-      }
-
-      return match && e.status == _selectedStatus;
-
-    }).toList();
-
-    notifyListeners();
   }
 
-  void changeStatus(String status) {
+  /// =========================
+  /// Search
+  /// =========================
+  void search(String value) {
+    final query = value.trim().toLowerCase();
 
-    _selectedStatus = status;
+    List<PartnerPaymentModel> list = _payments;
 
-    if (status == "All") {
-
-      _filteredList = List.from(_paymentList);
-
-    } else {
-
-      _filteredList = _paymentList
-          .where((e) => e.status == status)
+    if (_selectedStatus != "All") {
+      list = list
+          .where((e) =>
+      e.status.toLowerCase() ==
+          _selectedStatus.toLowerCase())
           .toList();
     }
 
+    if (query.isNotEmpty) {
+      list = list.where((e) {
+        return e.partnerName.toLowerCase().contains(query) ||
+            e.partnerPhone.contains(query) ||
+            e.amcId.toLowerCase().contains(query);
+      }).toList();
+    }
+
+    _filteredPayments = list;
+
     notifyListeners();
   }
 
-  Future<void> markAsPaid(
-      String paymentId,
-      String transactionId,
-      ) async {
+  /// =========================
+  /// Status Filter
+  /// =========================
+  void changeStatus(String status) {
+    _selectedStatus = status;
 
-    final index = _paymentList.indexWhere(
-          (e) => e.paymentId == paymentId,
-    );
+    _applyFilters();
 
-    if (index == -1) return;
-
-    final payment = _paymentList[index];
-
-    _paymentList[index] = PartnerPaymentModel(
-      paymentId: payment.paymentId,
-      partnerId: payment.partnerId,
-      partnerName: payment.partnerName,
-      partnerPhone: payment.partnerPhone,
-      orderId: payment.orderId,
-      amcId: payment.amcId,
-      totalOrders: payment.totalOrders,
-      serviceAmount: payment.serviceAmount,
-      commission: payment.commission,
-      payableAmount: payment.payableAmount,
-      paymentMethod: payment.paymentMethod,
-      transactionId: transactionId,
-      paymentDate: payment.paymentDate,
-      status: "Paid",
-    );
-
-    changeStatus(_selectedStatus);
+    notifyListeners();
   }
 
+  /// =========================
+  /// Refresh
+  /// =========================
   Future<void> refresh() async {
     await fetchPayments();
   }
 
-  void clearFilter() {
-    _selectedStatus = "All";
-    _filteredList = List.from(_paymentList);
-    notifyListeners();
+  /// =========================
+  /// Internal Filter
+  /// =========================
+  void _applyFilters() {
+    if (_selectedStatus == "All") {
+      _filteredPayments = List.from(_payments);
+    } else {
+      _filteredPayments = _payments.where((e) {
+        return e.status.toLowerCase() ==
+            _selectedStatus.toLowerCase();
+      }).toList();
+    }
   }
 
-  double get totalPendingAmount {
-    return _paymentList
-        .where((e) => e.status == "Pending")
-        .fold(0.0, (sum, e) => sum + e.payableAmount);
-  }
+  /// =========================
+  /// Pending Count
+  /// =========================
+  int get pendingCount =>
+      _payments.where((e) => e.status == "pending").length;
 
-  double get totalPaidAmount {
-    return _paymentList
-        .where((e) => e.status == "Paid")
-        .fold(0.0, (sum, e) => sum + e.payableAmount);
-  }
+  /// =========================
+  /// Released Count
+  /// =========================
+  int get releasedCount =>
+      _payments.where((e) => e.status == "released").length;
 
-  int get totalPartners {
-    return _paymentList.length;
-  }
+  /// =========================
+  /// Total Amount
+  /// =========================
+  double get totalAmount =>
+      _payments.fold(0.0, (sum, item) => sum + item.amount);
 
-  int get totalPayments {
-    return _paymentList.length;
-  }
+  /// =========================
+  /// Pending Amount
+  /// =========================
+  double get pendingAmount => _payments
+      .where((e) => e.status == "pending")
+      .fold(0.0, (sum, item) => sum + item.amount);
 
+  int get totalPayments => _payments.length;
+
+  int get totalPartners =>
+      _payments
+          .map((e) => e.partnerPhone)
+          .toSet()
+          .length;
+
+
+
+
+  /// =========================
+  /// Released Amount
+  /// =========================
+  double get releasedAmount => _payments
+      .where((e) => e.status == "released")
+      .fold(0.0, (sum, item) => sum + item.amount);
 }

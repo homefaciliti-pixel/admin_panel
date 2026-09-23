@@ -696,7 +696,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               .toList();
                         },
 
-                        onSelected: (val) {
+                        onChanged: (val) {
                           if (val != null) {
                             final mobile = val.substring(
                               val.lastIndexOf('(') + 1,

@@ -30,17 +30,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Amc/AMC_ViewModel/amc reports/amc_report_viewmodel.dart';
 import 'Amc/AMC_ViewModel/assign partner viewmodel/assign_partner_viewmodel.dart';
 import 'Amc/AMC_ViewModel/dashboard_viewmodel/active_amc_viewmodel.dart';
 import 'Amc/AMC_ViewModel/book_service/book_service_viewmodel.dart';
 import 'Amc/AMC_ViewModel/dashboard_viewmodel/recent_order_viewmodel.dart';
 import 'Amc/AMC_ViewModel/dashboard_viewmodel/today_visit_viewmodel.dart';
+import 'Amc/AMC_ViewModel/partner Payment/ReleasePaymentViewModel.dart';
 import 'Amc/AMC_ViewModel/partner Payment/partner_payment_viewmodel.dart';
-import 'Amc/AMC_ViewModel/reports/report_viewmodel.dart';
+
 import 'Amc/AMC_ViewModel/service_history/service_history_viewmodel.dart';
 import 'core/App_permission/app_permission.dart';
 import 'utils/app_scroll_behavior.dart';
 import 'service_Api/settings/navigation_viewmodel.dart';
+
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -121,12 +126,14 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ExpiredAmcViewModel()),
         ChangeNotifierProvider(create: (_) => RenewAmcViewModel()),
         ChangeNotifierProvider(create: (_) => AmcOrderViewModel()),
-
-        ChangeNotifierProvider(create: (_) => PartnerPaymentViewModel()),
         ChangeNotifierProvider(create: (_) => RecentOrderViewModel()),
         ChangeNotifierProvider(create: (_) => VisitViewModel()),
         ChangeNotifierProvider(create: (_) => AssignPartnerViewModel()),
         ChangeNotifierProvider(create: (_) => AmcReportViewModel()),
+        ChangeNotifierProvider(create: (_) => PartnerPaymentViewModel()),
+        ChangeNotifierProvider(create: (_) => ReleasePaymentViewModel()),
+
+
       ],
       child: MyApp(isLoggedIn: isLoggedIn),
     ),

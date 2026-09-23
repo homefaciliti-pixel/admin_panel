@@ -124,26 +124,30 @@ class PartnerPaymentCard extends StatelessWidget {
 
                   _info(
                     Icons.currency_rupee,
-                    "Payable",
-                    "₹${payment.payableAmount.toStringAsFixed(0)}",
+                    "Amount",
+                    "₹${payment.amount.toStringAsFixed(0)}",
                   ),
 
                   _info(
                     Icons.receipt_long,
-                    "Orders",
-                    "${payment.totalOrders}",
+                    "AMC ID",
+                    payment.amcId,
+                  ),
+
+                  _info(
+                    Icons.home_repair_service,
+                    "Visit ID",
+                    payment.visitId.toString(),
                   ),
 
                   _info(
                     Icons.calendar_today,
-                    "Date",
-                    payment.paymentDate,
-                  ),
-
-                  _info(
-                    Icons.account_balance,
-                    "Method",
-                    payment.paymentMethod,
+                    "Created",
+                    payment.createdAt
+                        .toLocal()
+                        .toString()
+                        .split(" ")
+                        .first,
                   ),
 
                 ],
@@ -151,20 +155,20 @@ class PartnerPaymentCard extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              if (payment.transactionId.isNotEmpty)
+              if (payment.releasedAt != null)
                 Row(
                   children: [
 
                     const Icon(
-                      Icons.receipt,
+                      Icons.check_circle,
+                      color: Colors.green,
                       size: 18,
-                      color: Colors.blue,
                     ),
 
                     const SizedBox(width: 8),
 
                     Text(
-                      "Txn : ${payment.transactionId}",
+                      "Released : ${payment.releasedAt!.toLocal().toString().split(' ').first}",
                     ),
 
                   ],
